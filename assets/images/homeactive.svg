@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="29px" viewBox="0 0 28 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>Home Icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="instances" transform="translate(-309.000000, -613.000000)" fill-rule="nonzero" stroke="#23211A">
+            <g id="Home-Icon" transform="translate(311.000000, 613.000000)">
+                <g id="Group">
+                    <g>
+                        <g transform="translate(11.896110, 13.709046) rotate(-179.999936) translate(-11.896110, -13.709046) translate(0.396110, 0.709046)" fill="#F9D22D" fill-opacity="0.4" id="path-1-link" stroke-width="4">
+                            <g transform="translate(0.008399, 0.000422)">
+                                <path d="M1.50609835,19.5438732 C0.577970786,19.038536 8.52651283e-14,18.0641943 8.52651283e-14,17.0048964 L8.52651283e-14,5.77777778 C8.52651283e-14,2.58679922 2.57883984,1.20792265e-13 5.76,1.20792265e-13 L16.6677102,1.20792265e-13 C19.8488704,1.20792265e-13 22.4277102,2.58679922 22.4277102,5.77777778 L22.4277102,17.0415795 C22.4277102,18.0813673 21.8706484,19.0409382 20.9691031,19.5541142 L12.8533832,24.1737295 C11.9886368,24.6659588 10.9319356,24.6759547 10.0580886,24.2001716 L1.50609835,19.5438732 Z" id="path-1"></path>
+                            </g>
+                        </g>
+                        <g id="path-2-link" transform="translate(7.680000, 18.333333)" fill="#000000" fill-opacity="0" stroke-width="2">
+                            <path d="M0.227022303,0.738986017 L8.54734625,0.738986017" id="path-2"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

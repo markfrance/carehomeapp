@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="28px" viewBox="0 0 32 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>Patients Icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="instances" transform="translate(-379.000000, -612.000000)" fill-rule="nonzero" stroke="#23211A" stroke-width="3">
+            <g id="Patients-Icon" transform="translate(381.000000, 614.000000)">
+                <g id="Group-3">
+                    <g>
+                        <g id="Group-1" transform="translate(8.000000, 0.000000)" fill="#F9D22D" fill-opacity="0.4">
+                            <g id="ellipse-1-link" transform="translate(4.000000, 0.000000)">
+                                <ellipse id="ellipse-1" cx="6.25766159" cy="6.3030303" rx="6.06060606" ry="6.3030303"></ellipse>
+                            </g>
+                            <g id="path-2-link" transform="translate(0.000000, 13.520000)">
+                                <path d="M0.409260219,12.48 L0.409260219,6.90181818 C0.409260219,3.45556134 3.09555172,0.661818182 6.40926022,0.661818182 L14.1061464,0.661818182 C17.4198549,0.661818182 20.1061464,3.45556134 20.1061464,6.90181818 L20.1061464,12.48" id="path-2"></path>
+                            </g>
+                        </g>
+                        <g id="Group-1" fill="#FDEDAB">
+                            <g id="ellipse-1-link" transform="translate(4.000000, 0.000000)">
+                                <ellipse id="ellipse-1" cx="6.25766159" cy="6.3030303" rx="6.06060606" ry="6.3030303"></ellipse>
+                            </g>
+                            <g id="path-2-link" transform="translate(0.000000, 13.520000)">
+                                <path d="M0.409260219,12.48 L0.409260219,6.90181818 C0.409260219,3.45556134 3.09555172,0.661818182 6.40926022,0.661818182 L14.1061464,0.661818182 C17.4198549,0.661818182 20.1061464,3.45556134 20.1061464,6.90181818 L20.1061464,12.48" id="path-2"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
