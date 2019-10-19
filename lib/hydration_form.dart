@@ -1,11 +1,11 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:flutter/material.dart';
 
-class BloodPressureForm extends StatelessWidget {
+class HydrationForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 251, 148, 148),
+      backgroundColor: Color.fromARGB(255, 186, 225, 189),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Column(
@@ -31,51 +31,79 @@ class BloodPressureForm extends StatelessWidget {
             ],
           ),
           Text(
-            "Blood Pressure",
+            "Hydration",
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Row(
+                ButtonBar(
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
-                      ),
-                      flex: 1,
-                    ),
-                    Expanded(
-                      child: Text("Systolic"),
-                      flex: 1,
+                    Wrap(
+                      direction: Axis.horizontal,
+                      children: <Widget>[
+                        RaisedButton(
+                          child: Text("Cold"),
+                          onPressed: null,
+                        ),
+                        RaisedButton(
+                          child: Text("Hot"),
+                          onPressed: null,
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(),
                       ),
+                      flex: 2,
+                    ),
+                    Expanded(
+                      child: Text("L"),
                       flex: 1,
                     ),
                     Expanded(
-                      child: Text("Diastolic"),
+                      child: Text("or"),
+                      flex: 1,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: TextFormField(),
+                      ),
+                      flex: 2,
+                    ),
+                    Expanded(
+                      child: Text("ml"),
                       flex: 1,
                     ),
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "other",
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(8.0), child: TextFormField()),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
                     onPressed: () {},
                   ),
-                )
+                ),
               ],
             ),
           ),

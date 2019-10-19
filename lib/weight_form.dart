@@ -1,11 +1,12 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:flutter/material.dart';
 
-class BloodPressureForm extends StatelessWidget {
+class WeightForm extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 251, 148, 148),
+      backgroundColor: Color.fromARGB(255, 244, 174, 124),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Column(
@@ -31,7 +32,7 @@ class BloodPressureForm extends StatelessWidget {
             ],
           ),
           Text(
-            "Blood Pressure",
+            "Weight",
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -49,22 +50,7 @@ class BloodPressureForm extends StatelessWidget {
                       flex: 1,
                     ),
                     Expanded(
-                      child: Text("Systolic"),
-                      flex: 1,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
-                      ),
-                      flex: 1,
-                    ),
-                    Expanded(
-                      child: Text("Diastolic"),
+                      child: Text("kg"),
                       flex: 1,
                     ),
                   ],

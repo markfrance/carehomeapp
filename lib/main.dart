@@ -1,9 +1,25 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/log_check.dart';
-
+import 'package:carehomeapp/patients_list.dart';
 
 void main() => runApp(MyApp());
+
+const MaterialColor backColor = const MaterialColor(
+  0xFFFFFFFF,
+  const <int, Color>{
+    50: const Color(0xFFfaf3f2),
+    100: const Color(0xFFfaf3f2),
+    200: const Color(0xFFfaf3f2),
+    300: const Color(0xFFfaf3f2),
+    400: const Color(0xFFfaf3f2),
+    500: const Color(0xFFfaf3f2),
+    600: const Color(0xFFfaf3f2),
+    700: const Color(0xFFfaf3f2),
+    800: const Color(0xFFfaf3f2),
+    900: const Color(0xFFfaf3f2),
+  },
+);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -12,6 +28,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.black,
+          textTheme: ButtonTextTheme.primary,
+        ),
         // This is the theme of your application.
         //
         // Try running your application with "flutter run". You'll see the
@@ -21,7 +41,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: backColor,
       ),
       home: MyHomePage(title: "Hello Caretaker"),
     );
@@ -47,82 +67,63 @@ class MyHomePage extends StatefulWidget {
 }
 
 class HomeFeed extends StatefulWidget {
-
   @override
   _HomeFeedState createState() => _HomeFeedState();
 }
 
 class _HomeFeedState extends State<HomeFeed> {
-
- String dropdownValue = 'Most recent';
+  String dropdownValue = 'Most recent';
 
   @override
   Widget build(BuildContext context) {
-  
-    return 
-    Column(
-          children:<Widget>[
-            Align(
-      alignment: Alignment.topLeft,
-      child: DropdownButton<String>(
-        
-        value: dropdownValue,
-        icon: Icon(Icons.arrow_downward),
-        iconSize: 24,
-        elevation: 16,
-        style: TextStyle(
-          color: Colors.black
-        ),
-        underline: Container(
-          height: 2,
-          color: Colors.black,
-        ),
-        onChanged: (String newValue) {
-          setState(() {
-            dropdownValue = newValue;
-          });
-        },
-        items: <String>['Most recent', 'Check type', 'Patients']
-          .map<DropdownMenuItem<String>>((String value) {
+    return Column(children: <Widget>[
+      Align(
+        alignment: Alignment.topLeft,
+        child: DropdownButton<String>(
+          value: dropdownValue,
+          icon: Icon(Icons.arrow_downward),
+          iconSize: 24,
+          elevation: 16,
+          style: TextStyle(color: Colors.black),
+          underline: Container(
+            height: 2,
+            color: Colors.black,
+          ),
+          onChanged: (String newValue) {
+            setState(() {
+              dropdownValue = newValue;
+            });
+          },
+          items: <String>['Most recent', 'Check type', 'Patients']
+              .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
-              
               value: value,
               child: Container(
                 color: Color.fromARGB(255, 250, 243, 242),
-                child:Text(value),
+                child: Text(value),
               ),
             );
-          })
-          .toList(),
+          }).toList(),
+        ),
       ),
-      ),
-      Text(
-        "test"
-      ),
+      Text("test"),
       Text("LIST GOES HERE")
-     ]
-    );
+    ]);
   }
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
-  
-    int _selectedIndex = 0;
+  int _selectedIndex = 0;
 
   void _incrementTab(index) {
-    if(_selectedIndex < 3){
+    if (_selectedIndex < 3) {
       setState(() {
         _selectedIndex = index;
       });
     }
   }
 
-  final widgetOptions = [
-    HomeFeed(),
-    LogCheck(),
-    Text('Patients')
-  ];
+  final widgetOptions = [HomeFeed(), LogCheck(), PatientsList()];
 
   @override
   Widget build(BuildContext context) {
@@ -133,75 +134,87 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 250, 243, 242),
-      endDrawer:Drawer(
-        child:Container(
-          color: Color.fromARGB(255, 249, 210, 45),
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text("First Name", textAlign: TextAlign.end,),
+        backgroundColor: Color.fromARGB(255, 250, 243, 242),
+        endDrawer: Drawer(
+          child: Container(
+            color: Color.fromARGB(255, 249, 210, 45),
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  title: Text(
+                    "First Name",
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "Last Name",
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "Following: 3",
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "Score: 20",
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: ListTile(
+                    title: Text(
+                      "Settings",
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            ListTile(
-              title: Text("Last Name", textAlign: TextAlign.end,),
+          ),
+        ),
+        appBar: AppBar(
+            backgroundColor: Color.fromARGB(255, 250, 243, 242),
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(widget.title,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(color: Colors.black)),
             ),
-            ListTile(
-              title: Text("Following: 3",  textAlign: TextAlign.end,),
-            ),
-            ListTile(
-              title: Text("Score: 20", textAlign: TextAlign.end,),
-            ),
-            Align( 
-              alignment: Alignment.bottomLeft,
-              child:ListTile( 
-              title: Text("Settings", textAlign: TextAlign.end, ),
-            ),
-            ),
+            iconTheme: new IconThemeData(color: Colors.black)),
+        body: Center(
+          child: widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          type: BottomNavigationBarType.shifting,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(CareHomeIcons.addb,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: new Text('')),
+            BottomNavigationBarItem(
+                icon: Icon(CareHomeIcons.home,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: new Text('')),
+            BottomNavigationBarItem(
+                icon: Icon(CareHomeIcons.patients,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: new Text('')),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: new Text(''))
           ],
-        ),
-        ),
-      ),
-     
-      appBar: AppBar(
-         backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child:Text(widget.title, textAlign: TextAlign.start, style: TextStyle(color: Colors.black)),
-        ),
-        iconTheme: new IconThemeData(color:Colors.black)
-      ),
-      body: Center(
-        child: widgetOptions.elementAt(_selectedIndex),
-      ),
-        
-      bottomNavigationBar:BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        type: BottomNavigationBarType.shifting ,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(CareHomeIcons.addb,color: Color.fromARGB(255, 0, 0, 0)),
-            title: new Text('')
-            
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CareHomeIcons.home,color: Color.fromARGB(255, 0, 0, 0)),
-            title: new Text('')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CareHomeIcons.patients, color: Color.fromARGB(255, 0, 0, 0)),
-            title: new Text('')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle,color: Color.fromARGB(255, 0, 0, 0)),
-            title: new Text('')
-          )
-        ],
-        onTap: (index){
+          onTap: (index) {
             _incrementTab(index);
-        },
-      ) 
-    );
+          },
+        ));
   }
 }
