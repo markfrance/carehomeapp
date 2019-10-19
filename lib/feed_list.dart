@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:carehomeapp/patient_model.dart';
-import 'package:carehomeapp/patients_card.dart';
+import 'package:carehomeapp/feeditem_model.dart';
+import 'package:carehomeapp/feed_card.dart';
 
-class PatientsList extends StatefulWidget {
-  final List<Patient> initialPatients = []
-    ..add(Patient('first', 'patient', 43))
-    ..add(Patient('second', 'patient', 33))
-    ..add(Patient('third', 'patient', 65))
-    ..add(Patient('fourth', 'patient', 14));
+class FeedList extends StatefulWidget {
+  final List<FeedItem> initialFeeds = []
+    ..add(FeedItem('first patient',CheckType.vitals,"THIS IS THE FEED CONTENT"))
+    ..add(FeedItem('second patient',CheckType.body,"THIS IS THE FEED CONTENT"))
+    ..add(FeedItem('third patient',CheckType.other,"THIS IS THE FEED CONTENT"))
+    ..add(FeedItem('fourth patient',CheckType.medication,"THIS IS THE FEED CONTENT"))
+    ..add(FeedItem('fifth patient',CheckType.mood,"THIS IS THE FEED CONTENT"))
+    ..add(FeedItem('sixth patient',CheckType.nutrition,"THIS IS THE FEED CONTENT"));
+
 
   @override
-  _PatientsListState createState() => _PatientsListState(initialPatients);
+  _FeedListState createState() => _FeedListState(initialFeeds);
 }
 
-class _PatientsListState extends State<PatientsList> {
-  final List<Patient> patients;
-  _PatientsListState(this.patients);
+class _FeedListState extends State<FeedList> {
+  final List<FeedItem> feeditems;
+  _FeedListState(this.feeditems);
   String dropdownValue = 'Most recent';
 
   Widget _buildList(BuildContext context) {
     return ListView.builder(
-      itemCount: patients.length,
+      itemCount: feeditems.length,
       itemBuilder: (context, int) {
-        return PatientCard(patients[int]);
+        return FeedCard(feeditems[int]);
       },
     );
   }

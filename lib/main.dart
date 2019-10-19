@@ -1,4 +1,7 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
+import 'package:carehomeapp/feed_list.dart';
+import 'package:carehomeapp/login_signup.dart';
+import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/log_check.dart';
 import 'package:carehomeapp/patients_list.dart';
@@ -66,64 +69,17 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class HomeFeed extends StatefulWidget {
-  @override
-  _HomeFeedState createState() => _HomeFeedState();
-}
-
-class _HomeFeedState extends State<HomeFeed> {
-  String dropdownValue = 'Most recent';
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Align(
-        alignment: Alignment.topLeft,
-        child: DropdownButton<String>(
-          value: dropdownValue,
-          icon: Icon(Icons.arrow_downward),
-          iconSize: 24,
-          elevation: 16,
-          style: TextStyle(color: Colors.black),
-          underline: Container(
-            height: 2,
-            color: Colors.black,
-          ),
-          onChanged: (String newValue) {
-            setState(() {
-              dropdownValue = newValue;
-            });
-          },
-          items: <String>['Most recent', 'Check type', 'Patients']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Container(
-                color: Color.fromARGB(255, 250, 243, 242),
-                child: Text(value),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-      Text("test"),
-      Text("LIST GOES HERE")
-    ]);
-  }
-}
-
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   void _incrementTab(index) {
-    if (_selectedIndex < 3) {
       setState(() {
         _selectedIndex = index;
       });
-    }
+    
   }
 
-  final widgetOptions = [HomeFeed(), LogCheck(), PatientsList()];
+  final widgetOptions = [LogCheck(),FeedList(), PatientsList()];
 
   @override
   Widget build(BuildContext context) {
@@ -135,48 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        endDrawer: Drawer(
-          child: Container(
-            color: Color.fromARGB(255, 249, 210, 45),
-            child: ListView(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    "First Name",
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Last Name",
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Following: 3",
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    "Score: 20",
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: ListTile(
-                    title: Text(
-                      "Settings",
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        endDrawer: YellowDrawer(),
         appBar: AppBar(
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
             // Here we take the value from the MyHomePage object that was created by
@@ -188,9 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.black)),
             ),
             iconTheme: new IconThemeData(color: Colors.black)),
-        body: Center(
+        body: LoginSignupPage(),/*Center(
           child: widgetOptions.elementAt(_selectedIndex),
-        ),
+        ),*/
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           type: BottomNavigationBarType.shifting,

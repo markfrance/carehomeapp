@@ -17,11 +17,11 @@ class Comment{
 
 class FeedItem {
   final String name;
-  final DateTime date;
+  DateTime date;
   final CheckType type;
   final String body;
   String imageUrl;
   List<Comment> comments;
 
-  FeedItem(this.name, this.date, this.type, this.body, this.comments );
+  FeedItem(this.name, this.type, this.body );
 }
