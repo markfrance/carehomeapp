@@ -1,8 +1,7 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
-import 'package:carehomeapp/form_header.dart';
 import 'package:flutter/material.dart';
 
-class ActivityForm extends StatelessWidget {
+class TasksForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -13,9 +12,8 @@ class ActivityForm extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-         FormHeader(),
           Text(
-            "Activity",
+            "Tasks",
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -31,7 +29,7 @@ class ActivityForm extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
                           keyboardType: TextInputType.multiline,
-                          maxLines: 6,
+                          maxLines: 10,
                         ),
                       ),
                     ),

@@ -1,24 +1,20 @@
+
 import 'package:carehomeapp/care_home_icons_icons.dart';
-import 'package:carehomeapp/form_header.dart';
 import 'package:flutter/material.dart';
 
-class ActivityForm extends StatelessWidget {
+class EnterComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 204, 241, 255),
+      backgroundColor: Color.fromARGB(255, 250, 243, 242),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-         FormHeader(),
-          Text(
-            "Activity",
-            textAlign: TextAlign.start,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+          Icon(CareHomeIcons.comment),
+       
           Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -31,7 +27,7 @@ class ActivityForm extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
                           keyboardType: TextInputType.multiline,
-                          maxLines: 6,
+                          maxLines: 8,
                         ),
                       ),
                     ),
@@ -40,7 +36,7 @@ class ActivityForm extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
-                    child: Text("Save"),
+                    child: Text("Confirm"),
                     onPressed: () {},
                   ),
                 ),

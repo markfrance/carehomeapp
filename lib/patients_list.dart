@@ -3,11 +3,12 @@ import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
 
 class PatientsList extends StatefulWidget {
+
   final List<Patient> initialPatients = []
-    ..add(Patient('first', 'patient', 43))
-    ..add(Patient('second', 'patient', 33))
-    ..add(Patient('third', 'patient', 65))
-    ..add(Patient('fourth', 'patient', 14));
+    ..add(Patient('first', 'patient', 43, 'test'))
+    ..add(Patient('second', 'patient', 33,'test'))
+    ..add(Patient('third', 'patient', 65,'test'))
+    ..add(Patient('fourth', 'patient', 14,'test'));
 
   @override
   _PatientsListState createState() => _PatientsListState(initialPatients);

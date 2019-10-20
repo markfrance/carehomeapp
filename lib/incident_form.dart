@@ -31,7 +31,7 @@ class IncidentForm extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
                           keyboardType: TextInputType.multiline,
-                          maxLines: 10,
+                          maxLines: 6,
                         ),
                       ),
                     ),

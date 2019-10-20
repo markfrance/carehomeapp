@@ -1,3 +1,4 @@
+import 'package:carehomeapp/patient_home.dart';
 import 'package:flutter/material.dart';
 
 import 'package:carehomeapp/patient_model.dart';
@@ -20,7 +21,7 @@ class _PatientCardState extends State<PatientCard> {
   @override
   Widget build(BuildContext context) {
     return  GestureDetector(
-      onTap: () { Navigator.push(context,MaterialPageRoute(builder: (context) => PatientView()),);},
+      onTap: () { Navigator.push(context,MaterialPageRoute(builder: (context) => PatientHome()),);},
       child:Card(
       color: Colors.white,
       child: Padding(

@@ -5,7 +5,7 @@ import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
 
 class PatientView extends StatelessWidget {
-  final Patient patient = new Patient("first", "patient", 65);
+  final Patient patient = new Patient("first", "patient", 65, "test");
 
   @override
   Widget build(BuildContext context) {

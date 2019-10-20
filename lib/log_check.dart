@@ -85,6 +85,7 @@ final List<Entry> data = <Entry>[
 class EntryItem extends StatelessWidget {
   EntryItem(this.entry, this.context);
 
+
   final Entry entry;
   final BuildContext context;
 
