@@ -16,7 +16,16 @@ class _MedicationViewState extends State<MedicationView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Card(
+      elevation: 4,
+        margin:EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+  ),
+  color: Color.fromARGB(255, 109, 191, 218),
+      child:Padding(
+        padding:EdgeInsets.all(18),
+        child:Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -55,6 +64,8 @@ class _MedicationViewState extends State<MedicationView> {
           ],
         ),
       ],
+      ),
+      ),
     );
   }
 }

@@ -35,7 +35,12 @@ class _FeedListState extends State<FeedList> {
     return Column(children: <Widget>[
       Align(
         alignment: Alignment.topLeft,
-        child: DropdownButton<String>(
+        child: Theme(
+          data: ThemeData(
+            canvasColor: Color.fromARGB(255,249, 210, 45),
+            backgroundColor:Color.fromARGB(255,250, 243, 242),
+             ),
+          child:DropdownButton<String>(
           value: dropdownValue,
           icon: Icon(Icons.arrow_downward),
           iconSize: 24,
@@ -60,6 +65,7 @@ class _FeedListState extends State<FeedList> {
               ),
             );
           }).toList(),
+        ),
         ),
       ),
       Expanded(child: _buildList(context), flex: 1)

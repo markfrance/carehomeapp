@@ -27,7 +27,7 @@ class _PatientHomeState extends State<PatientHome> {
     
   }
 
-final widgetOptions = [FeedList(), MedicationView(), TasksView()];
+final widgetOptions = [FeedList(),MedicationView(),ChartTypeList(), TasksView()];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,14 @@ final widgetOptions = [FeedList(), MedicationView(), TasksView()];
         body: Column(
           children:<Widget>[
             Column(children: <Widget>[
-      PatientCard(patient),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(child:  PatientCard(patient),)
+               
+              ],),
+      
+        
       Row(children: <Widget>[
         Spacer(),
           RaisedButton(child: Text("Feed"),
@@ -52,10 +59,10 @@ final widgetOptions = [FeedList(), MedicationView(), TasksView()];
        Row(children: <Widget>[
           Spacer(),
           RaisedButton(child: Text("Chart"),
-          onPressed: () {Navigator.push(context,MaterialPageRoute(builder: (context) => ChartTypeList()));}),
+          onPressed: () => _setIndex(2)),
            Spacer(),
           RaisedButton(child: Text("Tasks"),
-          onPressed: () => _setIndex(2)),
+          onPressed: () => _setIndex(3)),
            Spacer(),
       ],),],),
          RaisedButton(child: Icon(Icons.info),

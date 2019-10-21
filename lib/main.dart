@@ -34,9 +34,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        scaffoldBackgroundColor:Color.fromARGB(255, 250, 243, 242) ,
+        bottomAppBarColor: Color.fromARGB(255, 250, 243, 242),
+        fontFamily: 'Nunito',
+        backgroundColor: Color.fromARGB(255, 250, 243, 242),
         buttonTheme: ButtonThemeData(
-          buttonColor: Colors.black,
+          buttonColor: Color.fromARGB(255, 249, 210, 45),
           textTheme: ButtonTextTheme.primary,
+        
         ),
       
         primarySwatch: backColor,
@@ -68,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _selectedIndex = index;
       });
-    
   }
 
   final widgetOptions = [LogCheck(),FeedList(), PatientsList(), LoginSignupPage()];
@@ -81,8 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
         endDrawer: YellowDrawer(),
         appBar: AppBar(
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
             title: Align(
               alignment: Alignment.centerLeft,
               child: Text(widget.title,
@@ -94,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color.fromARGB(255, 250, 243, 242),
           currentIndex: _selectedIndex,
           type: BottomNavigationBarType.shifting,
           items: [

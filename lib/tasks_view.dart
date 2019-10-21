@@ -20,7 +20,17 @@ class _TasksViewState extends State<TasksView> {
   
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Card(
+       
+        elevation: 4,
+        margin:EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+  ),
+      color: Color.fromARGB(255, 250, 243, 242),
+      child: Padding(
+        padding: EdgeInsets.all(18),
+        child:Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -60,6 +70,8 @@ class _TasksViewState extends State<TasksView> {
             ],
           ),
         ],
+      ),
+      ),
       );
     }
 }

@@ -13,18 +13,6 @@ class ChartTypeList extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-         endDrawer: YellowDrawer(),
-        appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 250, 243, 242),
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
-            title: Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Charts",
-                  textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.black)),
-            ),
-            iconTheme: new IconThemeData(color: Colors.black)),
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
               ChartEntryItem(data[index], context),

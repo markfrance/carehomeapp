@@ -23,16 +23,23 @@ class _PatientCardState extends State<PatientCard> {
     return  GestureDetector(
       onTap: () { Navigator.push(context,MaterialPageRoute(builder: (context) => PatientHome()),);},
       child:Card(
-      color: Colors.white,
+       
+        elevation: 4,
+        margin:EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+  ),
+      color: Color.fromARGB(255, 250, 243, 242),
       child: Padding(
 
         padding: const EdgeInsets.only(
-          top: 8.0,
-          bottom: 8.0,
+          top: 18.0,
+          bottom: 18.0,
           left: 64.0,
         ),
 
-        child: Column(
+        child:Column(
+          
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(widget.patient.firstname,

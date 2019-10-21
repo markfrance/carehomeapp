@@ -18,6 +18,7 @@ class LogCheck extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Color.fromARGB(255, 250, 243, 242),
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
               EntryItem(data[index], context),

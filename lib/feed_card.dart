@@ -12,9 +12,9 @@ class FeedCard extends StatefulWidget {
 }
 
 class _FeedCardState extends State<FeedCard> {
-   FeedItem patient;
+   FeedItem feedItem;
 
-   _FeedCardState(this.patient);
+   _FeedCardState(this.feedItem);
 
   IconData getIcon(CheckType type) {
     switch (type) {
@@ -35,18 +35,42 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
+  Color getColor(CheckType type){
+    switch (type) {
+      case CheckType.body : 
+        return Color.fromARGB(255, 244, 174, 124);
+      case CheckType.medication :
+        return Color.fromARGB(255, 109, 191, 218);
+      case CheckType.mood:
+        return Color.fromARGB(255, 222, 164, 209);
+      case CheckType.nutrition:
+        return Color.fromARGB(255, 186, 225, 189);
+      case CheckType.other:
+        return Color.fromARGB(255, 204, 241, 255);
+      case CheckType.vitals:
+        return Color.fromARGB(255, 251, 148, 148);
+      default: 
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return  Card(
-      color: Colors.white,
+       elevation: 4,
+        margin:EdgeInsets.all(16.0),
+         shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+  ),
+      color: getColor(widget.feedItem.type),
       child:Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
 
         padding: const EdgeInsets.only(
-          top: 8.0,
-          bottom: 8.0,
+          top: 18.0,
+          bottom: 18.0,
           left: 64.0,
         ),
             child:Row(children: <Widget>[
