@@ -16,6 +16,7 @@ class IncidentForm extends StatefulWidget {
 class IncidentFormState extends State<IncidentForm> {
 
    final _incidentController = TextEditingController();
+   String imageurl;
   
    void _addIncident(BuildContext context)
   {
@@ -27,12 +28,20 @@ class IncidentFormState extends State<IncidentForm> {
         'type': 'other',
         'subtype': 'incident',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'incident': _incidentController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -45,7 +54,7 @@ class IncidentFormState extends State<IncidentForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Incident",
             textAlign: TextAlign.start,

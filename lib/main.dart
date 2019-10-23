@@ -136,7 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
               alignment: Alignment.centerLeft,
               child: Text("Hello " + user.firstName + " " + user.lastName,
                   textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: Colors.black,
+                  fontWeight: FontWeight.w900)),
             ),
             iconTheme: new IconThemeData(color: Colors.black)),
         body: Center(

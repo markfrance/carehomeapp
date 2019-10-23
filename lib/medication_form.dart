@@ -25,6 +25,14 @@ class MedicationState extends State<MedicationForm> {
     '06:32': false,
   };
 
+String imageurl;
+
+ void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -35,7 +43,7 @@ class MedicationState extends State<MedicationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Medication",
             textAlign: TextAlign.start,

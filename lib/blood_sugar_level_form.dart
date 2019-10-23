@@ -15,6 +15,7 @@ class BloodSugarLevelForm extends StatefulWidget {
 
 class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
    final _levelController = TextEditingController();
+   String imageurl;
 
    void _addBloodSugarLevel(BuildContext context)
   {
@@ -26,12 +27,20 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
         'type': 'vitals',
         'subtype': 'bloodsugar',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
-        'level': _levelController.text
+        'level': _levelController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -44,7 +53,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Blood Sugar Level",
             textAlign: TextAlign.start,

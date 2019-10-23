@@ -1,5 +1,6 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/popup_message.dart';
 import 'package:carehomeapp/user_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/blood_pressure_form.dart';
@@ -26,8 +27,7 @@ class LogCheckState extends State<LogCheck> {
   @override
   Widget build(BuildContext context) {
     final user = UserBinding.of(context).user;
-    print("LOG CHECK USER:" + user.id);
-
+  
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -41,7 +41,7 @@ class LogCheckState extends State<LogCheck> {
                       AsyncSnapshot<List<Patient>> snapshot) {
                     if (!snapshot.hasData) return CircularProgressIndicator();
                     return DropdownButton<Patient>(
-                      hint:Text("Select Patient Name"),
+                      hint:dropdownValue == null ? Text("Select Patient Name") : Text(dropdownValue.firstname + " " + dropdownValue.lastname),
                       isExpanded: true,
                       value:null,
                       items: snapshot.data
@@ -191,10 +191,7 @@ class EntryItem extends StatelessWidget {
               context: context,
               builder: (BuildContext context){
                 return Center(
-                  child:Card(
-                  
-                  child:Text("PLEASE SELECT PATIENT FIRST")
-                ));
+                  child:PopupMessage("Please first select patient"));
               }
             ) :
             showDialog(

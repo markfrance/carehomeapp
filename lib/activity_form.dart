@@ -15,9 +15,10 @@ class ActivityForm extends StatefulWidget {
 
 class ActivityFormState extends State<ActivityForm> {
 
-   final _activityController = TextEditingController();
+  final _activityController = TextEditingController();
+  String imageurl;
 
-   void _addActivity(BuildContext context)
+  void _addActivity(BuildContext context)
   {
      final user = UserBinding.of(context).user;
      
@@ -27,12 +28,20 @@ class ActivityFormState extends State<ActivityForm> {
         'type': 'other',
         'subtype': 'activity',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
-        'activity': _activityController.text
+        'activity': _activityController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+  void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
  
  
@@ -46,7 +55,7 @@ class ActivityFormState extends State<ActivityForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-         FormHeader(),
+         FormHeader(setImage),
           Text(
             "Activity",
             textAlign: TextAlign.start,

@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carehomeapp/feeditem_model.dart';
 
 import 'dart:async';
-import 'dart:io';
 
 class User {
   String id;
@@ -12,19 +11,17 @@ class User {
   String email;
   String carehome;
 
-   List<FeedItem> getFeedItems() {
-    List<FeedItem> userFeedItems;
-
-    Firestore.instance
+  /* List<FeedItem> getFeedItems() {
+   Firestore.instance
         .collection('feedItem')
         .where("user", isEqualTo: this.id)
         .snapshots()
         .listen((data) => data.documents.forEach((doc) => userFeedItems.add(
             new FeedItem(
-                doc["name"], doc["type"], doc["body"]))));
+                doc["timeadded"],doc["type"], doc["subtype"], doc["user"], doc["patient"]))));
 
     return userFeedItems;
-  }
+  }*/
 
   Future<List<Patient>> getPatients() async {
     List<Patient> userPatients = new List<Patient>();

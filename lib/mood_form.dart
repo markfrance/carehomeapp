@@ -22,11 +22,20 @@ class MoodFormState extends State<MoodForm> {
     Firestore.instance.collection('feeditem').document().setData({
       'timeadded': DateTime.now(),
       'type': 'mood',
-      'subtype': '',
+      'subtype': 'mood',
       'patient': widget.patient.id,
+     'patientname': widget.patient.firstname + " " +widget.patient.lastname,
       'user': user.id,
-      'mood': mood,
+      'mood': "happy",
+        'imageurl': imageurl
     }).then((onValue) => Navigator.pop(context));
+  }
+
+    String imageurl;
+     void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -39,7 +48,7 @@ class MoodFormState extends State<MoodForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,

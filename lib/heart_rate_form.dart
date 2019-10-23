@@ -17,6 +17,7 @@ class HeartRateForm extends StatefulWidget {
 class HeartRateFormState extends State<HeartRateForm> {
 
   final _rateController = TextEditingController();
+  String imageurl;
 
    void _addHeartRate(BuildContext context)
   {
@@ -28,12 +29,20 @@ class HeartRateFormState extends State<HeartRateForm> {
         'type': 'vitals',
         'subtype': 'heartrate',
         'patient': widget.patient.id,
+       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
-        'bpm': _rateController.text
+        'bpm': _rateController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -46,7 +55,7 @@ class HeartRateFormState extends State<HeartRateForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Heart Rate",
             textAlign: TextAlign.start,

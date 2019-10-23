@@ -16,6 +16,7 @@ class BloodPressureForm extends StatefulWidget {
 class BloodPressureFormState extends State<BloodPressureForm> {
    final _systolicController = TextEditingController();
    final _diastolicController = TextEditingController();
+    String imageurl;
 
    void _addBloodPressure(BuildContext context)
   {
@@ -27,13 +28,20 @@ class BloodPressureFormState extends State<BloodPressureForm> {
         'type': 'vitals',
         'subtype': 'bloodpressure',
         'patient': widget.patient.id,
+       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'systolic': _systolicController.text,
-        'diastolic': _diastolicController.text
+        'diastolic': _diastolicController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+
+      imageurl = newimageurl;
   }
 
   @override
@@ -46,7 +54,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Blood Pressure",
             textAlign: TextAlign.start,

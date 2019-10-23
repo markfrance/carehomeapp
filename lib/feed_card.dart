@@ -9,59 +9,80 @@ class FeedCard extends StatefulWidget {
   FeedCard(this.feedItem);
 
   @override
-  _FeedCardState createState() => _FeedCardState(feedItem);
+  _FeedCardState createState() => _FeedCardState();
 }
 
 class _FeedCardState extends State<FeedCard> {
-  FeedItem feedItem;
+ 
 
-  _FeedCardState(this.feedItem);
-
-  IconData getIcon(CheckType type) {
+  IconData getIcon(String type) {
     switch (type) {
-      case CheckType.body:
+      case "body":
         return CareHomeIcons.body;
-      case CheckType.medication:
+      case "medication":
         return CareHomeIcons.medsicon;
-      case CheckType.mood:
+      case "mood":
         return CareHomeIcons.moodicon;
-      case CheckType.nutrition:
+      case "nutrition":
         return CareHomeIcons.nutrition;
-      case CheckType.other:
+      case "other":
         return CareHomeIcons.other;
-      case CheckType.vitals:
+      case "vitals":
         return CareHomeIcons.vitalsicon;
       default:
         return null;
     }
   }
 
-  Color getColor(CheckType type) {
+  Color getColor(String type) {
     switch (type) {
-      case CheckType.body:
+      case "body":
         return Color.fromARGB(255, 244, 174, 124);
-      case CheckType.medication:
+      case "medication":
         return Color.fromARGB(255, 109, 191, 218);
-      case CheckType.mood:
+      case "mood":
         return Color.fromARGB(255, 222, 164, 209);
-      case CheckType.nutrition:
+      case "nutrition":
         return Color.fromARGB(255, 186, 225, 189);
-      case CheckType.other:
+      case "other":
         return Color.fromARGB(255, 204, 241, 255);
-      case CheckType.vitals:
+      case "vitals":
         return Color.fromARGB(255, 251, 148, 148);
       default:
         return null;
     }
   }
 
-  String getDescription(SubType type){
+  String getDescription(String type){
+    FeedItem feedItem = widget.feedItem;
     switch (type) {
-      case SubType.activity:
-      return "Activity";
-        
-        break;
+      case "mood":
+        return "Mood: " + feedItem.mood;
+      case "bloodpressure":
+        return "Blood pressure reading: " + feedItem.systolic + "/" + feedItem.diastolic;
+      case "bloodsugarlevel":
+        return "Blood sugar level: " + feedItem.mmol + " mmo/l";
+      case "heartrate":
+        return "Heart rate: " + feedItem.bpm + "bpm";
+      case "medication":
+        return "Took " + feedItem.dose + " " + feedItem.medication + " at " + feedItem.medicationtime;
+      case "hydration":
+        return "Drank " + feedItem.l + "L " + feedItem.hotcold + " drink. " + feedItem.sugar;
+      case "meals":
+        return "Ate " + feedItem.gm + "g meal for " + feedItem.mealtype + ". " + feedItem.description;
+      case "weight":
+        return "Weight reading: " + feedItem.weight + "kg";
+      case "hygiene":
+        return "Type: " + feedItem.hygienetype + ". " + feedItem.otherhygiene;
+      case "toilet":
+        return "Went to toilet for " + feedItem.toilettype + ". " + feedItem.status;
+      case "activity":
+        return "New activity:" + feedItem.activity;
+      case "incident":
+        return "New incident: " + feedItem.incident;
+
       default:
+      return "description error";
     }
   }
 
@@ -80,6 +101,11 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
+  String formatTime(DateTime time){
+    return time.year .toString()+ "/" + 
+    time.month.toString() + "/" + time.day.toString() + " " + 
+    time.hour.toString() + ":" + time.minute.toString();
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -100,9 +126,11 @@ class _FeedCardState extends State<FeedCard> {
             ),
             child: Row(children: <Widget>[
               Column(children: <Widget>[
-                Text(widget.feedItem.patient.firstname + " " + widget.feedItem.patient.lastname,
-                    style: Theme.of(context).textTheme.subhead),
-                Text("16/10/19 00:43"),
+                Text(widget.feedItem.patientname ?? " ",
+                    style: TextStyle(
+                      fontWeight:FontWeight.bold),
+                    ),
+                Text(formatTime(widget.feedItem.timeAdded)),
               ]),
               Spacer(flex: 5),
               Padding(
@@ -111,7 +139,7 @@ class _FeedCardState extends State<FeedCard> {
             ]),
           ),
           Padding(
-              child: Text(getDescription(widget.feedItem.subType),
+              child: Text(getDescription(widget.feedItem.subType) ?? " ",
                   style: Theme.of(context).textTheme.subhead),
               padding: EdgeInsets.all(8)),
 

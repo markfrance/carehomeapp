@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
 
-class PatientEdit extends StatefulWidget {
+class PatientAdd extends StatefulWidget {
  final Patient patient;
-  PatientEdit(this.patient);
+  PatientAdd(this.patient);
 
   @override
-  PatientEditState createState() => PatientEditState();
+  PatientAddState createState() => PatientAddState();
 }
 
-class PatientEditState extends State<PatientEdit> {
+class PatientAddState extends State<PatientAdd> {
   
   final _likesController = TextEditingController();
   final _dislikesController = TextEditingController();
@@ -37,9 +37,9 @@ class PatientEditState extends State<PatientEdit> {
     return super.initState();
   }
 
-  void _updatePatientData(BuildContext context)
+  void _addPatientData(BuildContext context)
   {
-    Firestore.instance.collection('patients').document(widget.patient.id).updateData(
+    Firestore.instance.collection('patients').document().setData(
       {
         
         'likes': _likesController.text,
@@ -79,7 +79,7 @@ class PatientEditState extends State<PatientEdit> {
                         padding: EdgeInsets.all(1.0),
                         child: Text("Save"),
                         onPressed: () {
-                          _updatePatientData(context);
+                          _addPatientData(context);
                         },
                       ),
                       flex: 1)

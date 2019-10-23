@@ -29,10 +29,12 @@ class _PatientHomeState extends State<PatientHome> {
     
   }
 
-final widgetOptions = [FeedList(),MedicationView(),ChartTypeList(), TasksView()];
 
   @override
   Widget build(BuildContext context) {
+
+    final widgetOptions = [FeedList(widget.patient),MedicationView(),ChartTypeList(), TasksView()];
+
     return Scaffold(
         endDrawer: YellowDrawer(),
         appBar: AppBar(

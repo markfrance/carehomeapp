@@ -16,10 +16,11 @@ class HydrationForm extends StatefulWidget {
 
 class HydrationFormState extends State<HydrationForm> {
 
-  String hotcold;
+  String hotcold = 'hot';
   final _lController = TextEditingController();
   final _mlController = TextEditingController();
-  final _otherController = TextEditingController();
+  final _sugarController = TextEditingController();
+  String imageurl;
 
    void _addHydration(BuildContext context)
   {
@@ -31,15 +32,23 @@ class HydrationFormState extends State<HydrationForm> {
         'type': 'nutrition',
         'subtype': 'hydration',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'hotcold': hotcold,
         'l': _lController.text,
         'ml': _mlController.text,
-        'other': _otherController.text,
+        'sugar': _sugarController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -52,7 +61,7 @@ class HydrationFormState extends State<HydrationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Hydration",
             textAlign: TextAlign.start,
@@ -123,13 +132,23 @@ class HydrationFormState extends State<HydrationForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "other",
+                    "Sweetner/sugar",
                     textAlign: TextAlign.start,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(8.0), child: TextFormField(
-                  controller: _otherController,
-                )),
+                Row(
+                  children:<Widget>[
+                    Expanded(
+                      child:Padding(padding: EdgeInsets.all(8.0), child: TextFormField(
+                  controller: _sugarController,
+                )
+                ),flex:1),
+                Expanded(
+                  flex:1,
+                  child:Text("tsp")),
+                  Spacer(),
+                ],
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(

@@ -19,6 +19,7 @@ class HygieneFormState extends State<HygieneForm> {
   final _otherController = TextEditingController();
 
   String hygieneType;
+  String imageurl;
 
    void _addHygiene(BuildContext context)
   {
@@ -30,13 +31,21 @@ class HygieneFormState extends State<HygieneForm> {
         'type': 'body',
         'subtype': 'hygiene',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
-        'hygieneType':hygieneType,
-        'other': _otherController.text,
+        'hygienetype':hygieneType,
+        'otherhygiene': _otherController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -49,7 +58,7 @@ class HygieneFormState extends State<HygieneForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Hygiene",
             textAlign: TextAlign.start,
@@ -59,6 +68,34 @@ class HygieneFormState extends State<HygieneForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Padding(padding: EdgeInsets.all(8),
+                child: DropdownButton<String>(
+                  hint: hygieneType == null ? Text( "Type") : Text(hygieneType),
+              value: null,
+              icon: Icon(CareHomeIcons.arrowdown),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  hygieneType = newValue;
+                });
+              },
+              items: <String>['Shower', 'Brushed Teeth', 'Changed Clothes']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Container(
+                    color: Color.fromARGB(255, 250, 243, 242),
+                    child: Text(value),
+                  ),
+                );
+              }).toList(),
+            ),),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(

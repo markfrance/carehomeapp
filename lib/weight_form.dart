@@ -18,6 +18,7 @@ class WeightFormState extends State<WeightForm> {
 
 final _weightController = TextEditingController();
  String toiletType;
+ String imageurl;
 
   void _addWeight(BuildContext context) {
     final user = UserBinding.of(context).user;
@@ -27,9 +28,17 @@ final _weightController = TextEditingController();
       'type': 'body',
       'subtype': 'weight',
       'patient': widget.patient.id,
+      'patientname': widget.patient.firstname + " " +widget.patient.lastname,
       'user': user.id,
-      'weight': _weightController.text
+      'weight': _weightController.text,
+        'imageurl': imageurl
     }).then((onValue) => Navigator.pop(context));
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
   
   @override
@@ -42,7 +51,7 @@ final _weightController = TextEditingController();
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Weight",
             textAlign: TextAlign.start,

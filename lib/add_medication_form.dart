@@ -1,4 +1,3 @@
-import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
 import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/user_binding.dart';
@@ -14,12 +13,12 @@ class AddMedicationForm extends StatefulWidget {
   MedicationFormState createState() => MedicationFormState();
 }
 
-
 class MedicationFormState extends State<AddMedicationForm> {
 
  final _medicationController = TextEditingController();
   final _doseController = TextEditingController();
   String _time = "time";
+  String imageurl;
 
    void _addMedication(BuildContext context)
   {
@@ -29,16 +28,24 @@ class MedicationFormState extends State<AddMedicationForm> {
       {
         'timeadded': DateTime.now(),
         'type': 'medication',
-        'subtype': '',
+        'subtype': 'medication',
         'patient': widget.patient.id,
+       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'medication': _medicationController.text,
         'dose': _doseController.text,
-        'time': _time
+        'medicationtime': _time,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -51,7 +58,7 @@ class MedicationFormState extends State<AddMedicationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Add Medication",
             textAlign: TextAlign.start,

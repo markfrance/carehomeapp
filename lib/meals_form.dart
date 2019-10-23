@@ -13,11 +13,12 @@ class MealsForm extends StatefulWidget {
   MealsFormState createState() => MealsFormState();
 }
 
-
 class MealsFormState extends State<MealsForm> {
 
     final _weightController = TextEditingController();
     final _descriptionController = TextEditingController();
+    String imageurl;
+    String mealType;
   
    void _addMeal(BuildContext context)
   {
@@ -29,12 +30,22 @@ class MealsFormState extends State<MealsForm> {
         'type': 'nutrition',
         'subtype': 'meals',
         'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
-        'weight': _weightController.text,
+        'mealtype' : mealType,
+        'gm': _weightController.text,
+        'mealdescription': _descriptionController.text,
+        'imageurl': imageurl
       }
     ).then(
       (onValue) => Navigator.pop(context)
     );
+  }
+
+   void setImage(String newimageurl) {
+    setState((){
+      imageurl = newimageurl;
+    });
   }
 
   @override
@@ -47,7 +58,7 @@ class MealsFormState extends State<MealsForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
+          FormHeader(setImage),
           Text(
             "Meal",
             textAlign: TextAlign.start,
@@ -58,6 +69,33 @@ class MealsFormState extends State<MealsForm> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                DropdownButton<String>(
+                  hint: mealType == null ? Text( "Type") : Text(mealType),
+              value: null,
+              icon: Icon(CareHomeIcons.arrowdown),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  mealType = newValue;
+                });
+              },
+              items: <String>['Breakfast', 'Lunch', 'Supper','Snack']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Container(
+                    color: Color.fromARGB(255, 250, 243, 242),
+                    child: Text(value),
+                  ),
+                );
+              }).toList(),
+            ),
                 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

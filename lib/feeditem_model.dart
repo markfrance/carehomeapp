@@ -2,33 +2,13 @@ import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum CheckType {
-  mood,
-  vitals,
-  medication,
-  nutrition,
-  body,
-  other,
-}
-
-enum SubType {
-  bloodpressure,
-  bloodsugarlevel,
-  heartrate,
-  hydration,
-  meals,
-  weight,
-  hygiene,
-  toilet,
-  activity,
-  incident
-}
 
 class Comment {
   final String carer;
   final String feeditem;
-  final DateTime time;
+  final String time;
   final String text;
+
 
   static void addNewComment(Comment newComment) {
     Firestore.instance.collection('comments').document().setData({
@@ -44,13 +24,34 @@ class Comment {
 
 class FeedItem {
   String id;
-  final Patient patient;
-  final User carer;
+  final String patientname;
+  final String user;
   final DateTime timeAdded;
-  final CheckType type;
-  final SubType subType;
-  String body;
-  String imageUrl;
+  final String type;
+  final String subType;
+  final String mood;
+  final String systolic;
+  final String diastolic;
+  final String mmol;
+  final String bpm;
+  final String medication;
+  final String dose;
+  final String medicationtime;
+  final String hotcold;
+  final String l;
+  final String ml;
+  final String sugar;
+  final String mealtype;
+  final String gm;
+  final String description;
+  final String weight;
+  final String hygienetype;
+  final String otherhygiene;
+  final String toilettype;
+  final String status;
+  final String activity;
+  final String incident;
+  final String imageUrl;
   List<Comment> comments;
 
   List<Comment> getComments() {
@@ -67,27 +68,29 @@ class FeedItem {
     return itemComments;
   }
 
-  FeedItem(this.timeAdded, this.type, this.subType,this.carer,this.patient,
-  [
-    mood,
-    systolic,
-    diastolic,
-    mmol,
-    bpm,
-    medication,
-    dose,
-    time,
-    hotcold,
-    l,
-    ml,
-    otherdrink,
-    gm,
-    description,
-    weight,
-    otherhygiene,
-    toilettype,
-    status,
-    activity,
-    incident
-  ]);
+  FeedItem(this.timeAdded, this.type, this.subType,this.user,this.patientname,
+    this.mood,
+    this.systolic,
+    this.diastolic,
+    this.mmol,
+    this.bpm,
+    this.medication,
+    this.dose,
+    this.medicationtime,
+   this.hotcold,
+    this.l,
+    this.ml,
+    this.sugar,
+    this.mealtype,
+    this.gm,
+   this.description,
+    this.weight,
+    this.hygienetype,
+    this.otherhygiene,
+    this.toilettype,
+    this.status,
+    this.activity,
+    this.incident,
+    this.imageUrl
+  );
 }
