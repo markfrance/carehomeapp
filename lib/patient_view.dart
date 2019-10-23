@@ -5,7 +5,9 @@ import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
 
 class PatientView extends StatelessWidget {
-  final Patient patient = new Patient("first", "patient", 65, "test");
+
+  PatientView(this.patient);
+  final Patient patient;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class PatientView extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PatientEdit()));
+                                  builder: (context) => PatientEdit(this.patient)));
                         },
                       ),
                       flex: 1)
@@ -47,8 +49,7 @@ class PatientView extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
+                    child: Text(this.patient.likes ?? ""),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
@@ -56,63 +57,49 @@ class PatientView extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text( this.patient.dislikes ?? "")),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Medical Condition"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.medicalcondition ?? ""),),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Contacts"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.contacts ?? ""),),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Key Nurse"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.keynurse ?? ""), ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Contra Indications"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.contraindications ?? ""),),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Things that they hate"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.frustrate ?? ""),),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Things that they love"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "),
-                  ),
+                    child: Text(this.patient.love ?? ""), ),
                 ],
               ),
             ],

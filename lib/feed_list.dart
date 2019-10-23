@@ -1,15 +1,16 @@
+import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/feeditem_model.dart';
 import 'package:carehomeapp/feed_card.dart';
 
 class FeedList extends StatefulWidget {
   final List<FeedItem> initialFeeds = []
-    ..add(FeedItem('first patient',CheckType.vitals,"THIS IS THE FEED CONTENT"))
-    ..add(FeedItem('second patient',CheckType.body,"THIS IS THE FEED CONTENT"))
-    ..add(FeedItem('third patient',CheckType.other,"THIS IS THE FEED CONTENT"))
-    ..add(FeedItem('fourth patient',CheckType.medication,"THIS IS THE FEED CONTENT"))
-    ..add(FeedItem('fifth patient',CheckType.mood,"THIS IS THE FEED CONTENT"))
-    ..add(FeedItem('sixth patient',CheckType.nutrition,"THIS IS THE FEED CONTENT"));
+    ..add(FeedItem('first patient',CheckType.vitals,"Blood Pressure: 7.8 mmol"))
+    ..add(FeedItem('second patient',CheckType.body,"Weight: 80kg"))
+    ..add(FeedItem('third patient',CheckType.other,"Incident: Fell down stairs"))
+    ..add(FeedItem('fourth patient',CheckType.medication,"Medication: 08:40 - 2 Vitamins"))
+    ..add(FeedItem('fifth patient',CheckType.mood,"Mood: Angry"))
+    ..add(FeedItem('sixth patient',CheckType.nutrition,"Breakfast: Egg and Bacon"));
 
 
   @override
@@ -40,9 +41,13 @@ class _FeedListState extends State<FeedList> {
             canvasColor: Color.fromARGB(255,249, 210, 45),
             backgroundColor:Color.fromARGB(255,250, 243, 242),
              ),
-          child:DropdownButton<String>(
+          child:Padding(
+            padding: EdgeInsets.only(
+              left: 16
+            ),
+            child:DropdownButton<String>(
           value: dropdownValue,
-          icon: Icon(Icons.arrow_downward),
+          icon: Icon(CareHomeIcons.arrowdown),
           iconSize: 24,
           elevation: 16,
           style: TextStyle(color: Colors.black),
@@ -66,6 +71,7 @@ class _FeedListState extends State<FeedList> {
             );
           }).toList(),
         ),
+          ),
         ),
       ),
       Expanded(child: _buildList(context), flex: 1)

@@ -1,8 +1,44 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class HygieneForm extends StatelessWidget {
+class HygieneForm extends StatefulWidget {
+  final Patient patient;
+  HygieneForm(this.patient);
+  
+  @override
+  HygieneFormState createState() => HygieneFormState();
+}
+
+
+class HygieneFormState extends State<HygieneForm> {
+
+  final _otherController = TextEditingController();
+
+  String hygieneType;
+
+   void _addHygiene(BuildContext context)
+  {
+     final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('feeditem').document().setData(
+      {
+        'timeadded': DateTime.now(),
+        'type': 'body',
+        'subtype': 'hygiene',
+        'patient': widget.patient.id,
+        'user' : user.id,
+        'hygieneType':hygieneType,
+        'other': _otherController.text,
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -33,15 +69,18 @@ class HygieneForm extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
+                    controller: _otherController,
                     keyboardType: TextInputType.multiline,
-                    maxLines: 5,
+                    maxLines: 3,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addHygiene(context);
+                    },
                   ),
                 )
               ],

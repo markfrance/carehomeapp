@@ -120,7 +120,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              showLogo(),
               showEmailInput(),
               showPasswordInput(),
               showPrimaryButton(),

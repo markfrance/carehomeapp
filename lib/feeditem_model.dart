@@ -1,3 +1,5 @@
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum CheckType {
@@ -7,6 +9,19 @@ enum CheckType {
   nutrition,
   body,
   other,
+}
+
+enum SubType {
+  bloodpressure,
+  bloodsugarlevel,
+  heartrate,
+  hydration,
+  meals,
+  weight,
+  hygiene,
+  toilet,
+  activity,
+  incident
 }
 
 class Comment {
@@ -29,10 +44,12 @@ class Comment {
 
 class FeedItem {
   String id;
-  final String name;
-  DateTime date;
+  final Patient patient;
+  final User carer;
+  final DateTime timeAdded;
   final CheckType type;
-  final String body;
+  final SubType subType;
+  String body;
   String imageUrl;
   List<Comment> comments;
 
@@ -50,19 +67,27 @@ class FeedItem {
     return itemComments;
   }
 
-  void addNewBloodPressure(int systolic, int diastolic) {
-    Firestore.instance
-      .collection('feeditem').document()
-      .setData({
-      'type': 'vitals',
-      'subtype': 'bloodpressure',
-      'patient': 'test',
-      'user': 'test',
-      'time':'08:43',
-      'systolic': systolic,
-      'diastolic': diastolic
-    });
-  }
-
-  FeedItem(this.name, this.type, this.body);
+  FeedItem(this.timeAdded, this.type, this.subType,this.carer,this.patient,
+  [
+    mood,
+    systolic,
+    diastolic,
+    mmol,
+    bpm,
+    medication,
+    dose,
+    time,
+    hotcold,
+    l,
+    ml,
+    otherdrink,
+    gm,
+    description,
+    weight,
+    otherhygiene,
+    toilettype,
+    status,
+    activity,
+    incident
+  ]);
 }

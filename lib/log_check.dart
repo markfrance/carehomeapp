@@ -1,4 +1,6 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/blood_pressure_form.dart';
 import 'package:carehomeapp/blood_sugar_level_form.dart';
@@ -13,16 +15,59 @@ import 'package:carehomeapp/hygiene_form.dart';
 import 'package:carehomeapp/hydration_form.dart';
 import 'package:carehomeapp/meals_form.dart';
 
-class LogCheck extends StatelessWidget {
+class LogCheck extends StatefulWidget {
+  @override
+  LogCheckState createState() => LogCheckState();
+}
+
+class LogCheckState extends State<LogCheck> {
+  Patient dropdownValue;
+
   @override
   Widget build(BuildContext context) {
+    final user = UserBinding.of(context).user;
+    print("LOG CHECK USER:" + user.id);
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        body: ListView.builder(
-          itemBuilder: (BuildContext context, int index) =>
-              EntryItem(data[index], context),
-          itemCount: data.length,
+        body: Column(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topLeft,
+              child: FutureBuilder<List<Patient>>(
+                  future: user.getPatients(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Patient>> snapshot) {
+                    if (!snapshot.hasData) return CircularProgressIndicator();
+                    return DropdownButton<Patient>(
+                      hint:Text("Select Patient Name"),
+                      isExpanded: true,
+                      value:null,
+                      items: snapshot.data
+                            .map((patient) => DropdownMenuItem<Patient>(
+                                  child: Text(patient.firstname +
+                                      " " +
+                                      patient.lastname),
+                                  value: patient,
+                                ))
+                            .toList(),
+                      onChanged: (Patient newValue) {
+                          setState(() {
+                            dropdownValue = newValue;
+                            print(newValue);
+                          });
+                        });
+                  }),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (BuildContext context, int index) =>
+                    EntryItem(data[index], context, dropdownValue),
+                itemCount: data.length,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -34,79 +79,143 @@ class Entry {
   Entry(this.title, [this.children = const <Entry>[], this.icon, this.form]);
 
   final String title;
-  final IconData icon;
-  final Widget form;
+  final String icon;
+  final String form;
   final List<Entry> children;
+}
+
+Widget getIcon(String icon) {
+  if (icon == null) {
+    return null;
+  } else {
+    return Image.asset(icon);
+  }
 }
 
 // The entire multilevel list displayed by this app.
 final List<Entry> data = <Entry>[
-  Entry('Mood', new List<Entry>(), CareHomeIcons.mooddark, MoodForm()),
+  Entry('Mood', new List<Entry>(), "assets/images/moodicon.png", 'mood'),
   Entry(
     'Vitals',
     <Entry>[
-      Entry('Blood Pressure', new List<Entry>(), null, BloodPressureForm()),
-      Entry(
-          'Blood Sugar Level', new List<Entry>(), null, BloodSugarLevelForm()),
-      Entry('Heart Rate', new List<Entry>(), null, HeartRateForm()),
+      Entry('Blood Pressure', new List<Entry>(), null, 'bloodpressure'),
+      Entry('Blood Sugar Level', new List<Entry>(), null, 'bloodsugar'),
+      Entry('Heart Rate', new List<Entry>(), null, 'heartrate'),
     ],
-    CareHomeIcons.vitalsdark,
+    "assets/images/vitalsicon.png",
   ),
-  Entry('Medication', new List<Entry>(), CareHomeIcons.medicationdark,
-      MedicationForm()),
+  Entry('Medication', new List<Entry>(), "assets/images/medsicon.png",
+      'medication'),
   Entry(
     'Nutrition',
     <Entry>[
-      Entry('Hydration', new List<Entry>(), null, HydrationForm()),
-      Entry('Meals',new List<Entry>(), null, MealsForm()),
+      Entry('Hydration', new List<Entry>(), null, 'hydration'),
+      Entry('Meals', new List<Entry>(), null, 'meals'),
     ],
-    CareHomeIcons.nutritiondark,
+    "assets/images/nutrition.png",
   ),
   Entry(
     'Body',
     <Entry>[
-      Entry('Weight', new List<Entry>(), null, WeightForm()),
-      Entry('Hygiene', new List<Entry>(), null, HygieneForm()),
-      Entry('Toilet', new List<Entry>(), null, ToiletForm()),
+      Entry('Weight', new List<Entry>(), null, 'weight'),
+      Entry('Hygiene', new List<Entry>(), null, 'hygiene'),
+      Entry('Toilet', new List<Entry>(), null, 'toilet'),
     ],
-    CareHomeIcons.body,
+    "assets/images/body.png",
   ),
   Entry(
     'Other',
     <Entry>[
-      Entry('Activity', new List<Entry>(), null, ActivityForm()),
-      Entry('Incident', new List<Entry>(), null, IncidentForm()),
+      Entry('Activity', new List<Entry>(), null, 'activity'),
+      Entry('Incident', new List<Entry>(), null, 'incident'),
     ],
-    CareHomeIcons.other,
+    "assets/images/other.png",
   ),
 ];
 
 // Displays one Entry. If the entry has children then it's displayed
 // with an ExpansionTile.
 class EntryItem extends StatelessWidget {
-  EntryItem(this.entry, this.context);
+  EntryItem(this.entry, this.context, this.patient);
 
-
+  final Patient patient;
   final Entry entry;
   final BuildContext context;
 
+  Widget getForm(String formname) {
+    switch (formname) {
+      case 'mood':
+        return MoodForm(patient);
+      case 'bloodpressure':
+        return BloodPressureForm(patient);
+      case 'bloodsugar':
+        return BloodSugarLevelForm(patient);
+      case 'heartrate':
+        return HeartRateForm(patient);
+      case 'medication':
+        return MedicationForm(patient);
+      case 'hydration':
+        return HydrationForm(patient);
+      case 'meals':
+        return MealsForm(patient);
+      case 'weight':
+        return WeightForm(patient);
+      case 'hygiene':
+        return HygieneForm(patient);
+      case 'toilet':
+        return ToiletForm(patient);
+      case 'activity':
+        return ActivityForm(patient);
+      case 'incident':
+        return IncidentForm(patient);
+
+      default:
+        return null;
+    }
+  }
+
   Widget _buildTiles(Entry root) {
+
     if (root.children.isEmpty)
-      return ListTile(
-        leading: Icon(root.icon),
-        title: Text(root.title),
-        onTap: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return root.form;
-            }),
+      return Padding(
+        padding: EdgeInsets.all(8),
+        child: ListTile(
+          leading: getIcon(root.icon),
+          title: Text(root.title,
+              style: TextStyle(
+                  fontSize: root.icon != null ? 20 : 16,
+                  fontWeight: FontWeight.bold)),
+          onTap: () => {
+            patient == null ?
+            showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return Center(
+                  child:Card(
+                  
+                  child:Text("PLEASE SELECT PATIENT FIRST")
+                ));
+              }
+            ) :
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return getForm(root.form);
+              })},
+        ),
       );
     else
-      return ExpansionTile(
-        leading: Icon(root.icon),
-        key: PageStorageKey<Entry>(root),
-        title: Text(root.title),
-        children: root.children.map(_buildTiles).toList(),
+      return Padding(
+        padding: EdgeInsets.all(8),
+        child: ExpansionTile(
+          leading: getIcon(root.icon),
+          key: PageStorageKey<Entry>(root),
+          title: Text(root.title,
+              style: TextStyle(
+                  fontSize: root.icon != null ? 20 : 16,
+                  fontWeight: FontWeight.bold)),
+          children: root.children.map(_buildTiles).toList(),
+        ),
       );
   }
 

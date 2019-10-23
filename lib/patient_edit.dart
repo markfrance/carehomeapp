@@ -1,13 +1,64 @@
+import 'package:carehomeapp/patient_view.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
 
-class PatientEdit extends StatelessWidget {
-  final Patient patient = new Patient("first", "patient", 65,"test");
+class PatientEdit extends StatefulWidget {
+ final Patient patient;
+  PatientEdit(this.patient);
+
+  @override
+  PatientEditState createState() => PatientEditState();
+}
+
+class PatientEditState extends State<PatientEdit> {
+  
+  final _likesController = TextEditingController();
+  final _dislikesController = TextEditingController();
+  final _medicalconditionController = TextEditingController();
+  final _contactsController = TextEditingController();
+  final _keynurseController = TextEditingController();
+  final _contraindicationsController = TextEditingController();
+  final _frustrateController = TextEditingController();
+  final _loveController = TextEditingController();
+
+  @override
+  void initState() {
+    _likesController.text = widget.patient.likes;
+    _contactsController.text = widget.patient.contacts;
+    _contraindicationsController.text = widget.patient.contraindications;
+    _dislikesController.text = widget.patient.dislikes;
+    _frustrateController.text = widget.patient.frustrate;
+    _keynurseController.text = widget.patient.keynurse;
+    _loveController.text = widget.patient.love;
+    _medicalconditionController.text = widget.patient.medicalcondition;
+    return super.initState();
+  }
+
+  void _updatePatientData(BuildContext context)
+  {
+    Firestore.instance.collection('patients').document(widget.patient.id).updateData(
+      {
+        'likes': _likesController.text,
+        'dislikes' : _dislikesController.text,
+        'medicalcondition': _medicalconditionController.text,
+        'contacts': _contactsController.text,
+        'keynurse': _keynurseController.text,
+        'contraindications':_contraindicationsController.text,
+        'frustrate': _frustrateController.text,
+        'love': _loveController.text
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+   
+
     return Scaffold(
         endDrawer: YellowDrawer(),
         appBar: AppBar(
@@ -21,12 +72,14 @@ class PatientEdit extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Expanded(flex: 5, child: PatientCard(this.patient)),
+                  Expanded(flex: 5, child: PatientCard(widget.patient)),
                   Expanded(
                       child: RaisedButton(
                         padding: EdgeInsets.all(1.0),
                         child: Text("Save"),
-                        onPressed: () {},
+                        onPressed: () {
+                          _updatePatientData(context);
+                        },
                       ),
                       flex: 1)
                 ],
@@ -41,7 +94,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _likesController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -52,7 +106,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _dislikesController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -63,18 +118,20 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _medicalconditionController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Contats"),
+                    child: Text("Contacts"),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _contactsController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -85,7 +142,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _keynurseController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -96,7 +154,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _contraindicationsController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -107,7 +166,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _frustrateController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),
@@ -118,7 +178,8 @@ class PatientEdit extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _loveController,
                       keyboardType: TextInputType.multiline,
                       maxLines: 5,
                     ),

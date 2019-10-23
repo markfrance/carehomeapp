@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,7 +29,7 @@ dependencies:
   image_picker: ^0.6.1+8
 
   flutter_calendar_carousel: ^1.4.2
-
+  flutter_datetime_picker: 1.2.5
   
   # Add the dependency for the FlutterFire plugin for Google Analytics
 
@@ -65,6 +65,18 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/images/home.png
+    - assets/images/patients.png
+    - assets/images/homeactive.png
+    - assets/images/patientsactive.png
+    - assets/images/moodicon.png
+    - assets/images/body.png
+    - assets/images/medsicon.png
+    - assets/images/nutrition.png
+    - assets/images/vitalsicon.png
+    - assets/images/other.png
+    - assets/images/placeholder.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

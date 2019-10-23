@@ -1,8 +1,41 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class HeartRateForm extends StatelessWidget {
+class HeartRateForm extends StatefulWidget {
+  final Patient patient;
+  HeartRateForm(this.patient);
+  
+  @override
+  HeartRateFormState createState() => HeartRateFormState();
+}
+
+
+class HeartRateFormState extends State<HeartRateForm> {
+
+  final _rateController = TextEditingController();
+
+   void _addHeartRate(BuildContext context)
+  {
+     final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('feeditem').document().setData(
+      {
+        'timeadded': DateTime.now(),
+        'type': 'vitals',
+        'subtype': 'heartrate',
+        'patient': widget.patient.id,
+        'user' : user.id,
+        'bpm': _rateController.text
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -28,7 +61,9 @@ class HeartRateForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller: _rateController
+                        ),
                       ),
                       flex: 1,
                     ),
@@ -42,7 +77,9 @@ class HeartRateForm extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addHeartRate(context);
+                    },
                   ),
                 )
               ],

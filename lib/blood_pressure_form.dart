@@ -1,8 +1,41 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class BloodPressureForm extends StatelessWidget {
+class BloodPressureForm extends StatefulWidget {
+  final Patient patient;
+  BloodPressureForm(this.patient);
+  
+  @override
+  BloodPressureFormState createState() => BloodPressureFormState();
+}
+
+class BloodPressureFormState extends State<BloodPressureForm> {
+   final _systolicController = TextEditingController();
+   final _diastolicController = TextEditingController();
+
+   void _addBloodPressure(BuildContext context)
+  {
+     final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('feeditem').document().setData(
+      {
+        'timeadded': DateTime.now(),
+        'type': 'vitals',
+        'subtype': 'bloodpressure',
+        'patient': widget.patient.id,
+        'user' : user.id,
+        'systolic': _systolicController.text,
+        'diastolic': _diastolicController.text
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -28,7 +61,9 @@ class BloodPressureForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller: _systolicController,
+                        ),
                       ),
                       flex: 1,
                     ),
@@ -43,7 +78,9 @@ class BloodPressureForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller:_diastolicController
+                        ),
                       ),
                       flex: 1,
                     ),
@@ -57,7 +94,9 @@ class BloodPressureForm extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addBloodPressure(context);
+                    },
                   ),
                 )
               ],

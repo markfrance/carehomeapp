@@ -1,22 +1,29 @@
+import 'package:carehomeapp/settings_page.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:carehomeapp/user_model.dart';
 import 'package:flutter/material.dart';
 
 class YellowDrawer extends StatelessWidget {
+
+  
   @override
   Widget build(BuildContext context) {
+    final user = UserBinding.of(context).user;
     return Drawer(
           child: Container(
+            
             color: Color.fromARGB(255, 249, 210, 45),
             child: ListView(
               children: <Widget>[
                 ListTile(
                   title: Text(
-                    "First Name",
+                    user.firstName,
                     textAlign: TextAlign.end,
                   ),
                 ),
                 ListTile(
                   title: Text(
-                    "Last Name",
+                    user.lastName,
                     textAlign: TextAlign.end,
                   ),
                 ),
@@ -32,14 +39,12 @@ class YellowDrawer extends StatelessWidget {
                     textAlign: TextAlign.end,
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: ListTile(
+                ListTile(
                     title: Text(
                       "Settings",
                       textAlign: TextAlign.end,
                     ),
-                  ),
+                    onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => SettingsPage()))
                 ),
               ],
             ),

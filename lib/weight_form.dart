@@ -1,8 +1,36 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class WeightForm extends StatelessWidget {
+
+class WeightForm extends StatefulWidget {
+  final Patient patient;
+  WeightForm(this.patient);
+
+  @override
+  WeightFormState createState() => WeightFormState();
+}
+
+class WeightFormState extends State<WeightForm> {
+
+final _weightController = TextEditingController();
+ String toiletType;
+
+  void _addWeight(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    Firestore.instance.collection('feeditem').document().setData({
+      'timeadded': DateTime.now(),
+      'type': 'body',
+      'subtype': 'weight',
+      'patient': widget.patient.id,
+      'user': user.id,
+      'weight': _weightController.text
+    }).then((onValue) => Navigator.pop(context));
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -29,7 +57,9 @@ class WeightForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller:_weightController,
+                        ),
                       ),
                       flex: 1,
                     ),
@@ -43,7 +73,9 @@ class WeightForm extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addWeight(context);
+                    },
                   ),
                 )
               ],

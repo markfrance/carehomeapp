@@ -1,8 +1,8 @@
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/login_signup.dart';
 import 'package:carehomeapp/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -22,6 +22,7 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
+  final database = Firestore.instance;
 
   @override
   void initState() {
@@ -37,8 +38,18 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
-  void loginCallback() {
-    widget.auth.getCurrentUser().then((user) {
+  void loginCallback() async {
+    widget.auth.getCurrentUser().then((user) async {
+      DocumentSnapshot doc = await database.collection("users").document(user.uid).get();
+      if(!doc.exists) {
+        database.collection("users").document(user.uid).setData(
+          {
+            "email": user.email,
+            "carehome":"AKWnLcXz2JCXazm5Ts5P"
+          }
+        );
+      }
+      
       setState(() {
         _userId = user.uid.toString();
       });

@@ -11,12 +11,14 @@ import 'package:carehomeapp/tasks_view.dart';
 
 class PatientHome extends StatefulWidget {
 
+  PatientHome(this.patient);
+  final Patient patient;
    @override
   _PatientHomeState createState() => _PatientHomeState();
 }
 
 class _PatientHomeState extends State<PatientHome> {
-  final Patient patient = new Patient("first", "patient", 65,"test");
+ 
 
  int _selectedIndex = 0;
 
@@ -42,34 +44,46 @@ final widgetOptions = [FeedList(),MedicationView(),ChartTypeList(), TasksView()]
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Expanded(child:  PatientCard(patient),)
+                  Expanded(child:  PatientCard(widget.patient),)
                
               ],),
       
         
       Row(children: <Widget>[
         Spacer(),
-          RaisedButton(child: Text("Feed"),
-          onPressed: () => _setIndex(0)),
+          Expanded(
+            flex:3,
+            child:RaisedButton(child: Text("Feed"),
+          
+          onPressed: () => _setIndex(0)),),
            Spacer(),
-          RaisedButton(child: Text("Medication"),
+          Expanded(
+            flex:3,
+            child:RaisedButton(child: Text("Medication"),
           onPressed: () => _setIndex(1)),
+          ),
            Spacer(),
       ],),
        Row(children: <Widget>[
           Spacer(),
-          RaisedButton(child: Text("Chart"),
+          Expanded(
+            flex:3,
+            child:RaisedButton(child: Text("Chart"),
           onPressed: () => _setIndex(2)),
+          ),
            Spacer(),
-          RaisedButton(child: Text("Tasks"),
+          Expanded(
+            flex:3,
+            child:RaisedButton(child: Text("Tasks"),
           onPressed: () => _setIndex(3)),
+          ),
            Spacer(),
       ],),],),
          RaisedButton(child: Icon(Icons.info),
             onPressed: () { Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PatientView()));
+                                  builder: (context) => PatientView(widget.patient)));
                         },),
                        
              Expanded(child: widgetOptions.elementAt(_selectedIndex))

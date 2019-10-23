@@ -56,7 +56,7 @@ class _MedicationViewState extends State<MedicationView> {
               onPressed: () => showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AddMedicationForm();
+                  return null;//AddMedicationForm();
                 },
               ),
               child: Icon(CareHomeIcons.addb),

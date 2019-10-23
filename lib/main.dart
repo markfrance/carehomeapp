@@ -3,13 +3,21 @@ import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/feed_list.dart';
 import 'package:carehomeapp/login_signup.dart';
 import 'package:carehomeapp/root_page.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:carehomeapp/user_model.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/log_check.dart';
 import 'package:carehomeapp/patients_list.dart';
 
 
-void main() => runApp(MyApp());
+void main() { 
+
+runApp(MyApp());
+}
 
 const MaterialColor backColor = const MaterialColor(
   0xFFFFFFFF,
@@ -27,16 +35,54 @@ const MaterialColor backColor = const MaterialColor(
   },
 );
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget{
+
+@override
+MyAppState createState() => MyAppState();
+}
+
+
+class MyAppState extends State<MyApp> {
+
+  User user;
+
+  @override
+  void initState() {
+
+   FirebaseAuth.instance.currentUser().then((currentuser) =>Firestore.instance.collection('users').document(currentuser.uid).get()
+    .then((dbuser) =>  {
+    setState(() {
+      user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email']);
+    })}));
+
+    super.initState();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    if(user == null){
+      return CircularProgressIndicator();
+    }
+    
+    return UserBinding(
+      user: user,
+      child: MaterialApp(
+      title: 'CareHomeApp',
       theme: ThemeData(
+        cursorColor: Colors.black,
+         cupertinoOverrideTheme: CupertinoThemeData (
+      primaryColor: Colors.black,
+    ),
         scaffoldBackgroundColor:Color.fromARGB(255, 250, 243, 242) ,
         bottomAppBarColor: Color.fromARGB(255, 250, 243, 242),
         fontFamily: 'Nunito',
+        accentColor: Colors.white,
+        inputDecorationTheme: InputDecorationTheme(
+          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+          border:OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ),
+          fillColor: Colors.white,
+          filled:true),
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         buttonTheme: ButtonThemeData(
           buttonColor: Color.fromARGB(255, 249, 210, 45),
@@ -47,6 +93,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: backColor,
       ),
       home: RootPage(auth: new Auth()),
+    ),
     );
   }
 }
@@ -59,7 +106,7 @@ class MyHomePage extends StatefulWidget {
   final BaseAuth auth;
   final VoidCallback logoutCallback;
   final String userId;
-
+ 
   final String title;
 
   @override
@@ -74,12 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
         _selectedIndex = index;
       });
   }
-
-  final widgetOptions = [LogCheck(),FeedList(), PatientsList(), LoginSignupPage()];
+  
+  final widgetOptions = [LogCheck(),FeedList(), PatientsList()];
 
   @override
   Widget build(BuildContext context) {
- 
+ final user = UserBinding.of(context).user;
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(),
@@ -87,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
             title: Align(
               alignment: Alignment.centerLeft,
-              child: Text(widget.title,
+              child: Text("Hello " + user.firstName + " " + user.lastName,
                   textAlign: TextAlign.start,
                   style: TextStyle(color: Colors.black)),
             ),
@@ -103,23 +150,30 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
                 icon: Icon(CareHomeIcons.addb,
                     color: Color.fromARGB(255, 0, 0, 0)),
-                title: new Text('')),
+                title: Text('')),
             BottomNavigationBarItem(
-                icon: Icon(CareHomeIcons.home,
-                    color: Color.fromARGB(255, 0, 0, 0)),
-                title: new Text('')),
+                icon:  Image.asset("assets/images/home.png"),
+                activeIcon:  Image.asset("assets/images/homeactive.png"),
+                title: Text('')),
             BottomNavigationBarItem(
-                icon: Icon(CareHomeIcons.patients,
-                    color: Color.fromARGB(255, 0, 0, 0)),
-                title: new Text('')),
+                icon:  Image.asset("assets/images/patients.png"),
+                activeIcon: Image.asset("assets/images/patientsactive.png"),
+                title: Text('')),
             BottomNavigationBarItem(
                 icon: Icon(Icons.account_circle,
                     color: Color.fromARGB(255, 0, 0, 0)),
-                title: new Text(''))
+                title: Text(''))
           ],
           onTap: (index) {
+            if(index == 3)
+            {
+              this.widget.logoutCallback();
+            }
+            else {
             _incrementTab(index);
+            }
           },
-        ));
+        )
+    );
   }
 }

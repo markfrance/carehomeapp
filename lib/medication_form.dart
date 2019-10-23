@@ -1,9 +1,13 @@
 import 'package:carehomeapp/add_medication_form.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
 import 'package:flutter/material.dart';
 
 class MedicationForm extends StatefulWidget {
+  final Patient patient;
+  MedicationForm(this.patient);
+
   @override
   MedicationState createState() => new MedicationState();
 }
@@ -59,7 +63,7 @@ class MedicationState extends State<MedicationForm> {
                 onPressed: () => showDialog(
             context: context,
             builder: (BuildContext context) {
-              return AddMedicationForm();
+              return AddMedicationForm(widget.patient);
             },
                 ),
                 child:Icon(CareHomeIcons.addb),

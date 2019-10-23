@@ -21,7 +21,7 @@ class _PatientCardState extends State<PatientCard> {
   @override
   Widget build(BuildContext context) {
     return  GestureDetector(
-      onTap: () { Navigator.push(context,MaterialPageRoute(builder: (context) => PatientHome()),);},
+      onTap: () { Navigator.push(context,MaterialPageRoute(builder: (context) => PatientHome(this.patient)),);},
       child:Card(
        
         elevation: 4,

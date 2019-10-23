@@ -34,7 +34,6 @@ class _TasksViewState extends State<TasksView> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(),
           Text(
             "Tasks",
             textAlign: TextAlign.start,

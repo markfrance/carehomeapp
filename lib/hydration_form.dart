@@ -1,8 +1,47 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/form_header.dart';
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class HydrationForm extends StatelessWidget {
+class HydrationForm extends StatefulWidget {
+  final Patient patient;
+  HydrationForm(this.patient);
+  
+  @override
+  HydrationFormState createState() => HydrationFormState();
+}
+
+
+class HydrationFormState extends State<HydrationForm> {
+
+  String hotcold;
+  final _lController = TextEditingController();
+  final _mlController = TextEditingController();
+  final _otherController = TextEditingController();
+
+   void _addHydration(BuildContext context)
+  {
+     final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('feeditem').document().setData(
+      {
+        'timeadded': DateTime.now(),
+        'type': 'nutrition',
+        'subtype': 'hydration',
+        'patient': widget.patient.id,
+        'user' : user.id,
+        'hotcold': hotcold,
+        'l': _lController.text,
+        'ml': _mlController.text,
+        'other': _otherController.text,
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -32,11 +71,15 @@ class HydrationForm extends StatelessWidget {
                       children: <Widget>[
                         RaisedButton(
                           child: Text("Cold"),
-                          onPressed: null,
+                          onPressed: () => setState((){
+                            hotcold = "cold";
+                          },),
                         ),
                         RaisedButton(
                           child: Text("Hot"),
-                          onPressed: null,
+                          onPressed: () => setState((){
+                            hotcold = "hot";
+                          }),
                         ),
                       ],
                     ),
@@ -48,7 +91,9 @@ class HydrationForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller: _lController,
+                        ),
                       ),
                       flex: 2,
                     ),
@@ -63,7 +108,9 @@ class HydrationForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(),
+                        child: TextFormField(
+                          controller:_mlController,
+                        ),
                       ),
                       flex: 2,
                     ),
@@ -80,12 +127,16 @@ class HydrationForm extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(8.0), child: TextFormField()),
+                Padding(padding: EdgeInsets.all(8.0), child: TextFormField(
+                  controller: _otherController,
+                )),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     child: Text("Save"),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addHydration(context);
+                    },
                   ),
                 ),
               ],
