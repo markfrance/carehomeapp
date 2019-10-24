@@ -79,8 +79,9 @@ class MyAppState extends State<MyApp> {
         fontFamily: 'Nunito',
         accentColor: Colors.white,
         inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-          border:OutlineInputBorder(borderSide: BorderSide(color: Colors.black) ),
+          contentPadding: EdgeInsets.all(8),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.black, width:2)),
+          border:OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.black) ),
           fillColor: Colors.white,
           filled:true),
         backgroundColor: Color.fromARGB(255, 250, 243, 242),

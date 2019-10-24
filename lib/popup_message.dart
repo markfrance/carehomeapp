@@ -12,7 +12,7 @@ class PopupMessageState extends State<PopupMessage> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        backgroundColor: Color.fromARGB(255, 204, 241, 255),
+        backgroundColor: Color.fromARGB(255, 250, 243, 242),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(32.0))),
         content: Column(

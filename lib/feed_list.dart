@@ -41,7 +41,7 @@ class _FeedListState extends State<FeedList> {
       snapshot = await Firestore.instance
           .collection('feeditem')
           .where('patient', isEqualTo: widget.patient.id)
-          .orderBy('timeadded', descending: true)
+         // .orderBy('timeadded', descending: true)
           .getDocuments();
     }
 
@@ -98,28 +98,34 @@ class _FeedListState extends State<FeedList> {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      Visibility(
+      Row(children: <Widget>[
+        Expanded(
+        flex:2,
+        child: Visibility(
         visible: widget.patient == null,
         child:Align(
+        
         alignment: Alignment.topLeft,
         child: Theme(
           data: ThemeData(
+            
             canvasColor: Color.fromARGB(255, 249, 210, 45),
-            backgroundColor: Color.fromARGB(255, 250, 243, 242),
+           
           ),
           child: Padding(
-            padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.only(left: 25, top:16, bottom:8),
+            child:Container(
+            decoration: BoxDecoration(color: Color.fromARGB(255, 249, 210, 45), borderRadius: BorderRadius.circular(8)),
+            
             child: DropdownButton<String>(
+              isExpanded: true,
               hint: Text(dropdownValue),
               value: dropdownValue,
-              icon: Icon(CareHomeIcons.arrowdown),
+              //icon: Padding(child:Icon(CareHomeIcons.arrowdown, size:10), padding:EdgeInsets.all(8)),
               iconSize: 24,
               elevation: 16,
-              style: TextStyle(color: Colors.black),
-              underline: Container(
-                height: 2,
-                color: Colors.black,
-              ),
+              style: TextStyle(color: Colors.black, backgroundColor: Color.fromARGB(255, 249, 210, 45)),
+              underline: null,
               onChanged: (String newValue) {
                 setState(() {
                   dropdownValue = newValue;
@@ -130,8 +136,8 @@ class _FeedListState extends State<FeedList> {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Container(
-                    color: Color.fromARGB(255, 250, 243, 242),
-                    child: Text(value),
+                    color: Color.fromARGB(255, 249, 210, 45),
+                    child: Padding(padding:EdgeInsets.only(left: 8), child:Text(value)),
                   ),
                 );
               }).toList(),
@@ -140,7 +146,12 @@ class _FeedListState extends State<FeedList> {
         ),
       ),
       ),
-      Expanded(child: _buildList(context), flex: 1)
+      ),
+ ),
+ Spacer(flex: 2,)
+
+      ],),
+         Expanded(child: _buildList(context), flex: 1)
     ]);
   }
 }

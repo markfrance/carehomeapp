@@ -27,17 +27,18 @@ class FormHeaderState extends State<FormHeader> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Container(
+      child:Row(
       children: <Widget>[
         Expanded(
             child: Align(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment(-2,0),
               child: FlatButton(
                 child: Icon(CareHomeIcons.arrowleft, color: Colors.black),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-            flex: 3),
+            flex: 4),
         Expanded(
             child: FlatButton(
               child: Icon(
@@ -58,6 +59,6 @@ class FormHeaderState extends State<FormHeader> {
             ),
             flex: 1)
       ],
-    );
+    ));
   }
 }

@@ -82,7 +82,8 @@ class IncidentFormState extends State<IncidentForm> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
-                    child: Text("Save"),
+                    color: Colors.black,
+                    child: Text("Save", style:TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addIncident(context);
                     },

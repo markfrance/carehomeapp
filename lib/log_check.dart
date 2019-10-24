@@ -33,23 +33,42 @@ class LogCheckState extends State<LogCheck> {
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         body: Column(
           children: <Widget>[
-            Align(
+            Row(children: <Widget>[
+              Expanded(flex:2,
+            
+            child:Align(
               alignment: Alignment.topLeft,
-              child: FutureBuilder<List<Patient>>(
+              child: Theme(
+          data: ThemeData(
+            
+            canvasColor: Color.fromARGB(255, 249, 210, 45),
+           
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(left: 25, top:16, bottom:8),
+            child:Container(
+            decoration: BoxDecoration(color: Color.fromARGB(255, 249, 210, 45), borderRadius: BorderRadius.circular(8)),
+            
+            child: FutureBuilder<List<Patient>>(
                   future: user.getPatients(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Patient>> snapshot) {
                     if (!snapshot.hasData) return CircularProgressIndicator();
                     return DropdownButton<Patient>(
-                      hint:dropdownValue == null ? Text("Select Patient Name") : Text(dropdownValue.firstname + " " + dropdownValue.lastname),
+                      hint:dropdownValue == null ? Padding(child:Text("Patient Name"), padding:EdgeInsets.only(left:8)) 
+                      : Padding(child:Text(dropdownValue.firstname + " " + dropdownValue.lastname), padding:EdgeInsets.only(left:8)),
                       isExpanded: true,
                       value:null,
                       items: snapshot.data
                             .map((patient) => DropdownMenuItem<Patient>(
-                                  child: Text(patient.firstname +
+                                  child: Container(
+                                    child:Text(patient.firstname +
                                       " " +
                                       patient.lastname),
+                                       color: Color.fromARGB(255, 249, 210, 45),
+                                  ),
                                   value: patient,
+                                  
                                 ))
                             .toList(),
                       onChanged: (Patient newValue) {
@@ -58,8 +77,10 @@ class LogCheckState extends State<LogCheck> {
                             print(newValue);
                           });
                         });
-                  }),
-            ),
+                  }),)))
+            ),),
+            Spacer(),
+            ]),
             Expanded(
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) =>
@@ -153,7 +174,7 @@ class EntryItem extends StatelessWidget {
       case 'heartrate':
         return HeartRateForm(patient);
       case 'medication':
-        return MedicationForm(patient);
+        return MedicationForm(patient, true);
       case 'hydration':
         return HydrationForm(patient);
       case 'meals':

@@ -77,6 +77,7 @@ flutter:
     - assets/images/vitalsicon.png
     - assets/images/other.png
     - assets/images/placeholder.jpg
+    - assets/images/avatar_placeholder_small.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

@@ -8,42 +8,36 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 class AddMedicationForm extends StatefulWidget {
   final Patient patient;
   AddMedicationForm(this.patient);
-  
+
   @override
   MedicationFormState createState() => MedicationFormState();
 }
 
 class MedicationFormState extends State<AddMedicationForm> {
-
- final _medicationController = TextEditingController();
+  final _medicationController = TextEditingController();
   final _doseController = TextEditingController();
-  String _time = "time";
+  String _time = "";
   String imageurl;
 
-   void _addMedication(BuildContext context)
-  {
-     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
-      {
-        'timeadded': DateTime.now(),
-        'type': 'medication',
-        'subtype': 'medication',
-        'patient': widget.patient.id,
-       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'medication': _medicationController.text,
-        'dose': _doseController.text,
-        'medicationtime': _time,
-        'imageurl': imageurl
-      }
-    ).then(
-      (onValue) => Navigator.pop(context)
-    );
+  void _addMedication(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    Firestore.instance.collection('feeditem').document().setData({
+      'timeadded': DateTime.now(),
+      'type': 'medication',
+      'subtype': 'medication',
+      'patient': widget.patient.id,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'medication': _medicationController.text,
+      'dose': _doseController.text,
+      'medicationtime': _time,
+      'imageurl': imageurl
+    }).then((onValue) => Navigator.pop(context));
   }
 
-   void setImage(String newimageurl) {
-    setState((){
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
@@ -51,7 +45,7 @@ class MedicationFormState extends State<AddMedicationForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 204, 241, 255),
+      backgroundColor: Color.fromARGB(255, 109, 191, 218),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Column(
@@ -67,47 +61,57 @@ class MedicationFormState extends State<AddMedicationForm> {
           Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-
               children: <Widget>[
-                Text("Medication"),
-                 Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _medicationController,
-                    ),
+                Align(child:Text("Medication"),alignment:Alignment.centerLeft),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _medicationController,
                   ),
-                  Text("Dose"),
-                 Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _doseController,
-                    ),
+                ),
+                Align(child:Text("Dose"),alignment:Alignment.centerLeft),
+                Row(
+                  children:<Widget>[Expanded(
+                    flex:1,
+                    child:Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _doseController,
                   ),
-                  Text("Time"),
-                 Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0)),
-                elevation: 4.0,
-                onPressed: () {
-                  DatePicker.showTimePicker(context,
-                      theme: DatePickerTheme(
-                        containerHeight: 210.0,
-                      ),
-                      showTitleActions: true, onConfirm: (time) {
-                    print('confirm $time');
-                    _time = '${time.hour} : ${time.minute} : ${time.second}';
-                    setState(() {});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
-                  setState(() {});
-                },
-                child:Text(_time),
-                  ),),
+                ),),
+                Spacer()]),
+                Align(child:Text("Time"),alignment:Alignment.centerLeft),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child:Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.circular(5.0)),
+                    onPressed: () {
+                      DatePicker.showTimePicker(context,
+                          theme: DatePickerTheme(
+                            backgroundColor: Color.fromARGB(255, 250, 243, 242),
+                            containerHeight: 210.0,
+                          ),
+                          showTitleActions: true, onConfirm: (time) {
+                        
+                        _time =
+                            '${time.hour} : ${time.minute} ';
+                        setState(() {});
+                      }, currentTime: DateTime.now(), locale: LocaleType.en);
+                      setState(() {});
+                    },
+                    child: Text(_time, style: TextStyle(color: Colors.black),),
+                  ),
+                ),),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
-                    child: Text("Save"),
+                    color: Colors.black,
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addMedication(context);
                     },

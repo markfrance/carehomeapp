@@ -1,6 +1,6 @@
 import 'package:carehomeapp/chart_type_list.dart';
 import 'package:carehomeapp/feed_list.dart';
-import 'package:carehomeapp/medication_view.dart';
+import 'package:carehomeapp/medication_form.dart';
 import 'package:carehomeapp/patient_view.dart';
 import 'package:carehomeapp/patients_card.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
@@ -12,6 +12,7 @@ import 'package:carehomeapp/tasks_view.dart';
 class PatientHome extends StatefulWidget {
 
   PatientHome(this.patient);
+  
   final Patient patient;
    @override
   _PatientHomeState createState() => _PatientHomeState();
@@ -29,16 +30,16 @@ class _PatientHomeState extends State<PatientHome> {
     
   }
 
-
   @override
   Widget build(BuildContext context) {
 
-    final widgetOptions = [FeedList(widget.patient),MedicationView(),ChartTypeList(), TasksView()];
+    final widgetOptions = [FeedList(widget.patient),MedicationForm(widget.patient, false),ChartTypeList(), TasksView()];
 
     return Scaffold(
         endDrawer: YellowDrawer(),
         appBar: AppBar(
-          title: Text('Patient'),
+          title: Text(widget.patient.firstname + " " + widget.patient.lastname),
+          backgroundColor: Color.fromARGB(255, 250, 243, 242),
         ),
         body: Column(
           children:<Widget>[
@@ -49,8 +50,6 @@ class _PatientHomeState extends State<PatientHome> {
                   Expanded(child:  PatientCard(widget.patient),)
                
               ],),
-      
-        
       Row(children: <Widget>[
         Spacer(),
           Expanded(
@@ -81,7 +80,8 @@ class _PatientHomeState extends State<PatientHome> {
           ),
            Spacer(),
       ],),],),
-         RaisedButton(child: Icon(Icons.info),
+         FlatButton(child: Icon(Icons.info, color: Colors.black),
+         
             onPressed: () { Navigator.push(
                               context,
                               MaterialPageRoute(
