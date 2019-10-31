@@ -20,7 +20,7 @@ class ActivityFormState extends State<ActivityForm> {
 
   void _addActivity(BuildContext context)
   {
-     final user = UserBinding.of(context).user;
+    final user = UserBinding.of(context).user;
      
     Firestore.instance.collection('feeditem').document().setData(
       {

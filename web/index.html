@@ -6,5 +6,28 @@
 </head>
 <body>
   <script src="main.dart.js" type="application/javascript"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBi9hX5PPIWWhBpdZMa6fWI7Mne7gAlcKU",
+    authDomain: "carehomeapp-a2936.firebaseapp.com",
+    databaseURL: "https://carehomeapp-a2936.firebaseio.com",
+    projectId: "carehomeapp-a2936",
+    storageBucket: "carehomeapp-a2936.appspot.com",
+    messagingSenderId: "957010353914",
+    appId: "1:957010353914:web:bf84cf39be88a039c4b343",
+    measurementId: "G-SY7K6ZVWM3"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
 </body>
 </html>

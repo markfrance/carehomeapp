@@ -24,16 +24,16 @@ class MoodFormState extends State<MoodForm> {
       'type': 'mood',
       'subtype': 'mood',
       'patient': widget.patient.id,
-     'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
-      'mood': "happy",
-        'imageurl': imageurl
+      'mood': mood,
+      'imageurl': imageurl
     }).then((onValue) => Navigator.pop(context));
   }
 
-    String imageurl;
-     void setImage(String newimageurl) {
-    setState((){
+  String imageurl;
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
@@ -59,11 +59,38 @@ class MoodFormState extends State<MoodForm> {
                   textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
+                DropdownButton<String>(
+                  hint: mood == null ? Text("Mood") : Text(mood),
+                  value: null,
+                  icon: Icon(CareHomeIcons.arrowdown),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(color: Colors.black),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.black,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      mood = newValue;
+                    });
+                  },
+                  items: <String>['Great', 'Happy', 'Neutral', 'Confused', 'Sad', 'Very Sad', 'Angry']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Container(
+                        color: Color.fromARGB(255, 250, 243, 242),
+                        child: Text(value),
+                      ),
+                    );
+                  }).toList(),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addMood(context);
                     },

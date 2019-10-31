@@ -16,7 +16,7 @@ class FormHeader extends StatefulWidget{
 class FormHeaderState extends State<FormHeader> {
 
   Future<String> _pickPhoto(String imageId) async {
-    File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    File imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
     StorageReference ref = FirebaseStorage.instance
         .ref()
         .child(imageId)

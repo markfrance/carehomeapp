@@ -49,7 +49,9 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
 
-   FirebaseAuth.instance.currentUser().then((currentuser) =>Firestore.instance.collection('users').document(currentuser.uid).get()
+   FirebaseAuth.instance.currentUser().then((currentuser) => 
+   Firestore.instance.collection('users')
+   .document(currentuser.uid).get()
     .then((dbuser) =>  {
     setState(() {
       user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email']);
@@ -61,13 +63,8 @@ class MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    if(user == null){
-      return CircularProgressIndicator();
-    }
     
-    return UserBinding(
-      user: user,
-      child: MaterialApp(
+    return MaterialApp(
       title: 'CareHomeApp',
       theme: ThemeData(
         cursorColor: Colors.black,
@@ -93,8 +90,12 @@ class MyAppState extends State<MyApp> {
       
         primarySwatch: backColor,
       ),
-      home: RootPage(auth: new Auth()),
-    ),
+      home: user != null ? UserBinding(
+      user: user,
+      child:  RootPage(auth: new Auth())) 
+      : 
+      RootPage(auth: new Auth()) 
+    
     );
   }
 }
@@ -135,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
             title: Align(
               alignment: Alignment.centerLeft,
-              child: Text("Hello " + user.firstName + " " + user.lastName,
+              child: Text("Hello " + user?.firstName + " " + user?.lastName,
                   textAlign: TextAlign.start,
                   style: TextStyle(color: Colors.black,
                   fontWeight: FontWeight.w900)),

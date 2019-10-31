@@ -1,8 +1,6 @@
 import 'package:carehomeapp/patient_home.dart';
 import 'package:flutter/material.dart';
-
 import 'package:carehomeapp/patient_model.dart';
-import 'package:carehomeapp/patient_view.dart';
 
 class PatientCard extends StatefulWidget {
   final Patient patient;
@@ -23,6 +21,7 @@ class _PatientCardState extends State<PatientCard> {
       followText = "Following";
     });
   }
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

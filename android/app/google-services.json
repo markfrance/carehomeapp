@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "957010353914",
+    "firebase_url": "https://carehomeapp-a2936.firebaseio.com",
+    "project_id": "carehomeapp-a2936",
+    "storage_bucket": "carehomeapp-a2936.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957010353914:android:497ca87178217ac0c4b343",
+        "android_client_info": {
+          "package_name": "com.carehomeapp.carehomeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957010353914-lnd6p7gq2nms0i7cpae0f93jmr9vnclm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjqvlw1I2iNXBvNMhkkVREv-myCscr34A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957010353914-lnd6p7gq2nms0i7cpae0f93jmr9vnclm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "957010353914-qu5ue6drgobvkgdmldnh632hbn7jqig4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carehomeapp.carehomeapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

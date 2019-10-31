@@ -96,13 +96,15 @@ class HygieneFormState extends State<HygieneForm> {
                 );
               }).toList(),
             ),),
-                Padding(
+                Align(
+                  alignment:Alignment.centerLeft,
+                  child:Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "other",
                     textAlign: TextAlign.start,
                   ),
-                ),
+                ),),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(

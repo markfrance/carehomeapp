@@ -1,7 +1,10 @@
+import 'package:carehomeapp/patient_edit.dart';
 import 'package:carehomeapp/user_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/patient_model.dart';
 import 'package:carehomeapp/patients_card.dart';
+
+import 'care_home_icons_icons.dart';
 
 class PatientsList extends StatefulWidget {
   @override
@@ -33,6 +36,30 @@ class _PatientsListState extends State<PatientsList> {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Row(children: <Widget>[
+          Padding(
+            child:Text("Patients", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            padding:EdgeInsets.all(16)),
+          SizedBox(
+                width:30,
+                height:30,
+                child:RaisedButton(
+                padding:EdgeInsets.all(0),
+                color:Colors.black,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                onPressed: () => showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return PatientEdit(null);
+            },
+                ),
+                child:Icon(CareHomeIcons.addb,),
+              ),)
+            
+        
+        ],
+        ),
+      Row(children: <Widget>[
+        
         Expanded(
             flex: 2,
             child: Align(

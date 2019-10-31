@@ -1,6 +1,41 @@
+import 'package:carehomeapp/patient_model.dart';
+import 'package:carehomeapp/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class TasksForm extends StatelessWidget {
+
+class TasksForm extends StatefulWidget {
+    final Patient patient;
+  TasksForm(this.patient);
+  
+
+  @override
+  TasksFormState createState() => TasksFormState();
+
+}
+
+class TasksFormState extends State<TasksForm> {
+
+   final _taskController = TextEditingController();
+
+
+  void _addTask(BuildContext context)
+  {
+    final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('tasks').document().setData(
+      {
+        'lastupdated': DateTime.now(),
+        'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+        'user' : user.id,
+        'task': _taskController.text,
+        'done' : false
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -26,7 +61,8 @@ class TasksForm extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextField(
+                        child: TextFormField(
+                          controller: _taskController,
                           keyboardType: TextInputType.multiline,
                           maxLines: 10,
                         ),
@@ -39,7 +75,9 @@ class TasksForm extends StatelessWidget {
                   child: RaisedButton(
                     color: Colors.black,
                     child: Text("Save", style:TextStyle(color: Colors.white)),
-                    onPressed: () {},
+                    onPressed: () {
+                      _addTask(context);
+                    },
                   ),
                 ),
               ],

@@ -16,7 +16,7 @@ class HydrationForm extends StatefulWidget {
 
 class HydrationFormState extends State<HydrationForm> {
 
-  String hotcold = 'hot';
+  String hotcold = 'cold';
   final _lController = TextEditingController();
   final _mlController = TextEditingController();
   final _sugarController = TextEditingController();
@@ -73,18 +73,21 @@ class HydrationFormState extends State<HydrationForm> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 ButtonBar(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Wrap(
                       direction: Axis.horizontal,
+                      
                       children: <Widget>[
                         RaisedButton(
+                          color: hotcold == 'cold' ? Colors.white : Color.fromARGB(255, 158, 192, 161),
                           child: Text("Cold"),
                           onPressed: () => setState((){
                             hotcold = "cold";
                           },),
                         ),
                         RaisedButton(
+                          color: hotcold == 'hot' ? Colors.white : Color.fromARGB(255, 158, 192, 161),
                           child: Text("Hot"),
                           onPressed: () => setState((){
                             hotcold = "hot";
@@ -129,12 +132,14 @@ class HydrationFormState extends State<HydrationForm> {
                     ),
                   ],
                 ),
-                Padding(
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child:Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     "Sweetner/sugar",
                     textAlign: TextAlign.start,
-                  ),
+                  ),),
                 ),
                 Row(
                   children:<Widget>[

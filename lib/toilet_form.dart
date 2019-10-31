@@ -19,7 +19,7 @@ class ToiletForm extends StatefulWidget {
 class ToiletFormState extends State<ToiletForm> {
 
  final _statusController = TextEditingController();
- String toiletType;
+ String toiletType = 'urine';
  String imageurl;
 
   void _addToilet(BuildContext context) {
@@ -71,12 +71,14 @@ class ToiletFormState extends State<ToiletForm> {
                       direction: Axis.horizontal,
                       children: <Widget>[
                         RaisedButton(
+                          color: toiletType == 'urine' ? Colors.white : Color.fromARGB(255, 244, 174, 124),
                           child: Text("Urine"),
                           onPressed: () => setState(() {
                             toiletType = "urine";
                           },),
                         ),
                         RaisedButton(
+                           color: toiletType == 'stool' ? Colors.white : Color.fromARGB(255, 244, 174, 124),
                           child: Text("Stool"),
                           onPressed: () => setState((){
                             toiletType = "stool";

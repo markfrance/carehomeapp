@@ -15,6 +15,9 @@ class PatientEdit extends StatefulWidget {
 
 class PatientEditState extends State<PatientEdit> {
   
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _ageController = TextEditingController();
   final _likesController = TextEditingController();
   final _dislikesController = TextEditingController();
   final _medicalconditionController = TextEditingController();
@@ -26,6 +29,10 @@ class PatientEditState extends State<PatientEdit> {
 
   @override
   void initState() {
+    if(widget.patient != null) {
+    _firstNameController.text = widget.patient.firstname;
+    _lastNameController.text = widget.patient.lastname;
+    _ageController.text = widget.patient.age.toString();
     _likesController.text = widget.patient.likes;
     _contactsController.text = widget.patient.contacts;
     _contraindicationsController.text = widget.patient.contraindications;
@@ -34,6 +41,7 @@ class PatientEditState extends State<PatientEdit> {
     _keynurseController.text = widget.patient.keynurse;
     _loveController.text = widget.patient.love;
     _medicalconditionController.text = widget.patient.medicalcondition;
+    }
     return super.initState();
   }
 
@@ -56,6 +64,34 @@ class PatientEditState extends State<PatientEdit> {
     );
   }
 
+  void _addNewPatient(BuildContext context){
+    Firestore.instance.collection('patients').document().setData(
+      {
+        'firstname': _firstNameController.text,
+        'lastname' : _lastNameController.text,
+        'age': _ageController.text,
+        'likes': _likesController.text,
+        'dislikes' : _dislikesController.text,
+        'medicalcondition': _medicalconditionController.text,
+        'contacts': _contactsController.text,
+        'keynurse': _keynurseController.text,
+        'contraindications':_contraindicationsController.text,
+        'frustrate': _frustrateController.text,
+        'love': _loveController.text
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
+  }
+
+  String followText = "Follow";
+
+  void _follow() {
+    setState(() {
+      followText = "Following";
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
    
@@ -71,22 +107,66 @@ class PatientEditState extends State<PatientEdit> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Expanded(flex: 5, child: PatientCard(widget.patient)),
-                  Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.all(1.0),
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(
+                    child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 18.0,
+                    bottom: 18.0,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(left: 24, right: 24, top: 8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.asset(
+                                "assets/images/avatar_placeholder_small.png",
+                                width: 50,
+                                height: 50),
+                          )),
+                      Column(
+                      
+                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                     
+                        
+                          
+                        ],
+                      ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child:RaisedButton(
+                          color:Colors.black,
+                        
+                        padding: EdgeInsets.all(16.0),
                         child: Text("Save"),
                         onPressed: () {
+                          if(widget.patient == null) {
+                            _addNewPatient(context);
+                          } else {
                           _updatePatientData(context);
+                          }
                         },
-                      ),
-                      flex: 1)
+                      ),),
+                    ],
+                  ),
+                ))
+              ],
+            ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+      
+                 
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              Padding(
+                padding:EdgeInsets.only(left:50, right:50),
+                child:Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Padding(
@@ -98,96 +178,96 @@ class PatientEditState extends State<PatientEdit> {
                     child: TextFormField(
                       controller: _likesController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Dislikes"),
+                    child: Text("Dislikes", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _dislikesController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Medical Condition"),
+                    child: Text("Medical Condition", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _medicalconditionController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Contacts"),
+                    child: Text("Contacts", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _contactsController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Key Nurse"),
+                    child: Text("Key Nurse", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _keynurseController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Contra Indications"),
+                    child: Text("Contra Indications", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _contraindicationsController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Things that frustrate"),
+                    child: Text("Things that frustrate", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _frustrateController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text("Things that they love"),
+                    child: Text("Things that they love", style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: _loveController,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLines: 3,
                     ),
                   ),
                 ],
               ),
-            ],
+              )],
           ),
         ));
   }
