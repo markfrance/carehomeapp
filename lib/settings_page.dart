@@ -1,4 +1,4 @@
-import 'package:carehomeapp/user_binding.dart';
+import 'package:carehomeapp/model/user_binding.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {

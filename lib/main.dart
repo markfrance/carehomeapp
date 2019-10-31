@@ -1,17 +1,16 @@
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
-import 'package:carehomeapp/feed_list.dart';
-import 'package:carehomeapp/login_signup.dart';
+import 'package:carehomeapp/feed/feed_list.dart';
+import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/root_page.dart';
-import 'package:carehomeapp/user_binding.dart';
-import 'package:carehomeapp/user_model.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carehomeapp/log_check.dart';
-import 'package:carehomeapp/patients_list.dart';
+import 'package:carehomeapp/logcheck/log_check.dart';
+import 'package:carehomeapp/patient/patients_list.dart';
 
 
 void main() { 
@@ -44,27 +43,33 @@ MyAppState createState() => MyAppState();
 
 class MyAppState extends State<MyApp> {
 
-  User user;
+   User user;
 
   @override
   void initState() {
 
-   FirebaseAuth.instance.currentUser().then((currentuser) => 
+/*   FirebaseAuth.instance.currentUser().then((currentuser) => 
    Firestore.instance.collection('users')
    .document(currentuser.uid).get()
     .then((dbuser) =>  {
     setState(() {
       user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email']);
     })}));
-
+*/
+    if(user == null) {
+      user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2","mark","france","markusfrance@hotmail.com");
+    }
     super.initState();
   }
+ 
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     
-    return MaterialApp(
+    return  UserBinding(
+      user: user,
+      child: MaterialApp(
       title: 'CareHomeApp',
       theme: ThemeData(
         cursorColor: Colors.black,
@@ -90,13 +95,9 @@ class MyAppState extends State<MyApp> {
       
         primarySwatch: backColor,
       ),
-      home: user != null ? UserBinding(
-      user: user,
-      child:  RootPage(auth: new Auth())) 
-      : 
-      RootPage(auth: new Auth()) 
+      home: RootPage(auth: new Auth())
     
-    );
+    ));
   }
 }
 
@@ -123,6 +124,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _selectedIndex = index;
       });
   }
+
+
   
   final widgetOptions = [LogCheck(),FeedList(), PatientsList()];
 
