@@ -19,7 +19,10 @@ class DateTimeComboLinePointChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.TimeSeriesChart(
+    return Container(
+      width: 300,
+      height:300,
+      child:charts.TimeSeriesChart(
       seriesList,
       animate: animate,
       // Configure the default renderer as a line renderer. This will be used
@@ -37,7 +40,7 @@ class DateTimeComboLinePointChart extends StatelessWidget {
       // should create the same type of [DateTime] as the data provided. If none
       // specified, the default creates local date time.
       dateTimeFactory: const charts.LocalDateTimeFactory(),
-    );
+    ));
   }
 
   /// Create one series with sample hard coded data.

@@ -3,6 +3,8 @@ import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/medication_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
+import 'package:carehomeapp/model/user_binding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class MedicationForm extends StatefulWidget {
@@ -15,10 +17,7 @@ class MedicationForm extends StatefulWidget {
 }
 
 class MedicationState extends State<MedicationForm> {
-  Map<Medication, bool> values = {
-    Medication("1","Vitamins", "4", DateTime.now()) : false,
-    Medication("2","Paracetamol", "2", DateTime.now()) : false,
-  };
+List<Medication> medicationList = new List<Medication>();
 
 String imageurl;
 
@@ -28,15 +27,104 @@ String imageurl;
     });
   }
 
+  Future<List<Medication>> getMedications() async {
+
+  medicationList.clear();
+    
+    QuerySnapshot snapshot = await Firestore.instance
+    .collection('medications')
+    .where('patient', isEqualTo: widget.patient.id)
+    .getDocuments();
+
+    snapshot.documents.forEach((data) => {
+      medicationList.add(
+      new Medication(
+        data.documentID,
+        data['medication'],
+        data['dose'],
+        data['task'],
+        data['done']))
+    });
+      
+      return medicationList;
+      
+  }
+
+  void setMedication(Medication med, bool done){
+
+    final user = UserBinding.of(context).user;
+     
+    Firestore.instance.collection('tasks').document(med.id).updateData(
+      {
+        'lastupdated': DateTime.now(),
+        'done' : done
+      }
+    );
+
+     //Create feed item
+     Firestore.instance.collection('feeditem').document().setData({
+      'timeadded': DateTime.now(),
+      'type': 'medication',
+      'subtype': 'medication',
+      'patient': widget.patient.id,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'medication': med.medication,
+      'dose': med.dose,
+      'medicationtime': med.time,
+      'imageurl': imageurl
+    });
+  }
+
+    Widget _buildList(BuildContext context){
+
+    return FutureBuilder<List<Medication>>(
+      future:getMedications(),
+      builder:(context, snapshot)
+      {
+        if(!snapshot.hasData){
+          return CircularProgressIndicator();
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: snapshot.data.length,
+          itemBuilder: (context, int)
+          {
+           return CheckboxListTile(
+                activeColor: Colors.black,
+                checkColor: Colors.white,
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children:<Widget>[
+                  
+                  Align(
+                  alignment: Alignment.centerLeft,
+                  child:Text(snapshot.data[int].time.hour.toString() + ":" + 
+                  snapshot.data[int].time.minute.toString(), 
+                  style:TextStyle(fontSize: 24,fontWeight: FontWeight.bold)),),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child:Text(snapshot.data[int].dose + " " + snapshot.data[int].medication),)
+                ]),
+                value: snapshot.data[int].done,
+                onChanged: (bool value) {
+                  setState(() {
+                    setMedication(medicationList[int], value);
+                  });
+                },);
+          },);
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Color.fromARGB(255, 109, 191, 218),
+    return Card(
+      color: Color.fromARGB(255, 109, 191, 218),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
-      content: Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Visibility(
             visible: widget.showHeader == true,
@@ -48,32 +136,10 @@ String imageurl;
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
-            children: values.keys.map((Medication key) {
-              return Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                child:CheckboxListTile(
-                activeColor: Colors.black,
-                checkColor: Colors.white,
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children:<Widget>[
-                  
-                  Align(
-                  alignment: Alignment.centerLeft,
-                  child:Text(key.time.hour.toString() + ":" + key.time.minute.toString(), 
-                  style:TextStyle(fontSize: 24,fontWeight: FontWeight.bold)),),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child:Text(key.dose + " " + key.medication),)
-                ]),
-                value: values[key],
-                onChanged: (bool value) {
-                  setState(() {
-                    values[key] = value;
-                  });
-                },)
-              );
-            }).toList(),
+          
+            children: <Widget>[
+               _buildList(context)
+               ]
           ),
           Column(
            

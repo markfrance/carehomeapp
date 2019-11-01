@@ -57,6 +57,8 @@ Future<List<Task>> getTasks() async {
      Firestore.instance.collection('feeditem').document().setData({
       'timeadded': DateTime.now(),
       'type': 'task',
+       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+        'patient': widget.patient.id,
       'subtype': 'task',
       'task' : "Completed Task: " + task.task,
       'user': user.id,
@@ -73,13 +75,23 @@ Future<List<Task>> getTasks() async {
         if(!snapshot.hasData){
           return CircularProgressIndicator();
         }
-        return ListView.builder(
+        return SingleChildScrollView(
+          child:ListView.builder(
           shrinkWrap: true,
           itemCount: snapshot.data.length,
           itemBuilder: (context, int)
           {
            return CheckboxListTile(
-                title: new Text(snapshot.data[int].task),
+              activeColor: Colors.black,
+                checkColor: Colors.white,
+                title:  Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children:<Widget>[
+                  
+                  Align(
+                  alignment: Alignment.centerLeft,
+                  child:Text(snapshot.data[int].task ?? "",
+                  style:TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),),]),
                 value: snapshot.data[int].done,
                 onChanged: (bool value) {
                   setState(() {
@@ -87,7 +99,7 @@ Future<List<Task>> getTasks() async {
                   });
                 },
               );
-          },);
+          },));
       });
   }
   

@@ -9,6 +9,7 @@ class Medication {
   String medication;
   String dose;
   DateTime time;
+  bool done;
 
 
  /* Future<List<Medication>> getPatients(Patient patient) async {
@@ -40,5 +41,5 @@ class Medication {
   }
   */
 
-  Medication(this.id, this.medication,this.dose,this.time);
+  Medication(this.id, this.medication,this.dose,this.time, this.done);
 }

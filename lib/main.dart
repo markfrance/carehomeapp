@@ -118,20 +118,29 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
+  String currentScore;
+
+  
+  void getCurrentScore(User user) async {
+    user.getScore().then((score) => 
+    setState(() {
+      currentScore = score.toString();
+    }));
+  }
 
   void _incrementTab(index) {
       setState(() {
         _selectedIndex = index;
       });
   }
-
-
   
   final widgetOptions = [LogCheck(),FeedList(), PatientsList()];
 
   @override
   Widget build(BuildContext context) {
  final user = UserBinding.of(context).user;
+
+  getCurrentScore(user);
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(),
@@ -149,9 +158,10 @@ class _MyHomePageState extends State<MyHomePage> {
           child: widgetOptions.elementAt(_selectedIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          showUnselectedLabels: true,
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
           currentIndex: _selectedIndex,
-          type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
                 icon: Icon(CareHomeIcons.addb,
@@ -168,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.account_circle,
                     color: Color.fromARGB(255, 0, 0, 0)),
-                title: Text(''))
+                title: Text(currentScore ?? ""),)
           ],
           onTap: (index) {
             if(index == 3)

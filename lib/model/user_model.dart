@@ -52,17 +52,24 @@ class User {
 
   Future<int> getScore() async {
     QuerySnapshot snapshot = await Firestore.instance
-    .collection('feeditems')
+    .collection('feeditem')
     .where('user', isEqualTo: id)
-    .where('timeadded', isGreaterThan: DateTime.now().subtract(new Duration(days: 1)))
+    .where('timeadded', isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
     .getDocuments();
     
     return snapshot.documents.length;
   }
 
-  /*Future<int> getFollowers() async {
+  Future<int> getFollowing() async {
+    DocumentSnapshot snapshot = await Firestore.instance
+    .collection('users')
+    .document(id)
+    .get();
 
+   List<String> following = List.from(snapshot.data['following']);
+
+    return following.length;
   }
-*/
+
   User(this.id, this.firstName,this.lastName,this.email);
 }

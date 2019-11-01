@@ -5,9 +5,16 @@ import 'package:carehomeapp/charts/mood_charts.dart';
 import 'package:carehomeapp/charts/nutrition_charts.dart';
 import 'package:carehomeapp/charts/other_charts.dart';
 import 'package:carehomeapp/charts/vitals_charts.dart';
+import 'package:carehomeapp/model/patient_model.dart';
 import 'package:flutter/material.dart';
 
 class ChartTypeList extends StatelessWidget {
+
+  final Patient patient;
+  ChartTypeList(this.patient);
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,16 +74,18 @@ class ChartEntryItem extends StatelessWidget {
   final BuildContext context;
 
   Widget _buildTiles(ChartEntry root) {
-    if (root.children.isEmpty)
+    if (root.children.isEmpty){
       return ListTile(
         leading: Icon(root.icon),
         title: Text(root.title),
-        onTap: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return root.form;
-            }),
-      );
+        onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => root.form
+                                      )));
+             
+            
+  }
     else
       return ExpansionTile(
         leading: Icon(root.icon),

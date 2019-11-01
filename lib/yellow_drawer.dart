@@ -1,13 +1,45 @@
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/settings_page.dart';
 import 'package:flutter/material.dart';
 
-class YellowDrawer extends StatelessWidget {
+class YellowDrawer extends StatefulWidget {
 
-  
+  @override
+  YellowDrawerState createState() => YellowDrawerState();
+}
+
+class YellowDrawerState extends State<YellowDrawer> {
+
+  String currentScore;
+  String followingCount;
+
+void getCurrentScore(User user) async {
+    user.getScore().then((score) => 
+    setState(() {
+      currentScore = score.toString();
+    }));
+  }
+
+  void getFollowingCount(User user) async {
+    user.getFollowing().then((count) =>
+    setState(() =>
+      followingCount = count.toString()
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = UserBinding.of(context).user;
+    
+    if(currentScore == null){
+      getCurrentScore(user);
+    }
+
+    if(followingCount == null){
+      getFollowingCount(user);
+    }
+
     return Drawer(
           child: Container(
             
@@ -28,13 +60,13 @@ class YellowDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text(
-                    "Following: 3",
+                    "Following: " + (followingCount ?? ""),
                     textAlign: TextAlign.end,
                   ),
                 ),
                 ListTile(
                   title: Text(
-                    "Score: 20",
+                    "Score: " + (currentScore ?? ""),
                     textAlign: TextAlign.end,
                   ),
                 ),

@@ -22,18 +22,20 @@ class MedicationFormState extends State<AddMedicationForm> {
   void _addMedication(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-    Firestore.instance.collection('feeditem').document().setData({
-      'timeadded': DateTime.now(),
-      'type': 'medication',
-      'subtype': 'medication',
-      'patient': widget.patient.id,
-      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'medication': _medicationController.text,
-      'dose': _doseController.text,
-      'medicationtime': _time,
-      'imageurl': imageurl
-    }).then((onValue) => Navigator.pop(context));
+   Firestore.instance.collection('tasks').document().setData(
+      {
+        'lastupdated': DateTime.now(),
+        'patient': widget.patient.id,
+        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+        'user' : user.id,
+        'medication': _medicationController.text,
+        'dose': _doseController.text,
+        'time': _time,
+        'done' : false
+      }
+    ).then(
+      (onValue) => Navigator.pop(context)
+    );
   }
 
   void setImage(String newimageurl) {
