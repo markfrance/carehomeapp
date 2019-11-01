@@ -12,10 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:carehomeapp/logcheck/log_check.dart';
 import 'package:carehomeapp/patient/patients_list.dart';
 
-
-void main() { 
-
-runApp(MyApp());
+void main() {
+  runApp(MyApp());
 }
 
 const MaterialColor backColor = const MaterialColor(
@@ -34,20 +32,16 @@ const MaterialColor backColor = const MaterialColor(
   },
 );
 
-class MyApp extends StatefulWidget{
-
-@override
-MyAppState createState() => MyAppState();
+class MyApp extends StatefulWidget {
+  @override
+  MyAppState createState() => MyAppState();
 }
 
-
 class MyAppState extends State<MyApp> {
-
-   User user;
+  User user;
 
   @override
   void initState() {
-
 /*   FirebaseAuth.instance.currentUser().then((currentuser) => 
    Firestore.instance.collection('users')
    .document(currentuser.uid).get()
@@ -56,60 +50,58 @@ class MyAppState extends State<MyApp> {
       user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email']);
     })}));
 */
-    if(user == null) {
-      user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2","mark","france","markusfrance@hotmail.com");
+    if (user == null) {
+      user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2", "mark", "france",
+          "markusfrance@hotmail.com");
     }
     super.initState();
   }
- 
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
-    return  UserBinding(
-      user: user,
-      child: MaterialApp(
-      title: 'CareHomeApp',
-      theme: ThemeData(
-        cursorColor: Colors.black,
-         cupertinoOverrideTheme: CupertinoThemeData (
-      primaryColor: Colors.black,
-    ),
-        scaffoldBackgroundColor:Color.fromARGB(255, 250, 243, 242) ,
-        bottomAppBarColor: Color.fromARGB(255, 250, 243, 242),
-        fontFamily: 'Nunito',
-        accentColor: Colors.white,
-        inputDecorationTheme: InputDecorationTheme(
-          contentPadding: EdgeInsets.all(8),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide(color: Colors.black, width:2)),
-          border:OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.black) ),
-          fillColor: Colors.white,
-          filled:true),
-        backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        buttonTheme: ButtonThemeData(
-          buttonColor: Color.fromARGB(255, 249, 210, 45),
-          textTheme: ButtonTextTheme.primary,
-        
-        ),
-      
-        primarySwatch: backColor,
-      ),
-      home: RootPage(auth: new Auth())
-    
-    ));
+    return UserBinding(
+        user: user,
+        child: MaterialApp(
+            title: 'CareHomeApp',
+            theme: ThemeData(
+              cursorColor: Colors.black,
+              cupertinoOverrideTheme: CupertinoThemeData(
+                primaryColor: Colors.black,
+              ),
+              scaffoldBackgroundColor: Color.fromARGB(255, 250, 243, 242),
+              bottomAppBarColor: Color.fromARGB(255, 250, 243, 242),
+              fontFamily: 'Nunito',
+              accentColor: Colors.white,
+              inputDecorationTheme: InputDecorationTheme(
+                  contentPadding: EdgeInsets.all(8),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.black, width: 2)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: Colors.black)),
+                  fillColor: Colors.white,
+                  filled: true),
+              backgroundColor: Color.fromARGB(255, 250, 243, 242),
+              buttonTheme: ButtonThemeData(
+                buttonColor: Color.fromARGB(255, 249, 210, 45),
+                textTheme: ButtonTextTheme.primary,
+              ),
+              primarySwatch: backColor,
+            ),
+            home: RootPage(auth: new Auth())));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
   MyHomePage({Key key, this.title, this.auth, this.userId, this.logoutCallback})
       : super(key: key);
 
   final BaseAuth auth;
   final VoidCallback logoutCallback;
   final String userId;
- 
+
   final String title;
 
   @override
@@ -119,28 +111,33 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
   String currentScore;
+  User user;
 
-  
+
   void getCurrentScore(User user) async {
-    user.getScore().then((score) => 
-    setState(() {
-      currentScore = score.toString();
-    }));
+    user.getScore().then((score) => setState(() {
+          currentScore = score.toString();
+        }));
   }
 
   void _incrementTab(index) {
-      setState(() {
-        _selectedIndex = index;
-      });
+    setState(() {
+      _selectedIndex = index;
+    });
   }
-  
-  final widgetOptions = [LogCheck(),FeedList(), PatientsList()];
+
+  final widgetOptions = [LogCheck(), FeedList(), PatientsList()];
 
   @override
   Widget build(BuildContext context) {
- final user = UserBinding.of(context).user;
+    if(user == null) {
+      user = UserBinding.of(context).user;
+    }
 
-  getCurrentScore(user);
+    if(currentScore == null) {
+      getCurrentScore(user);
+    }
+
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(),
@@ -150,8 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
               alignment: Alignment.centerLeft,
               child: Text("Hello " + user?.firstName + " " + user?.lastName,
                   textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.black,
-                  fontWeight: FontWeight.w900)),
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.w900)),
             ),
             iconTheme: new IconThemeData(color: Colors.black)),
         body: Center(
@@ -168,28 +165,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     color: Color.fromARGB(255, 0, 0, 0)),
                 title: Text('')),
             BottomNavigationBarItem(
-                icon:  Image.asset("assets/images/home.png"),
-                activeIcon:  Image.asset("assets/images/homeactive.png"),
+                icon: Image.asset("assets/images/home.png"),
+                activeIcon: Image.asset("assets/images/homeactive.png"),
                 title: Text('')),
             BottomNavigationBarItem(
-                icon:  Image.asset("assets/images/patients.png"),
+                icon: Image.asset("assets/images/patients.png"),
                 activeIcon: Image.asset("assets/images/patientsactive.png"),
                 title: Text('')),
             BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle,
-                    color: Color.fromARGB(255, 0, 0, 0)),
-                title: Text(currentScore ?? ""),)
+              icon: Icon(Icons.account_circle,
+                  color: Color.fromARGB(255, 0, 0, 0)),
+              title: Text(currentScore ?? ""),
+            )
           ],
           onTap: (index) {
-            if(index == 3)
-            {
+            if (index == 3) {
               this.widget.logoutCallback();
-            }
-            else {
-            _incrementTab(index);
+            } else {
+              _incrementTab(index);
             }
           },
-        )
-    );
+        ));
   }
 }

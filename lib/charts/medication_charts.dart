@@ -5,9 +5,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
-
 class MedicationCharts extends StatefulWidget {
-
   @override
   MedicationChartsState createState() => MedicationChartsState();
 }
@@ -25,7 +23,7 @@ List<DateTime> allTakenDates = [
 ];
 
 List<DateTime> someTakenDates = [
-DateTime(2019, 11,9),
+  DateTime(2019, 11, 9),
   DateTime(2019, 11, 10),
   DateTime(2019, 11, 14),
   DateTime(2019, 11, 16)
@@ -43,10 +41,7 @@ List<DateTime> noneTakenDates = [
   DateTime(2019, 11, 18),
 ];
 
-
-
 class MedicationChartsState extends State<MedicationCharts> {
-  
   DateTime _currentDate = DateTime.now();
   static Widget _allIcon(String day) => Container(
         decoration: BoxDecoration(
@@ -107,7 +102,7 @@ class MedicationChartsState extends State<MedicationCharts> {
   @override
   Widget build(BuildContext context) {
     cHeight = MediaQuery.of(context).size.height;
-    for (int i = 0; i < allTakenDates.length -1; i++) {
+    for (int i = 0; i < allTakenDates.length - 1; i++) {
       _markedDateMap.add(
         allTakenDates[i],
         new Event(
@@ -117,33 +112,33 @@ class MedicationChartsState extends State<MedicationCharts> {
             allTakenDates[i].day.toString(),
           ),
         ),
-      );}
+      );
+    }
 
-      for (int i = 0; i < noneTakenDates.length -1; i++) {
-        _markedDateMap.add(
-          noneTakenDates[i],
-          new Event(
-            date: noneTakenDates[i],
-            title: 'None',
-            icon: _noneIcon(
-              noneTakenDates[i].day.toString(),
-            ),
+    for (int i = 0; i < noneTakenDates.length - 1; i++) {
+      _markedDateMap.add(
+        noneTakenDates[i],
+        new Event(
+          date: noneTakenDates[i],
+          title: 'None',
+          icon: _noneIcon(
+            noneTakenDates[i].day.toString(),
           ),
-        );
-      }
-       for (int i = 0; i < someTakenDates.length -1; i++) {
-        _markedDateMap.add(
-          someTakenDates[i],
-          new Event(
-            date: someTakenDates[i],
-            title: 'Some',
-            icon: _someIcon(
-              someTakenDates[i].day.toString(),
-            ),
+        ),
+      );
+    }
+    for (int i = 0; i < someTakenDates.length - 1; i++) {
+      _markedDateMap.add(
+        someTakenDates[i],
+        new Event(
+          date: someTakenDates[i],
+          title: 'Some',
+          icon: _someIcon(
+            someTakenDates[i].day.toString(),
           ),
-        );
-      }
-    
+        ),
+      );
+    }
 
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       headerTextStyle: TextStyle(color: Colors.black),
@@ -164,24 +159,24 @@ class MedicationChartsState extends State<MedicationCharts> {
     );
 
     return SingleChildScrollView(
-      child:Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            ListTile(
-              
-              title:Text("Medication", style: TextStyle(fontWeight: FontWeight.bold)),),
-              markerRepresent(Colors.red, "None Taken"),
-               markerRepresent(Colors.orange, "Some Taken"),
-            markerRepresent(Colors.green, "All Taken"),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child:Card(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        ListTile(
+          title:
+              Text("Medication", style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        markerRepresent(Colors.red, "None Taken"),
+        markerRepresent(Colors.orange, "Some Taken"),
+        markerRepresent(Colors.green, "All Taken"),
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: Card(
               color: Color.fromARGB(255, 109, 191, 218),
               child: _calendarCarouselNoHeader),
-            ),
-            
-          ],
-        ));
+        ),
+      ],
+    ));
   }
 
   Widget markerRepresent(Color color, String data) {

@@ -4,13 +4,15 @@ import 'package:carehomeapp/logcheck/medication_form.dart';
 import 'package:carehomeapp/patient/patient_view.dart';
 import 'package:carehomeapp/patient/tasks_view.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 
 class PatientHome extends StatefulWidget {
-  PatientHome(this.patient);
+  PatientHome(this.patient, this.followText);
 
   final Patient patient;
+  final String followText;
   @override
   _PatientHomeState createState() => _PatientHomeState();
 }
@@ -24,14 +26,7 @@ class _PatientHomeState extends State<PatientHome> {
     });
   }
 
-  String followText = "Follow";
-
-  void _follow() {
-    setState(() {
-      followText = "Following";
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     final widgetOptions = [
@@ -88,8 +83,8 @@ class _PatientHomeState extends State<PatientHome> {
                           alignment: Alignment.bottomRight,
                           child: RaisedButton(
                               color: Colors.black,
-                              child: Text(followText),
-                              onPressed: () => {_follow()}),
+                              child: Text(widget.followText),
+                              onPressed: () => null,)
                         ),
                       )),
                       FlatButton(
@@ -99,7 +94,7 @@ class _PatientHomeState extends State<PatientHome> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      PatientView(widget.patient)));
+                                      PatientView(widget.patient, widget.followText)));
                         },
                       ),
                     ],

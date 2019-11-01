@@ -6,8 +6,9 @@ import 'package:carehomeapp/model/patient_model.dart';
 
 class PatientView extends StatelessWidget {
 
-  PatientView(this.patient);
+  PatientView(this.patient, this.followText);
   final Patient patient;
+  final String followText;
 
   @override
   Widget build(BuildContext context) {
@@ -53,20 +54,16 @@ class PatientView extends StatelessWidget {
                           style: Theme.of(context).textTheme.subhead),
                     ],
                   ),
+                  Spacer(),
                   Padding(
                       padding: EdgeInsets.only(right:16),
                       child:Align(
                     alignment: Alignment.bottomRight,
                     child:RaisedButton(
                       color:Colors.black,
-                      child: Text('Following'),
+                      child: Text(followText),
                   onPressed: null,),)),
-                 
-                ],
-              ),
-            )),
-                  Expanded(
-                      child: RaisedButton(
+                  RaisedButton(
                         color:Colors.black,
                         padding: EdgeInsets.all(8),
                         child: Text("Edit"),
@@ -77,7 +74,12 @@ class PatientView extends StatelessWidget {
                                   builder: (context) => PatientEdit(this.patient)));
                         },
                       ),
-                      flex: 1)
+                      Spacer()
+                 
+                ],
+              ),
+            )),
+                
                 ],
               ),
               Padding(

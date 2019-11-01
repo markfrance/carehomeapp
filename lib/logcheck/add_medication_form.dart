@@ -14,15 +14,17 @@ class AddMedicationForm extends StatefulWidget {
 }
 
 class MedicationFormState extends State<AddMedicationForm> {
+  
   final _medicationController = TextEditingController();
   final _doseController = TextEditingController();
-  String _time = "";
+  String _timeString = "";
+  DateTime _time;
   String imageurl;
 
   void _addMedication(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-   Firestore.instance.collection('tasks').document().setData(
+   Firestore.instance.collection('medication').document().setData(
       {
         'lastupdated': DateTime.now(),
         'patient': widget.patient.id,
@@ -100,13 +102,14 @@ class MedicationFormState extends State<AddMedicationForm> {
                           ),
                           showTitleActions: true, onConfirm: (time) {
                         
-                        _time =
+                        _timeString =
                             '${time.hour} : ${time.minute} ';
+                            _time = time;
                         setState(() {});
                       }, currentTime: DateTime.now(), locale: LocaleType.en);
                       setState(() {});
                     },
-                    child: Text(_time, style: TextStyle(color: Colors.black),),
+                    child: Text(_timeString, style: TextStyle(color: Colors.black),),
                   ),
                 ),),
                 Padding(

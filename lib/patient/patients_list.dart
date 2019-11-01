@@ -54,8 +54,7 @@ class _PatientsListState extends State<PatientsList> {
                 ),
                 child:Icon(CareHomeIcons.addb,),
               ),)
-            
-        
+
         ],
         ),
       Row(children: <Widget>[

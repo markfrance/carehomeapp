@@ -1,4 +1,7 @@
+import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 
@@ -13,22 +16,57 @@ class PatientCard extends StatefulWidget {
 
 class _PatientCardState extends State<PatientCard> {
   Patient patient;
-  String followText = "Follow";
+  String followText;
   _PatientCardState(this.patient);
 
-  void _follow() {
-    setState(() {
-      followText = "Following";
-    });
+  void _setFollowText(user) {
+    Firestore.instance.collection('users').document(user.id).get().then((doc) =>
+        List.from(doc['following']).contains(widget.patient.id)
+            ? setState(() => followText = "Following")
+            : setState(() => followText = "Follow"));
   }
-  
+
+  void _followToggle(user) {
+    Firestore.instance
+        .collection('users')
+        .document(user.id)
+        .get()
+        .then((doc) => {
+              List.from(doc['following']).contains(widget.patient.id)
+                  ? {
+                      Firestore.instance
+                          .collection('users')
+                          .document(user.id)
+                          .updateData({
+                        'following': FieldValue.arrayRemove([widget.patient.id])
+                      }),
+                      setState(() => followText = "Follow")
+                    }
+                  : {
+                      Firestore.instance
+                          .collection('users')
+                          .document(user.id)
+                          .updateData({
+                        'following': FieldValue.arrayUnion([widget.patient.id])
+                      }),
+                      setState(() => followText = "Following")
+                    }
+            });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    if (followText == null) {
+      _setFollowText(user);
+    }
+
     return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PatientHome(this.patient)),
+            MaterialPageRoute(builder: (context) => PatientHome(this.patient, followText)),
           );
         },
         child: Card(
@@ -42,7 +80,6 @@ class _PatientCardState extends State<PatientCard> {
               padding: const EdgeInsets.only(
                 top: 18.0,
                 bottom: 18.0,
-         
               ),
               child: Row(
                 children: <Widget>[
@@ -67,18 +104,19 @@ class _PatientCardState extends State<PatientCard> {
                     ],
                   ),
                   Expanded(
-                    child:Padding(
-                      padding: EdgeInsets.only(right:16),
-                      child:Align(
-                    alignment: Alignment.bottomRight,
-                    child:RaisedButton(
-                      color:Colors.black,
-                      child: Text(followText),
-                  onPressed: () => {_follow()}),),)),
+                      child: Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: RaisedButton(
+                          color: Colors.black,
+                          child: Text(followText ?? "",
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () => {_followToggle(user)}),
+                    ),
+                  )),
                 ],
               ),
             )));
   }
-
-
 }

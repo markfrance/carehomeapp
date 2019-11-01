@@ -32,7 +32,7 @@ String imageurl;
   medicationList.clear();
     
     QuerySnapshot snapshot = await Firestore.instance
-    .collection('medications')
+    .collection('medication')
     .where('patient', isEqualTo: widget.patient.id)
     .getDocuments();
 
@@ -42,7 +42,7 @@ String imageurl;
         data.documentID,
         data['medication'],
         data['dose'],
-        data['task'],
+        data['time'].toDate(),
         data['done']))
     });
       
@@ -54,13 +54,14 @@ String imageurl;
 
     final user = UserBinding.of(context).user;
      
-    Firestore.instance.collection('tasks').document(med.id).updateData(
+    Firestore.instance.collection('medication').document(med.id).updateData(
       {
         'lastupdated': DateTime.now(),
         'done' : done
       }
     );
 
+    if(done) {
      //Create feed item
      Firestore.instance.collection('feeditem').document().setData({
       'timeadded': DateTime.now(),
@@ -71,9 +72,10 @@ String imageurl;
       'user': user.id,
       'medication': med.medication,
       'dose': med.dose,
-      'medicationtime': med.time,
+      'medicationtime': med.time.hour.toString() + ":" + med.time.minute.toString(),
       'imageurl': imageurl
     });
+    }
   }
 
     Widget _buildList(BuildContext context){
@@ -99,8 +101,7 @@ String imageurl;
                   
                   Align(
                   alignment: Alignment.centerLeft,
-                  child:Text(snapshot.data[int].time.hour.toString() + ":" + 
-                  snapshot.data[int].time.minute.toString(), 
+                  child:Text(snapshot.data[int].time.hour.toString() + ":" + snapshot.data[int].time.minute.toString(), 
                   style:TextStyle(fontSize: 24,fontWeight: FontWeight.bold)),),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -161,14 +162,7 @@ String imageurl;
                 ),
                 child:Icon(CareHomeIcons.addb,),
               ),),),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                    color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
-                  onPressed: () {},
-                ),
-              ),
+              
             ],
           ),
         ],

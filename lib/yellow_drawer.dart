@@ -13,6 +13,8 @@ class YellowDrawerState extends State<YellowDrawer> {
 
   String currentScore;
   String followingCount;
+  User user;
+
 
 void getCurrentScore(User user) async {
     user.getScore().then((score) => 
@@ -30,8 +32,11 @@ void getCurrentScore(User user) async {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
-    
+
+    if (user == null) {
+      user = UserBinding.of(context).user;
+    }
+
     if(currentScore == null){
       getCurrentScore(user);
     }
@@ -39,7 +44,6 @@ void getCurrentScore(User user) async {
     if(followingCount == null){
       getFollowingCount(user);
     }
-
     return Drawer(
           child: Container(
             

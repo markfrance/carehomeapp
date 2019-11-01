@@ -26,50 +26,47 @@ class User {
     List<Patient> userPatients = new List<Patient>();
 
     QuerySnapshot snapshot = await Firestore.instance
-    .collection('patients')
-    .where('carehome', isEqualTo:'AKWnLcXz2JCXazm5Ts5P')
-    .getDocuments();
+        .collection('patients')
+        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
+        .getDocuments();
 
-    snapshot.documents.forEach((data) =>
-      userPatients.add(
-      new Patient(
+    snapshot.documents.forEach((data) => userPatients.add(new Patient(
         data.documentID,
-                data['firstname'], 
-                data['lastname'], 
-                data['age'], 
-                data['carehome'],
-                data['likes'],
-                data['dislikes'],
-                data['medicalcondition'],
-                data['contacts'],
-                data['keynurse'],
-                data['contraindications'],
-                data['frustrate'],
-                data['love'])));    
+        data['firstname'],
+        data['lastname'],
+        data['age'],
+        data['carehome'],
+        data['likes'],
+        data['dislikes'],
+        data['medicalcondition'],
+        data['contacts'],
+        data['keynurse'],
+        data['contraindications'],
+        data['frustrate'],
+        data['love'])));
 
-      return userPatients; 
+    return userPatients;
   }
 
   Future<int> getScore() async {
     QuerySnapshot snapshot = await Firestore.instance
-    .collection('feeditem')
-    .where('user', isEqualTo: id)
-    .where('timeadded', isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
-    .getDocuments();
-    
+        .collection('feeditem')
+        .where('user', isEqualTo: id)
+        .where('timeadded',
+            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
+        .getDocuments();
+
     return snapshot.documents.length;
   }
 
   Future<int> getFollowing() async {
-    DocumentSnapshot snapshot = await Firestore.instance
-    .collection('users')
-    .document(id)
-    .get();
+    DocumentSnapshot snapshot =
+        await Firestore.instance.collection('users').document(id).get();
 
-   List<String> following = List.from(snapshot.data['following']);
+    List<String> following = List.from(snapshot.data['following']);
 
     return following.length;
   }
 
-  User(this.id, this.firstName,this.lastName,this.email);
+  User(this.id, this.firstName, this.lastName, this.email);
 }
