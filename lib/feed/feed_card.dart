@@ -1,4 +1,6 @@
+import 'package:carehomeapp/firestore_database.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/feeditem_model.dart';
@@ -64,7 +66,7 @@ class _FeedCardState extends State<FeedCard> {
             feedItem.systolic +
             "/" +
             feedItem.diastolic;
-      case "bloodsugarlevel":
+      case "bloodsugar":
         return "Blood sugar level: " + feedItem.mmol + " mmo/l";
       case "heartrate":
         return "Heart rate: " + feedItem.bpm + "bpm";
@@ -111,6 +113,10 @@ class _FeedCardState extends State<FeedCard> {
 
   bool isLiked = false;
   void _toggleLikeIcon() {
+
+ //   Firestore.instance.collection('feeditem').document(widget.feedItem.id).get()
+   // .then((doc) => 
+
     setState(() {
       isLiked = !isLiked;
     });

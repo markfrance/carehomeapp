@@ -119,7 +119,9 @@ String imageurl;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Padding(
+      padding: EdgeInsets.all(32),
+      child: Card(
       color: Color.fromARGB(255, 109, 191, 218),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(32.0))),
@@ -130,10 +132,13 @@ String imageurl;
           Visibility(
             visible: widget.showHeader == true,
             child:FormHeader(setImage)),
-          Text(
+          Padding(
+            padding:EdgeInsets.all(16),
+            child:Text(
             "Medication",
             textAlign: TextAlign.start,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -145,7 +150,9 @@ String imageurl;
           Column(
            
             children: <Widget>[
-              Align(
+              Padding(
+                padding:EdgeInsets.all(16),
+                child:Align(
                 alignment: Alignment.centerLeft,
                 child:SizedBox(
                 width:30,
@@ -161,12 +168,12 @@ String imageurl;
             },
                 ),
                 child:Icon(CareHomeIcons.addb,),
-              ),),),
+              ),),),),
               
             ],
           ),
         ],
       ),
-    );
+    ),);
   }
 }

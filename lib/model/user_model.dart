@@ -22,13 +22,29 @@ class User {
     return userFeedItems;
   }*/
 
-  Future<List<Patient>> getPatients() async {
+  Future<List<Patient>> getPatients([String dropdownValue]) async {
     List<Patient> userPatients = new List<Patient>();
+    QuerySnapshot snapshot;
 
-    QuerySnapshot snapshot = await Firestore.instance
+    if(dropdownValue == "Following"){
+
+      snapshot = await Firestore.instance
+        .collection('patients')
+        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P').limit(2)
+        .getDocuments();
+    }
+    else if(dropdownValue == "Alphabetically"){
+       snapshot = await Firestore.instance
+        .collection('patients')
+        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
+        .orderBy('lastname')
+        .getDocuments();
+    } else {
+    snapshot = await Firestore.instance
         .collection('patients')
         .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
         .getDocuments();
+    }
 
     snapshot.documents.forEach((data) => userPatients.add(new Patient(
         data.documentID,

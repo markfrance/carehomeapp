@@ -18,7 +18,7 @@ class _PatientsListState extends State<PatientsList> {
     final user = UserBinding.of(context).user;
 
     return FutureBuilder<List<Patient>>(
-        future: user.getPatients(),
+        future: user.getPatients(dropdownValue),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();

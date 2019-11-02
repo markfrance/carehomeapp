@@ -14,34 +14,36 @@ class FeedList extends StatefulWidget {
 
 class _FeedListState extends State<FeedList> {
   List<FeedItem> feedItems = new List<FeedItem>();
-   String dropdownValue = 'Most recent';
+  String dropdownValue = 'Most recent';
 
   Future<List<FeedItem>> getItems() async {
-
     feedItems.clear();
     QuerySnapshot snapshot;
-    
+
     if (widget.patient == null) {
-      if(dropdownValue == 'Most recent' || dropdownValue == null){
-        snapshot = await Firestore.instance.collection('feeditem')
-        .orderBy('timeadded', descending: true)
-        .getDocuments();
+      if (dropdownValue == 'Most recent' || dropdownValue == null) {
+        snapshot = await Firestore.instance
+            .collection('feeditem')
+            .orderBy('timeadded', descending: true)
+            .getDocuments();
       }
-      if(dropdownValue == 'Check Type'){
-        snapshot = await Firestore.instance.collection('feeditem')
-        .orderBy('type', descending: false)
-        .getDocuments();
+      if (dropdownValue == 'Check Type') {
+        snapshot = await Firestore.instance
+            .collection('feeditem')
+            .orderBy('type', descending: false)
+            .getDocuments();
       }
-      if(dropdownValue == 'Patients'){
-        snapshot = await Firestore.instance.collection('feeditem')
-        .orderBy('patientname', descending: false)
-        .getDocuments();
+      if (dropdownValue == 'Patients') {
+        snapshot = await Firestore.instance
+            .collection('feeditem')
+            .orderBy('patientname', descending: false)
+            .getDocuments();
       }
     } else {
       snapshot = await Firestore.instance
           .collection('feeditem')
           .where('patient', isEqualTo: widget.patient.id)
-         // .orderBy('timeadded', descending: true)
+          // .orderBy('timeadded', descending: true)
           .getDocuments();
     }
 
@@ -54,7 +56,7 @@ class _FeedListState extends State<FeedList> {
         data['mood'],
         data['systolic'],
         data['diastolic'],
-        data['mmol'],
+        data['level'],
         data['bpm'],
         data['medication'],
         data['dose'],
@@ -79,13 +81,11 @@ class _FeedListState extends State<FeedList> {
     return feedItems;
   }
 
- 
-
   Widget _buildList(BuildContext context) {
     return FutureBuilder(
         future: getItems(),
         builder: (context, snapshot) {
-        /*  if (!snapshot.hasData) {
+          /*  if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }*/
           return ListView.builder(
@@ -99,60 +99,65 @@ class _FeedListState extends State<FeedList> {
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
-      Row(children: <Widget>[
-        Expanded(
-        flex:2,
-        child: Visibility(
-        visible: widget.patient == null,
-        child:Align(
-        
-        alignment: Alignment.topLeft,
-        child: Theme(
-          data: ThemeData(
-            
-            canvasColor: Color.fromARGB(255, 249, 210, 45),
-           
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(left: 25, top:16, bottom:8),
-            child:Container(
-            decoration: BoxDecoration(color: Color.fromARGB(255, 249, 210, 45), borderRadius: BorderRadius.circular(8)),
-            
-            child: DropdownButton<String>(
-              isExpanded: true,
-              hint: Text(dropdownValue),
-              value: dropdownValue,
-              //icon: Padding(child:Icon(CareHomeIcons.arrowdown, size:10), padding:EdgeInsets.all(8)),
-              iconSize: 24,
-              elevation: 16,
-              style: TextStyle(color: Colors.black, backgroundColor: Color.fromARGB(255, 249, 210, 45)),
-              underline: null,
-              onChanged: (String newValue) {
-                setState(() {
-                  dropdownValue = newValue;
-                });
-              },
-              items: <String>['Most recent', 'Check Type', 'Patients']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Container(
-                    color: Color.fromARGB(255, 249, 210, 45),
-                    child: Padding(padding:EdgeInsets.only(left: 8), child:Text(value)),
+      Row(
+        children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: Visibility(
+              visible: widget.patient == null,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Theme(
+                  data: ThemeData(
+                    canvasColor: Color.fromARGB(255, 249, 210, 45),
                   ),
-                );
-              }).toList(),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 25, top: 16, bottom: 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 249, 210, 45),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: Text(dropdownValue),
+                        value: dropdownValue,
+                        //icon: Padding(child:Icon(CareHomeIcons.arrowdown, size:10), padding:EdgeInsets.all(8)),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(
+                            color: Colors.black,
+                            backgroundColor: Color.fromARGB(255, 249, 210, 45)),
+                        underline: null,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            dropdownValue = newValue;
+                          });
+                        },
+                        items: <String>['Most recent', 'Check Type', 'Patients']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Container(
+                              color: Color.fromARGB(255, 249, 210, 45),
+                              child: Padding(
+                                  padding: EdgeInsets.only(left: 8),
+                                  child: Text(value)),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          Spacer(
+            flex: 2,
+          )
+        ],
       ),
-      ),
-      ),
- ),
- Spacer(flex: 2,)
-
-      ],),
-         Expanded(child: _buildList(context), flex: 1)
+      Expanded(child: _buildList(context), flex: 1)
     ]);
   }
 }
