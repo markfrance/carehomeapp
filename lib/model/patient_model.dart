@@ -15,20 +15,17 @@ class Patient {
   String frustrate = " ";
   String love = " ";
   final int age;
-  String imageUrl = " ";
+  String imageUrl;
 
   static void addNewPatient(Patient newPatient) {
     Firestore.instance.collection('patients').document().setData({
       'carehome': 'AKWnLcXz2JCXazm5Ts5P',
       'firstname': newPatient.firstname,
       'lastname': newPatient.lastname,
-      'age': newPatient.age
+      'age': newPatient.age,
+      'imageurl': newPatient.imageUrl
     });
   }
-
-
-
- 
 
   Patient(
     this.id,
@@ -43,6 +40,6 @@ class Patient {
   this.keynurse,
   this.contraindications,
   this.frustrate,
-  this.love]
+  this.love, this.imageUrl]
   );
 }

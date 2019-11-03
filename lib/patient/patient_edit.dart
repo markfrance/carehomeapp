@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:carehomeapp/patient/patient_view.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/patient/patients_card.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PatientEdit extends StatefulWidget {
   final Patient patient;
@@ -26,6 +30,7 @@ class PatientEditState extends State<PatientEdit> {
   final _frustrateController = TextEditingController();
   final _loveController = TextEditingController();
 
+  String imageUrl;
   @override
   void initState() {
     if (widget.patient != null) {
@@ -42,6 +47,17 @@ class PatientEditState extends State<PatientEdit> {
       _medicalconditionController.text = widget.patient.medicalcondition;
     }
     return super.initState();
+  }
+
+  void _pickPhoto(String imageId) async {
+    File imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    StorageReference ref = FirebaseStorage.instance
+        .ref()
+        .child(imageId)
+        .child(imageFile.uri.toString());
+    StorageUploadTask uploadTask = ref.putFile(imageFile);
+    await (await uploadTask.onComplete).ref.getDownloadURL().then((url) =>
+    setState(()=> imageUrl = url));
   }
 
   void _updatePatientData(BuildContext context) {
@@ -73,7 +89,8 @@ class PatientEditState extends State<PatientEdit> {
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
       'love': _loveController.text,
-      'carehome': "AKWnLcXz2JCXazm5Ts5P"
+      'carehome': "AKWnLcXz2JCXazm5Ts5P",
+      'imageurl': imageUrl
     }).then((onValue) => Navigator.pop(context));
   }
 
@@ -104,13 +121,17 @@ class PatientEditState extends State<PatientEdit> {
                         Padding(
                             padding:
                                 EdgeInsets.only(left: 24, right: 24, top: 8),
-                            child: ClipRRect(
+                            child: FlatButton(
+                              child:ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: Image.asset(
-                                  "assets/images/avatar_placeholder_small.png",
+                                  widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
                                   width: 50,
                                   height: 50),
-                            )),
+                            ),
+                            onPressed: () => _pickPhoto(widget.patient.id)
+                            ,),),
+                            
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

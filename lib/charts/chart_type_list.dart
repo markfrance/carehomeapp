@@ -62,17 +62,17 @@ class ChartEntryItem extends StatelessWidget {
   Widget _getChart(String title) {
     switch (title) {
       case 'Mood':
-        return MoodCharts();
+        return MoodCharts(patient);
       case 'Vitals':
         return VitalsCharts(patient);
       case 'Medication':
-        return MedicationCharts();
+        return MedicationCharts(patient);
       case 'Nutrition':
         return NutritionCharts(patient);
       case 'Body':
         return BodyCharts(patient);
       case 'Other':
-        return OtherCharts();
+        return OtherCharts(patient);
       default:
         return null;
     }

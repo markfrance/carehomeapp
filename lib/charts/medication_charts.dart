@@ -1,3 +1,5 @@
+import 'package:carehomeapp/model/patient_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
@@ -6,62 +8,74 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
 class MedicationCharts extends StatefulWidget {
+  Patient patient;
+  MedicationCharts(this.patient);
   @override
   MedicationChartsState createState() => MedicationChartsState();
 }
 
-List<DateTime> allTakenDates = [
-  DateTime(2019, 11, 1),
-  DateTime(2019, 11, 3),
-  DateTime(2019, 11, 4),
-  DateTime(2019, 11, 5),
-  DateTime(2019, 11, 6),
-  DateTime(2019, 11, 11),
-  DateTime(2019, 11, 15),
-  DateTime(2019, 11, 11),
-  DateTime(2019, 11, 15),
-];
+List<DateTime> medicationDates = [];
+int medicationCount;
 
-List<DateTime> someTakenDates = [
-  DateTime(2019, 11, 9),
-  DateTime(2019, 11, 10),
-  DateTime(2019, 11, 14),
-  DateTime(2019, 11, 16)
-];
+List<DateTime> allTakenDates = [];
 
-List<DateTime> noneTakenDates = [
-  DateTime(2019, 11, 2),
-  DateTime(2019, 11, 7),
-  DateTime(2019, 11, 8),
-  DateTime(2019, 11, 12),
-  DateTime(2019, 11, 13),
-  DateTime(2019, 11, 17),
-  DateTime(2019, 11, 18),
-  DateTime(2019, 11, 17),
-  DateTime(2019, 11, 18),
-];
+List<DateTime> someTakenDates = [];
+
 
 class MedicationChartsState extends State<MedicationCharts> {
+
+  @override
+  void initState() {
+    getMedicationData(widget.patient);
+
+    super.initState();
+  }
+
+  void getMedicationData(Patient patient) {
+    Firestore.instance
+        .collection('feeditem')
+        .where('patient', isEqualTo: patient.id)
+        .where('subtype', isEqualTo: 'medication')
+        .getDocuments()
+        .then((documents) => documents.documents.forEach((data) => {
+              medicationDates.add(data['timeadded'].toDate()),
+            }));
+
+    Firestore.instance
+        .collection('medication')
+        .where('patient', isEqualTo: patient.id)
+        .getDocuments()
+        .then((documents) => medicationCount = documents.documents.length);
+  }
+
+  void showMedicationDates() {
+    var medicationMap = Map();
+
+    medicationDates.forEach((date) {
+      var dateonly = DateTime.parse(date.year.toString() +
+          date.month.toString().padLeft(2, '0') +
+          date.day.toString().padLeft(2, '0'));
+      if (!medicationMap.containsKey(dateonly)) {
+        medicationMap[dateonly] = 1;
+      } else {
+        medicationMap[dateonly] += 1;
+      }
+    });
+
+    medicationMap.forEach((k,v) {
+      if(v >= medicationCount){
+        allTakenDates.add(k);
+      }
+      else{
+        someTakenDates.add(k);
+      }
+    });
+  }
+  
   DateTime _currentDate = DateTime.now();
   static Widget _allIcon(String day) => Container(
         decoration: BoxDecoration(
           color: Colors.green,
-          borderRadius: BorderRadius.all(
-            Radius.circular(1000),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            day,
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-        ),
-      );
-  static Widget _noneIcon(String day) => Container(
-        decoration: BoxDecoration(
-          color: Colors.red,
           borderRadius: BorderRadius.all(
             Radius.circular(1000),
           ),
@@ -101,6 +115,7 @@ class MedicationChartsState extends State<MedicationCharts> {
 
   @override
   Widget build(BuildContext context) {
+    showMedicationDates();
     cHeight = MediaQuery.of(context).size.height;
     for (int i = 0; i < allTakenDates.length - 1; i++) {
       _markedDateMap.add(
@@ -115,18 +130,6 @@ class MedicationChartsState extends State<MedicationCharts> {
       );
     }
 
-    for (int i = 0; i < noneTakenDates.length - 1; i++) {
-      _markedDateMap.add(
-        noneTakenDates[i],
-        new Event(
-          date: noneTakenDates[i],
-          title: 'None',
-          icon: _noneIcon(
-            noneTakenDates[i].day.toString(),
-          ),
-        ),
-      );
-    }
     for (int i = 0; i < someTakenDates.length - 1; i++) {
       _markedDateMap.add(
         someTakenDates[i],
@@ -152,7 +155,7 @@ class MedicationChartsState extends State<MedicationCharts> {
       markedDateShowIcon: true,
       markedDateIconMaxShown: 1,
       markedDateMoreShowTotal:
-          null, // null for not showing hidden events indicator
+          null, 
       markedDateIconBuilder: (event) {
         return event.icon;
       },
@@ -166,7 +169,6 @@ class MedicationChartsState extends State<MedicationCharts> {
           title:
               Text("Medication", style: TextStyle(fontWeight: FontWeight.bold)),
         ),
-        markerRepresent(Colors.red, "None Taken"),
         markerRepresent(Colors.orange, "Some Taken"),
         markerRepresent(Colors.green, "All Taken"),
         Padding(

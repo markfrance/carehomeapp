@@ -39,7 +39,7 @@ class PatientView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Image.asset(
-                            "assets/images/avatar_placeholder_small.png",
+                            patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
                             width: 50,
                             height: 50),
                       )),

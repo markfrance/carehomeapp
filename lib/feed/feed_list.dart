@@ -43,7 +43,7 @@ class _FeedListState extends State<FeedList> {
       snapshot = await Firestore.instance
           .collection('feeditem')
           .where('patient', isEqualTo: widget.patient.id)
-          // .orderBy('timeadded', descending: true)
+          .orderBy('timeadded', descending: true)
           .getDocuments();
     }
 

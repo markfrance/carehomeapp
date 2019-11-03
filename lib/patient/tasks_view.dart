@@ -6,150 +6,131 @@ import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
-class TasksView extends StatefulWidget{
-
+class TasksView extends StatefulWidget {
   final Patient patient;
   TasksView(this.patient);
-  
+
   @override
   _TasksViewState createState() => _TasksViewState();
 }
 
 class _TasksViewState extends State<TasksView> {
+  List<Task> userTasks = new List<Task>();
 
-List<Task> userTasks= new List<Task>();
+  Future<List<Task>> getTasks() async {
+    userTasks.clear();
 
-Future<List<Task>> getTasks() async {
-
-  userTasks.clear();
-    
     QuerySnapshot snapshot = await Firestore.instance
-    .collection('tasks')
-    .where('patient', isEqualTo: widget.patient.id)
-    .getDocuments();
+        .collection('tasks')
+        .where('patient', isEqualTo: widget.patient.id)
+        .getDocuments();
 
     snapshot.documents.forEach((data) => {
-      userTasks.add(
-      new Task(
-        data.documentID,
-        data['patient'],
-        data['task'],
-        data['done']))
-    });
-      
-      return userTasks;
-      
+          userTasks.add(new Task(
+              data.documentID, data['patient'], data['task'], data['done']))
+        });
+
+    return userTasks;
   }
 
   void setTask(Task task, bool status) {
-
     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('tasks').document(task.id).updateData(
-      {
-        'lastupdated': DateTime.now(),
-        'done' : status
-      }
-    );
 
-     //Create feed item
-     Firestore.instance.collection('feeditem').document().setData({
-      'timeadded': DateTime.now(),
-      'type': 'task',
-       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+    Firestore.instance
+        .collection('tasks')
+        .document(task.id)
+        .updateData({'lastupdated': DateTime.now(), 'done': status});
+    if (status == true) {
+      //Create feed item
+      Firestore.instance.collection('feeditem').document().setData({
+        'timeadded': DateTime.now(),
+        'type': 'task',
+        'patientname': widget.patient.firstname + " " + widget.patient.lastname,
         'patient': widget.patient.id,
-      'subtype': 'task',
-      'task' : "Completed Task: " + task.task,
-      'user': user.id,
-    });
-
+        'subtype': 'task',
+        'task': "Completed Task: " + task.task,
+        'user': user.id,
+      });
+    }
   }
 
-    Widget _buildList(BuildContext context){
-
+  Widget _buildList(BuildContext context) {
     return FutureBuilder<List<Task>>(
-      future:getTasks(),
-      builder:(context, snapshot)
-      {
-        if(!snapshot.hasData){
-          return CircularProgressIndicator();
-        }
-        return SingleChildScrollView(
-          child:ListView.builder(
-          shrinkWrap: true,
-          itemCount: snapshot.data.length,
-          itemBuilder: (context, int)
-          {
-           return CheckboxListTile(
-              activeColor: Colors.black,
+        future: getTasks(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return SingleChildScrollView(
+              child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, int) {
+              return CheckboxListTile(
+                activeColor: Colors.black,
                 checkColor: Colors.white,
-                title:  Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children:<Widget>[
-                  
-                  Align(
-                  alignment: Alignment.centerLeft,
-                  child:Text(snapshot.data[int].task ?? "",
-                  style:TextStyle(fontSize: 16,fontWeight: FontWeight.bold)),),]),
+                title: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(snapshot.data[int].task ?? "",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
+                    ]),
                 value: snapshot.data[int].done,
                 onChanged: (bool value) {
                   setState(() {
-                    setTask(userTasks[int],value);
+                    setTask(userTasks[int], value);
                   });
                 },
               );
-          },));
-      });
+            },
+          ));
+        });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Card(
-       
-        elevation: 4,
-        margin:EdgeInsets.all(16.0),
-        shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15.0),
-  ),
+      elevation: 4,
+      margin: EdgeInsets.all(16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       color: Color.fromARGB(255, 250, 243, 242),
       child: Padding(
         padding: EdgeInsets.all(18),
-        child:Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Text(
-            "Tasks",
-            textAlign: TextAlign.start,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-          
-            children: <Widget>[
-               _buildList(context)
-               ]
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return TasksForm(widget.patient);
-            }),
-                child:Icon(CareHomeIcons.addb),
-              ),
-              
-            ],
-          ),
-        ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              "Tasks",
+              textAlign: TextAlign.start,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[_buildList(context)]),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return TasksForm(widget.patient);
+                      }),
+                  child: Icon(CareHomeIcons.addb),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      ),
-      );
-    }
+    );
+  }
 }
-
