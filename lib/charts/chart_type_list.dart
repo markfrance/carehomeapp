@@ -70,7 +70,7 @@ class ChartEntryItem extends StatelessWidget {
       case 'Nutrition':
         return NutritionCharts(patient);
       case 'Body':
-        return BodyCharts();
+        return BodyCharts(patient);
       case 'Other':
         return OtherCharts();
       default:

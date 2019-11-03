@@ -28,7 +28,7 @@ class NutritionCharts extends StatefulWidget{
 
 class NutritionChartState extends State<NutritionCharts> {
 
-    List<charts.Series<TimeSeriesHydration, DateTime>> hydrationSeries;
+  List<charts.Series<TimeSeriesHydration, DateTime>> hydrationSeries;
   List<charts.Series<TimeSeriesMeal, DateTime>> mealSeries;
 
 
