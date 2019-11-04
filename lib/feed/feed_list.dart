@@ -48,6 +48,7 @@ class _FeedListState extends State<FeedList> {
     }
 
     snapshot.documents.forEach((data) => feedItems.add(new FeedItem(
+      data.documentID,
         data['timeadded'].toDate(),
         data['type'],
         data['subtype'],

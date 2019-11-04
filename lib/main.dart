@@ -1,6 +1,7 @@
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/feed/feed_list.dart';
+import 'package:carehomeapp/model/push_message.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/root_page.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/logcheck/log_check.dart';
 import 'package:carehomeapp/patient/patients_list.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() {
   runApp(MyApp());
@@ -113,6 +115,29 @@ class _MyHomePageState extends State<MyHomePage> {
   String currentScore;
   User user;
 
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final List<PushMessage> messages = [];
+
+@override
+void initState() { 
+  super.initState();
+ 
+ _firebaseMessaging.configure(
+   onMessage: (Map<String, dynamic> message) async{
+     print("onMessage:  $message");
+   },
+   onResume: (Map<String, dynamic> message) async{
+     print("onResume:  $message");
+   },
+   onLaunch: (Map<String, dynamic> message) async{
+     print("onLaunch:  $message");
+   }
+ );
+
+ _firebaseMessaging.requestNotificationPermissions(
+   const IosNotificationSettings(sound: true, badge:true, alert:true)
+ );
+}
 
   void getCurrentScore(User user) async {
     user.getScore().then((score) => setState(() {
@@ -154,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
           child: widgetOptions.elementAt(_selectedIndex),
         ),
+        
         bottomNavigationBar: BottomNavigationBar(
           showUnselectedLabels: true,
           backgroundColor: Color.fromARGB(255, 250, 243, 242),

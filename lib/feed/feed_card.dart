@@ -1,5 +1,8 @@
+import 'package:carehomeapp/feed/comment_card.dart';
 import 'package:carehomeapp/firestore_database.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
+import 'package:carehomeapp/model/comment_model.dart';
+import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
@@ -15,7 +18,16 @@ class FeedCard extends StatefulWidget {
 }
 
 class _FeedCardState extends State<FeedCard> {
-  
+  bool showComments = false;
+    List<Comment> itemComments = new List<Comment>();
+    bool isLiked = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _setLiked();
+  }
+
   IconData getIcon(String type) {
     switch (type) {
       case "body":
@@ -31,7 +43,7 @@ class _FeedCardState extends State<FeedCard> {
       case "vitals":
         return CareHomeIcons.vitalsicon;
       case "task":
-      return Icons.check_circle_outline;
+        return Icons.check_circle_outline;
       default:
         return null;
     }
@@ -94,7 +106,10 @@ class _FeedCardState extends State<FeedCard> {
       case "weight":
         return "Weight reading: " + feedItem.weight + "kg";
       case "hygiene":
-        return "Hygiene: " + feedItem.hygienetype + ". " + feedItem.otherhygiene;
+        return "Hygiene: " +
+            feedItem.hygienetype +
+            ". " +
+            feedItem.otherhygiene;
       case "toilet":
         return "Went to toilet for " +
             feedItem.toilettype +
@@ -111,12 +126,38 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
-  bool isLiked = false;
+  
+
+  void _setLiked() {
+    final user = UserBinding.of(context).user;
+    Firestore.instance
+        .collection('feeditem')
+        .document(widget.feedItem.id)
+        .get()
+        .then((data) => {
+              setState(() => isLiked =
+                  List.from(data['likes'])?.contains(user.id) ?? false)
+            });
+  }
+
   void _toggleLikeIcon() {
+    final user = UserBinding.of(context).user;
 
- //   Firestore.instance.collection('feeditem').document(widget.feedItem.id).get()
-   // .then((doc) => 
-
+    if (isLiked) {
+      Firestore.instance
+          .collection('feeditem')
+          .document(widget.feedItem.id)
+          .updateData({
+        'likes': FieldValue.arrayRemove([user.id])
+      });
+    } else {
+      Firestore.instance
+          .collection('feeditem')
+          .document(widget.feedItem.id)
+          .updateData({
+        'likes': FieldValue.arrayUnion([user.id])
+      });
+    }
     setState(() {
       isLiked = !isLiked;
     });
@@ -133,18 +174,56 @@ class _FeedCardState extends State<FeedCard> {
   String formatTime(DateTime time) {
     return time.year.toString() +
         "/" +
-        time.month.toString() +
+        time.month.toString().padLeft(2,'0') +
         "/" +
-        time.day.toString() +
+        time.day.toString().padLeft(2,'0') +
         " " +
-        time.hour.toString() +
+        time.hour.toString().padLeft(2,'0') +
         ":" +
-        time.minute.toString();
+        time.minute.toString().padLeft(2,'0');
+  }
+
+
+  Future<List<Comment>> getComments() async {
+    itemComments.clear();
+    QuerySnapshot snapshot;
+
+    snapshot = await Firestore.instance
+            .collection('feeditem')
+            .document(widget.feedItem.id)
+            .collection('comments')
+            .getDocuments();
+
+    snapshot.documents.forEach((data) =>
+    itemComments.add(Comment(
+                data['username'], data['user'], data["feeditem"], data["time"].toDate(), data["text"])));
+
+    return itemComments;
+  }
+
+   Widget _buildCommentList(BuildContext context) {
+    return FutureBuilder(
+        future: getComments(),
+        builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return ListView.builder(
+            primary: false,
+            shrinkWrap: true,
+              itemCount: itemComments.length,
+              itemBuilder: (context, int) {
+                return CommentCard(itemComments[int]);
+              });
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+      Card(
         elevation: 4,
         margin: EdgeInsets.only(left: 25, right: 25, top: 16.0, bottom: 16),
         shape: RoundedRectangleBorder(
@@ -168,12 +247,11 @@ class _FeedCardState extends State<FeedCard> {
                           padding: EdgeInsets.all(8),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child:Image.asset(
-                                      "assets/images/avatar_placeholder_small.png",
-                                      width: 50,
-                                      height: 50) ,)
-                          
-                          ),
+                            child: Image.asset(
+                                "assets/images/avatar_placeholder_small.png",
+                                width: 50,
+                                height: 50),
+                          )),
                       Column(children: <Widget>[
                         Text(
                           widget.feedItem.patientname ?? " ",
@@ -196,12 +274,12 @@ class _FeedCardState extends State<FeedCard> {
                   padding: EdgeInsets.all(8)),
               Visibility(
                 visible: widget.feedItem.imageUrl != null,
-                child:Padding(
-                  child: Image.asset(
-                    widget.feedItem.imageUrl ?? "",
-                    fit: BoxFit.fitWidth,
-                  ),
-                  padding: EdgeInsets.all(8)),
+                child: Padding(
+                    child: Image.asset(
+                      widget.feedItem.imageUrl ?? "",
+                      fit: BoxFit.fitWidth,
+                    ),
+                    padding: EdgeInsets.all(8)),
               ),
               Row(
                 children: <Widget>[
@@ -217,21 +295,44 @@ class _FeedCardState extends State<FeedCard> {
                     ),
                   ),
                   Expanded(
-                      flex: 2,
-                      child: Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: FlatButton(
-                              child: Icon(CareHomeIcons.comment,
-                                  color: Colors.black),
-                              onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return EnterComment();
-                                  })))),
+                    flex: 2,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: FlatButton(
+                          child:
+                              Icon(showComments ? CareHomeIcons.commentactive : CareHomeIcons.comment, color: Colors.black),
+                          onPressed: () => setState(() {
+                                showComments = !showComments;
+                              })),
+                    ),
+                  ),
                 ],
               )
             ],
           ),
-        ));
+        ),
+      ),
+     Visibility(
+        visible: showComments,
+        child: 
+        Column(children: <Widget>[
+          Align(
+            alignment: Alignment.centerRight,
+            child:FlatButton(
+            child: Icon(Icons.add, color: Colors.black,),
+            onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return EnterComment(widget.feedItem);
+                }),
+          ),
+          ),
+          Card(
+            child: _buildCommentList(context),
+          ),
+          
+        ]),
+      ),
+    ]);
   }
 }

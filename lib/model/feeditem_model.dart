@@ -1,25 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-class Comment {
-  final String carer;
-  final String feeditem;
-  final String time;
-  final String text;
+import 'comment_model.dart';
 
 
-  static void addNewComment(Comment newComment) {
-    Firestore.instance.collection('comments').document().setData({
-      'user': newComment.carer,
-      'feeditem': newComment.feeditem,
-      'time': newComment.time,
-      'text': newComment.text
-    });
-  }
-
-  Comment(this.carer, this.feeditem, this.time, this.text);
-}
 
 class FeedItem {
   String id;
@@ -52,23 +36,15 @@ class FeedItem {
   final String incident;
   final String imageUrl;
   final String task;
-  List<Comment> comments;
+ 
 
-  List<Comment> getComments() {
-    List<Comment> itemComments;
-
-    Firestore.instance
-        .collection('comments')
-        .where("feeditem", isEqualTo: this.id)
-        .snapshots()
-        .listen((data) => data.documents.forEach((doc) => itemComments.add(
-            new Comment(
-                doc["user"], doc["feeditem"], doc["time"], doc["text"]))));
-
-    return itemComments;
-  }
-
-  FeedItem(this.timeAdded, this.type, this.subType,this.user,this.patientname,
+  FeedItem(
+    this.id,
+    this.timeAdded, 
+    this.type, 
+    this.subType,
+    this.user,
+    this.patientname,
     this.mood,
     this.systolic,
     this.diastolic,
