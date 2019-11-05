@@ -32,6 +32,7 @@ class HydrationFormState extends State<HydrationForm> {
         'type': 'nutrition',
         'subtype': 'hydration',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'hotcold': hotcold,

@@ -9,12 +9,12 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 class TimeSeriesIncident {
   final DateTime time;
   final int incidents;
-
+  
   TimeSeriesIncident(this.time, this.incidents);
 }
 
 class OtherCharts extends StatefulWidget {
-    OtherCharts(this.patient);
+  OtherCharts(this.patient);
   final Patient patient;
 
   @override
@@ -23,10 +23,9 @@ class OtherCharts extends StatefulWidget {
 
 class _OtherChartsState extends State<OtherCharts> {
 
- List<charts.Series<TimeSeriesIncident, DateTime>> incidentSeries;
- final List<TimeSeriesIncident> incidentData = [];
+  List<charts.Series<TimeSeriesIncident, DateTime>> incidentSeries;
+  final List<TimeSeriesIncident> incidentData = [];
   List<DateTime> incidents = [];
-
   List<DateTime> activityDates = [];
 
   @override
@@ -102,7 +101,6 @@ class _OtherChartsState extends State<OtherCharts> {
         ),
       );
   
-
    EventList<Event> _markedDateMap = new EventList<Event>(
     events: {},
   );

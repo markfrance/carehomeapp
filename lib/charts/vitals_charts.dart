@@ -109,14 +109,16 @@ class VitalsChartState extends State<VitalsCharts> {
             id: 'systolic',
             colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
             domainFn: (TimeSeriesBloodPressure pressure, _) => pressure.time,
-            measureFn: (TimeSeriesBloodPressure pressure, _) => pressure.systolic,
+            measureFn: (TimeSeriesBloodPressure pressure, _) =>
+                pressure.systolic,
             data: bloodPressureData,
           ),
           charts.Series<TimeSeriesBloodPressure, DateTime>(
             id: 'diastolic',
             colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
             domainFn: (TimeSeriesBloodPressure pressure, _) => pressure.time,
-            measureFn: (TimeSeriesBloodPressure pressure, _) => pressure.diastolic,
+            measureFn: (TimeSeriesBloodPressure pressure, _) =>
+                pressure.diastolic,
             data: bloodPressureData,
           )
         ]);

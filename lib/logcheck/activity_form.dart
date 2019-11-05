@@ -1,4 +1,3 @@
-import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
@@ -28,6 +27,7 @@ class ActivityFormState extends State<ActivityForm> {
         'type': 'other',
         'subtype': 'activity',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'activity': _activityController.text,
@@ -43,7 +43,6 @@ class ActivityFormState extends State<ActivityForm> {
       imageurl = newimageurl;
     });
   }
- 
  
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carehomeapp/feed/comment_card.dart';
-import 'package:carehomeapp/firestore_database.dart';
+import 'package:carehomeapp/feed/image_view.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
@@ -19,8 +20,8 @@ class FeedCard extends StatefulWidget {
 
 class _FeedCardState extends State<FeedCard> {
   bool showComments = false;
-    List<Comment> itemComments = new List<Comment>();
-    bool isLiked = false;
+  List<Comment> itemComments = new List<Comment>();
+  bool isLiked = false;
 
   @override
   void didChangeDependencies() {
@@ -126,8 +127,6 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
-  
-
   void _setLiked() {
     final user = UserBinding.of(context).user;
     Firestore.instance
@@ -174,43 +173,46 @@ class _FeedCardState extends State<FeedCard> {
   String formatTime(DateTime time) {
     return time.year.toString() +
         "/" +
-        time.month.toString().padLeft(2,'0') +
+        time.month.toString().padLeft(2, '0') +
         "/" +
-        time.day.toString().padLeft(2,'0') +
+        time.day.toString().padLeft(2, '0') +
         " " +
-        time.hour.toString().padLeft(2,'0') +
+        time.hour.toString().padLeft(2, '0') +
         ":" +
-        time.minute.toString().padLeft(2,'0');
+        time.minute.toString().padLeft(2, '0');
   }
-
 
   Future<List<Comment>> getComments() async {
     itemComments.clear();
     QuerySnapshot snapshot;
 
     snapshot = await Firestore.instance
-            .collection('feeditem')
-            .document(widget.feedItem.id)
-            .collection('comments')
-            .getDocuments();
+        .collection('feeditem')
+        .document(widget.feedItem.id)
+        .collection('comments')
+        .orderBy('time', descending: true)
+        .getDocuments();
 
-    snapshot.documents.forEach((data) =>
-    itemComments.add(Comment(
-                data['username'], data['user'], data["feeditem"], data["time"].toDate(), data["text"])));
+    snapshot.documents.forEach((data) => itemComments.add(Comment(
+        data['username'],
+        data['user'],
+        data["feeditem"],
+        data["time"].toDate(),
+        data["text"])));
 
     return itemComments;
   }
 
-   Widget _buildCommentList(BuildContext context) {
+  Widget _buildCommentList(BuildContext context) {
     return FutureBuilder(
         future: getComments(),
         builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+          if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
           return ListView.builder(
-            primary: false,
-            shrinkWrap: true,
+              primary: false,
+              shrinkWrap: true,
               itemCount: itemComments.length,
               itemBuilder: (context, int) {
                 return CommentCard(itemComments[int]);
@@ -221,118 +223,137 @@ class _FeedCardState extends State<FeedCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-      Card(
-        elevation: 4,
-        margin: EdgeInsets.only(left: 25, right: 25, top: 16.0, bottom: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        color: getColor(widget.feedItem.type),
-        child: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 18.0,
-                  bottom: 18.0,
-                ),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.all(8),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.asset(
-                                "assets/images/avatar_placeholder_small.png",
-                                width: 50,
-                                height: 50),
-                          )),
-                      Column(children: <Widget>[
-                        Text(
-                          widget.feedItem.patientname ?? " ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(formatTime(widget.feedItem.timeAdded)),
-                      ]),
-                      Spacer(flex: 5),
-                      Expanded(
-                        flex: 3,
-                        child: Padding(
-                            child: Icon(getIcon(widget.feedItem.type)),
-                            padding: EdgeInsets.all(8)),
-                      ),
-                    ]),
-              ),
-              Padding(
-                  child: Text(getDescription(widget.feedItem.subType) ?? " ",
-                      style: Theme.of(context).textTheme.subhead),
-                  padding: EdgeInsets.all(8)),
-              Visibility(
-                visible: widget.feedItem.imageUrl != null,
-                child: Padding(
-                    child: Image.asset(
-                      widget.feedItem.imageUrl ?? "",
-                      fit: BoxFit.fitWidth,
-                    ),
-                    padding: EdgeInsets.all(8)),
-              ),
-              Row(
-                children: <Widget>[
-                  Spacer(flex: 7),
-                  Expanded(
-                    flex: 2,
-                    child: FlatButton(
-                      child: Icon(
-                        _getLikeIcon(),
-                        color: Colors.black,
-                      ),
-                      onPressed: () => _toggleLikeIcon(),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: FlatButton(
-                          child:
-                              Icon(showComments ? CareHomeIcons.commentactive : CareHomeIcons.comment, color: Colors.black),
-                          onPressed: () => setState(() {
-                                showComments = !showComments;
-                              })),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-     Visibility(
-        visible: showComments,
-        child: 
-        Column(children: <Widget>[
-          Align(
-            alignment: Alignment.centerRight,
-            child:FlatButton(
-            child: Icon(Icons.add, color: Colors.black,),
-            onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return EnterComment(widget.feedItem);
-                }),
-          ),
-          ),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
           Card(
-            child: _buildCommentList(context),
+            elevation: 4,
+            margin: EdgeInsets.only(left: 25, right: 25, top: 16.0, bottom: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: getColor(widget.feedItem.type),
+            child: Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 18.0,
+                      bottom: 18.0,
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.all(8),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: CachedNetworkImage(
+                                    imageUrl: widget.feedItem.patientImage ??
+                                        "assets/images/avatar_placeholder_small.png",
+                                    placeholder: (context, url) => Image.asset(
+                                        "assets/images/avatar_placeholder_small.png",
+                                        width: 50,
+                                        height: 50),
+                                    width: 50,
+                                    height: 50),
+                              )),
+                          Column(children: <Widget>[
+                            Text(
+                              widget.feedItem.patientname ?? " ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(formatTime(widget.feedItem.timeAdded)),
+                          ]),
+                          Spacer(flex: 5),
+                          Expanded(
+                            flex: 3,
+                            child: Padding(
+                                child: Icon(getIcon(widget.feedItem.type)),
+                                padding: EdgeInsets.all(8)),
+                          ),
+                        ]),
+                  ),
+                  Padding(
+                      child: Text(
+                          getDescription(widget.feedItem.subType) ?? " ",
+                          style: Theme.of(context).textTheme.subhead),
+                      padding: EdgeInsets.all(8)),
+                  Visibility(
+                    visible: widget.feedItem.imageUrl != null,
+                    child: Padding(
+                        child: GestureDetector(
+                            child: CachedNetworkImage(
+                              imageUrl: widget.feedItem.imageUrl ??
+                                  "assets/images/avatar_placeholder_small.png",
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                            ),
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return DetailScreen(widget.feedItem.imageUrl);
+                              }));
+                            }),
+                        padding: EdgeInsets.all(8)),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Spacer(flex: 7),
+                      Expanded(
+                        flex: 2,
+                        child: FlatButton(
+                          child: Icon(
+                            _getLikeIcon(),
+                            color: Colors.black,
+                          ),
+                          onPressed: () => _toggleLikeIcon(),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: FlatButton(
+                              child: Icon(
+                                  showComments
+                                      ? CareHomeIcons.commentactive
+                                      : CareHomeIcons.comment,
+                                  color: Colors.black),
+                              onPressed: () => setState(() {
+                                    showComments = !showComments;
+                                  })),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
           ),
-          
-        ]),
-      ),
-    ]);
+          Visibility(
+            visible: showComments,
+            child: Column(children: <Widget>[
+              Align(
+                alignment: Alignment.centerRight,
+                child: FlatButton(
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return EnterComment(widget.feedItem);
+                      }),
+                ),
+              ),
+              Card(
+                child: _buildCommentList(context),
+              ),
+            ]),
+          ),
+        ]);
   }
 }

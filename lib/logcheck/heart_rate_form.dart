@@ -29,6 +29,7 @@ class HeartRateFormState extends State<HeartRateForm> {
         'type': 'vitals',
         'subtype': 'heartrate',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'bpm': _rateController.text,

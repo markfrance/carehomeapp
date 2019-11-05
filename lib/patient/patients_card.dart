@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_home.dart';
@@ -87,10 +88,11 @@ class _PatientCardState extends State<PatientCard> {
                       padding: EdgeInsets.all(8),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child: Image.asset(
-                           patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
-                            width: 50,
-                            height: 50),
+                        child:CachedNetworkImage(
+                                  imageUrl: widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
+                                  placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
+                                  width: 50,
+                                  height: 50),
                       )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

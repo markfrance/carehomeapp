@@ -27,6 +27,7 @@ class MealsFormState extends State<MealsForm> {
       'type': 'nutrition',
       'subtype': 'meals',
       'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
       'mealtype': mealType,

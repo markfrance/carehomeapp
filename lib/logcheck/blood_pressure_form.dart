@@ -27,6 +27,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
         'type': 'vitals',
         'subtype': 'bloodpressure',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'systolic': _systolicController.text,

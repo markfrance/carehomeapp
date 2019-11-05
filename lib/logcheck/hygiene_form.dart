@@ -33,6 +33,7 @@ class HygieneFormState extends State<HygieneForm> {
         'type': 'body',
         'subtype': 'hygiene',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'hygienetype':hygieneType,

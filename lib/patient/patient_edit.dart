@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:carehomeapp/patient/patient_view.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
-import 'package:carehomeapp/patient/patients_card.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientEdit extends StatefulWidget {
   final Patient patient;
@@ -31,6 +30,7 @@ class PatientEditState extends State<PatientEdit> {
   final _loveController = TextEditingController();
 
   String imageUrl;
+
   @override
   void initState() {
     if (widget.patient != null) {
@@ -72,7 +72,8 @@ class PatientEditState extends State<PatientEdit> {
       'keynurse': _keynurseController.text,
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
-      'love': _loveController.text
+      'love': _loveController.text,
+      'imageurl' : imageUrl
     }).then((onValue) => Navigator.pop(context));
   }
 
@@ -120,12 +121,13 @@ class PatientEditState extends State<PatientEdit> {
                       children: <Widget>[
                         Padding(
                             padding:
-                                EdgeInsets.only(left: 24, right: 24, top: 8),
+                                EdgeInsets.only(left: 8, right: 8, top: 8),
                             child: FlatButton(
                               child:ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: Image.asset(
-                                  widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
+                              child: CachedNetworkImage(
+                                  imageUrl: widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
+                                  placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
                                   width: 50,
                                   height: 50),
                             ),

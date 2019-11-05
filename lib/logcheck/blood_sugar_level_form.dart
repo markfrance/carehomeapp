@@ -27,6 +27,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
         'type': 'vitals',
         'subtype': 'bloodsugar',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'level': _levelController.text,

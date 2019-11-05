@@ -28,6 +28,7 @@ class IncidentFormState extends State<IncidentForm> {
         'type': 'other',
         'subtype': 'incident',
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'incident': _incidentController.text,

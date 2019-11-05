@@ -1,11 +1,8 @@
-
 import 'package:carehomeapp/care_home_icons_icons.dart';
-import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/feeditem_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 
 class EnterComment extends StatefulWidget {
 

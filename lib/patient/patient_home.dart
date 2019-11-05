@@ -7,6 +7,7 @@ import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientHome extends StatefulWidget {
   PatientHome(this.patient, this.followText);
@@ -60,10 +61,11 @@ class _PatientHomeState extends State<PatientHome> {
                           padding: EdgeInsets.only(left: 24, right: 24, top: 8),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child: Image.asset(
-                                widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
-                                width: 50,
-                                height: 50),
+                            child: CachedNetworkImage(
+                                  imageUrl: widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
+                                  placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
+                                  width: 50,
+                                  height: 50),
                           )),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

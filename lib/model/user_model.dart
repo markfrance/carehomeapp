@@ -30,7 +30,7 @@ class User {
 
       snapshot = await Firestore.instance
         .collection('patients')
-        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P').limit(2)
+        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
         .getDocuments();
     }
     else if(dropdownValue == "Alphabetically"){
@@ -59,7 +59,8 @@ class User {
         data['keynurse'],
         data['contraindications'],
         data['frustrate'],
-        data['love'])));
+        data['love'],
+        data['imageurl'])));
 
     return userPatients;
   }

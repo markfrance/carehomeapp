@@ -8,6 +8,7 @@ import 'comment_model.dart';
 class FeedItem {
   String id;
   final String patientname;
+  final String patientImage;
   final String user;
   final DateTime timeAdded;
   final String type;
@@ -44,6 +45,7 @@ class FeedItem {
     this.type, 
     this.subType,
     this.user,
+    this.patientImage,
     this.patientname,
     this.mood,
     this.systolic,

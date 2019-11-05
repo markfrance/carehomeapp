@@ -68,6 +68,7 @@ String imageurl;
       'type': 'medication',
       'subtype': 'medication',
       'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
       'medication': med.medication,

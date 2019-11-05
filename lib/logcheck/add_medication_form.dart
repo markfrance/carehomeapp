@@ -28,6 +28,7 @@ class MedicationFormState extends State<AddMedicationForm> {
       {
         'lastupdated': DateTime.now(),
         'patient': widget.patient.id,
+        'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'medication': _medicationController.text,

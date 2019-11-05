@@ -28,6 +28,7 @@ final _weightController = TextEditingController();
       'type': 'body',
       'subtype': 'weight',
       'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
       'user': user.id,
       'weight': _weightController.text,

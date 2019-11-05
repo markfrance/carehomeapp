@@ -1,4 +1,3 @@
-import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +52,7 @@ class _FeedListState extends State<FeedList> {
         data['type'],
         data['subtype'],
         data['user'],
+        data['patientimage'],
         data['patientname'],
         data['mood'],
         data['systolic'],

@@ -1,11 +1,6 @@
 
 import 'package:carehomeapp/model/comment_model.dart';
-import 'package:carehomeapp/model/user_binding.dart';
-import 'package:carehomeapp/model/user_model.dart';
-import 'package:carehomeapp/patient/patient_home.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:carehomeapp/model/patient_model.dart';
 
 class CommentCard extends StatefulWidget {
   final Comment comment;
@@ -17,7 +12,6 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
-
 
  String formatTime(DateTime time) {
     return time.year.toString() +
@@ -33,7 +27,6 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-
 
     return  Card(
             elevation: 4,
