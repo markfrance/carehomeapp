@@ -1,3 +1,4 @@
+import 'package:carehomeapp/feed/image_view.dart';
 import 'package:carehomeapp/patient/patient_edit.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:flutter/material.dart';
@@ -38,11 +39,19 @@ class PatientView extends StatelessWidget {
                       padding: EdgeInsets.only(left:24, right:24, top:8),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
-                        child:  CachedNetworkImage(
+                        child:  GestureDetector
+                        (child:CachedNetworkImage(
                                   imageUrl: patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
                                   placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
                                   width: 50,
                                   height: 50),
+                                  onTap:  () { patient.imageUrl != null ?
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return ImageView(patient.imageUrl);
+                              })) : null;
+                            }
+                        ),
                       )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

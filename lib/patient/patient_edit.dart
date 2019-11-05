@@ -56,8 +56,10 @@ class PatientEditState extends State<PatientEdit> {
         .child(imageId)
         .child(imageFile.uri.toString());
     StorageUploadTask uploadTask = ref.putFile(imageFile);
-    await (await uploadTask.onComplete).ref.getDownloadURL().then((url) =>
-    setState(()=> imageUrl = url));
+    await (await uploadTask.onComplete)
+        .ref
+        .getDownloadURL()
+        .then((url) => setState(() => imageUrl = url));
   }
 
   void _updatePatientData(BuildContext context) {
@@ -73,7 +75,7 @@ class PatientEditState extends State<PatientEdit> {
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
       'love': _loveController.text,
-      'imageurl' : imageUrl
+      'imageurl': imageUrl
     }).then((onValue) => Navigator.pop(context));
   }
 
@@ -120,20 +122,23 @@ class PatientEditState extends State<PatientEdit> {
                     child: Row(
                       children: <Widget>[
                         Padding(
-                            padding:
-                                EdgeInsets.only(left: 8, right: 8, top: 8),
-                            child: FlatButton(
-                              child:ClipRRect(
+                          padding: EdgeInsets.only(left: 8, right: 8, top: 8),
+                          child: FlatButton(
+                            child: ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: CachedNetworkImage(
-                                  imageUrl: widget.patient.imageUrl ?? "assets/images/avatar_placeholder_small.png",
-                                  placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
+                                  imageUrl: widget.patient?.imageUrl ??
+                                      "assets/images/avatar_placeholder_small.png",
+                                  placeholder: (context, url) => Image.asset(
+                                      "assets/images/avatar_placeholder_small.png",
+                                      width: 50,
+                                      height: 50),
                                   width: 50,
                                   height: 50),
                             ),
-                            onPressed: () => _pickPhoto(widget.patient.id)
-                            ,),),
-                            
+                            onPressed: () => _pickPhoto(widget.patient.id),
+                          ),
+                        ),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -142,18 +147,24 @@ class PatientEditState extends State<PatientEdit> {
                             Container(
                               width: 150,
                               child: TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: 'First Name'),
                                 controller: _firstNameController,
                               ),
                             ),
                             Container(
                               width: 150,
                               child: TextFormField(
+                                 decoration: InputDecoration(
+                                    hintText: 'Last Name'),
                                 controller: _lastNameController,
                               ),
                             ),
                             Container(
                               width: 50,
                               child: TextFormField(
+                                 decoration: InputDecoration(
+                                    hintText: 'Age'),
                                 controller: _ageController,
                               ),
                             ),

@@ -15,6 +15,8 @@ class MoodForm extends StatefulWidget {
 
 class MoodFormState extends State<MoodForm> {
   String mood;
+  String imageurl;
+  String comment;
 
   void _addMood(BuildContext context) {
     final user = UserBinding.of(context).user;
@@ -27,15 +29,21 @@ class MoodFormState extends State<MoodForm> {
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
+      'username' : user.firstName + " " + user.lastName,
       'mood': mood,
       'imageurl': imageurl
     }).then((onValue) => Navigator.pop(context));
   }
 
-  String imageurl;
+  
   void setImage(String newimageurl) {
     setState(() {
       imageurl = newimageurl;
+    });
+  }
+   void setComment(String newComment){
+    setState((){
+      comment = newComment;
     });
   }
 
@@ -49,7 +57,7 @@ class MoodFormState extends State<MoodForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -21,6 +21,7 @@ class ToiletFormState extends State<ToiletForm> {
  final _statusController = TextEditingController();
  String toiletType = 'urine';
  String imageurl;
+ String comment;
 
   void _addToilet(BuildContext context) {
     final user = UserBinding.of(context).user;
@@ -34,6 +35,7 @@ class ToiletFormState extends State<ToiletForm> {
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
       'user': user.id,
+      'username' : user.firstName + " " + user.lastName,
       'toilettype': toiletType,
       'status': _statusController.text,
         'imageurl': imageurl
@@ -46,6 +48,13 @@ class ToiletFormState extends State<ToiletForm> {
     });
   }
 
+  void setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -56,7 +65,7 @@ class ToiletFormState extends State<ToiletForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Toilet",
             textAlign: TextAlign.start,

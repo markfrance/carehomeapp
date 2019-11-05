@@ -1,6 +1,5 @@
 import 'package:carehomeapp/logcheck/add_medication_form.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
-import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/medication_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
@@ -130,9 +129,7 @@ String imageurl;
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Visibility(
-            visible: widget.showHeader == true,
-            child:FormHeader(setImage)),
+     
           Padding(
             padding:EdgeInsets.all(16),
             child:Text(

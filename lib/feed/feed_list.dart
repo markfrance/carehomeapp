@@ -52,6 +52,7 @@ class _FeedListState extends State<FeedList> {
         data['type'],
         data['subtype'],
         data['user'],
+        data['username'],
         data['patientimage'],
         data['patientname'],
         data['mood'],

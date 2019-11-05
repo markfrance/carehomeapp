@@ -8,7 +8,8 @@ import 'package:image_picker/image_picker.dart';
 class FormHeader extends StatefulWidget{
 
   final void Function(String value) imagecallback;
-  FormHeader(this.imagecallback);
+  final void Function(String value) commentCallback;
+  FormHeader(this.imagecallback, this.commentCallback);
   @override
   FormHeaderState createState() => FormHeaderState();
 }
@@ -24,6 +25,11 @@ class FormHeaderState extends State<FormHeader> {
     StorageUploadTask uploadTask = ref.putFile(imageFile);
     return await (await uploadTask.onComplete).ref.getDownloadURL();
   }
+
+  void setComment(String commentText) {
+    widget.commentCallback(commentText);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +54,7 @@ class FormHeaderState extends State<FormHeader> {
               onPressed: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return EnterComment();
+                    return EnterComment(null, this.setComment);
                   }),
             ),
             flex: 1),

@@ -50,6 +50,7 @@ class _TasksViewState extends State<TasksView> {
         'subtype': 'task',
         'task': "Completed Task: " + task.task,
         'user': user.id,
+        'username' : user.firstName + " " + user.lastName,
       });
     }
   }

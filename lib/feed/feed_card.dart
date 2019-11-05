@@ -259,12 +259,19 @@ class _FeedCardState extends State<FeedCard> {
                                     width: 50,
                                     height: 50),
                               )),
-                          Column(children: <Widget>[
-                            Text(
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                            
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child:Text(
                               widget.feedItem.patientname ?? " ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                              style: TextStyle(fontWeight: FontWeight.bold, ),
+                            ),),
                             Text(formatTime(widget.feedItem.timeAdded)),
+                            Text("carer: " + (widget.feedItem.username ?? ""))
                           ]),
                           Spacer(flex: 5),
                           Expanded(
@@ -293,7 +300,7 @@ class _FeedCardState extends State<FeedCard> {
                             onTap: () {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (_) {
-                                return DetailScreen(widget.feedItem.imageUrl);
+                                return ImageView(widget.feedItem.imageUrl);
                               }));
                             }),
                         padding: EdgeInsets.all(8)),
@@ -349,8 +356,9 @@ class _FeedCardState extends State<FeedCard> {
                       }),
                 ),
               ),
-              Card(
-                child: _buildCommentList(context),
+              Column(
+                
+                children:<Widget>[ _buildCommentList(context),]
               ),
             ]),
           ),

@@ -1,4 +1,5 @@
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,30 +21,43 @@ class MedicationFormState extends State<AddMedicationForm> {
   String _timeString = "";
   DateTime _time;
   String imageurl;
+  String comment;
 
   void _addMedication(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-   Firestore.instance.collection('medication').document().setData(
+  final docRef = Firestore.instance.collection('medication').document();
+   
+   docRef.setData(
       {
         'lastupdated': DateTime.now(),
         'patient': widget.patient.id,
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
+        'username' : user.firstName + " " + user.lastName,
         'medication': _medicationController.text,
         'dose': _doseController.text,
         'time': _time,
         'done' : false
       }
     ).then(
-      (onValue) => Navigator.pop(context)
+      (onValue) => {
+        comment != null ? Comment.addNewComment(docRef.documentID, user.id, user.firstName + " " + user.lastName, comment) : null,
+        Navigator.pop(context)
+      }
     );
   }
 
   void setImage(String newimageurl) {
     setState(() {
       imageurl = newimageurl;
+    });
+  }
+
+  void setComment(String newComment){
+    setState((){
+      comment = newComment;
     });
   }
 
@@ -57,7 +71,7 @@ class MedicationFormState extends State<AddMedicationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Add Medication",
             textAlign: TextAlign.start,

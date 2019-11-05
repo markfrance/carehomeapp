@@ -1,37 +1,25 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/feeditem_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class EnterComment extends StatefulWidget {
 
   FeedItem feedItem;
-  EnterComment([this.feedItem]);
+  final void Function(String value) commentCallback;
+  EnterComment([this.feedItem, this.commentCallback]);
   
   @override
   EnterCommentState createState() => EnterCommentState();
 }
 class EnterCommentState extends State<EnterComment> {
   final _commentTextController = TextEditingController();
-
-  void addNewComment() {
-
-    final user = UserBinding.of(context).user;
-
-    Firestore.instance.collection('feeditem')
-    .document(widget.feedItem.id)
-    .collection('comments').document().setData({
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
-      'feeditem': widget.feedItem.id,
-      'time': DateTime.now(),
-      'text': _commentTextController.text
-    });
-  }
-  
+   
   @override
   Widget build(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
           shape: RoundedRectangleBorder(
@@ -66,7 +54,12 @@ class EnterCommentState extends State<EnterComment> {
                   child: RaisedButton(
                     child: Text("Confirm"),
                     onPressed: () {
-                      addNewComment();
+                      widget.feedItem == null ?
+                      widget.commentCallback(_commentTextController.text) :
+                      Comment.addNewComment(widget.feedItem.id,
+                      user.id, 
+                      user.firstName + " " + user.lastName,
+                      _commentTextController.text);
                       Navigator.pop(context);
                     },
                   ),

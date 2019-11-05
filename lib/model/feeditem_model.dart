@@ -1,15 +1,10 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'comment_model.dart';
-
-
-
 class FeedItem {
   String id;
   final String patientname;
   final String patientImage;
   final String user;
+  final String username;
   final DateTime timeAdded;
   final String type;
   final String subType;
@@ -45,6 +40,7 @@ class FeedItem {
     this.type, 
     this.subType,
     this.user,
+    this.username,
     this.patientImage,
     this.patientname,
     this.mood,

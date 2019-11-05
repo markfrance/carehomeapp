@@ -17,6 +17,7 @@ class IncidentFormState extends State<IncidentForm> {
 
    final _incidentController = TextEditingController();
    String imageurl;
+   String comment;
   
    void _addIncident(BuildContext context)
   {
@@ -31,6 +32,7 @@ class IncidentFormState extends State<IncidentForm> {
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
+        'username' : user.firstName + " " + user.lastName,
         'incident': _incidentController.text,
         'imageurl': imageurl
       }
@@ -45,6 +47,12 @@ class IncidentFormState extends State<IncidentForm> {
     });
   }
 
+   void setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -55,7 +63,7 @@ class IncidentFormState extends State<IncidentForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Incident",
             textAlign: TextAlign.start,

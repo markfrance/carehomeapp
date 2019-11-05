@@ -18,6 +18,7 @@ class MealsFormState extends State<MealsForm> {
   final _descriptionController = TextEditingController();
   String imageurl;
   String mealType;
+  String comment;
 
   void _addMeal(BuildContext context) {
     final user = UserBinding.of(context).user;
@@ -30,6 +31,7 @@ class MealsFormState extends State<MealsForm> {
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
+      'username' : user.firstName + " " + user.lastName,
       'mealtype': mealType,
       'gm': _weightController.text,
       'mealdescription': _descriptionController.text,
@@ -43,6 +45,12 @@ class MealsFormState extends State<MealsForm> {
     });
   }
 
+   void setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -53,7 +61,7 @@ class MealsFormState extends State<MealsForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Meal",
             textAlign: TextAlign.start,

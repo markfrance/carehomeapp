@@ -34,6 +34,8 @@ class _PatientsListState extends State<PatientsList> {
 
   @override
   Widget build(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
     return Column(children: <Widget>[
       Row(children: <Widget>[
           Padding(

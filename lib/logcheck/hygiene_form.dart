@@ -22,6 +22,7 @@ class HygieneFormState extends State<HygieneForm> {
 
   String hygieneType;
   String imageurl;
+  String comment;
 
    void _addHygiene(BuildContext context)
   {
@@ -36,6 +37,7 @@ class HygieneFormState extends State<HygieneForm> {
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
+        'username' : user.firstName + " " + user.lastName,
         'hygienetype':hygieneType,
         'otherhygiene': _otherController.text,
         'imageurl': imageurl
@@ -50,6 +52,11 @@ class HygieneFormState extends State<HygieneForm> {
       imageurl = newimageurl;
     });
   }
+   void setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +68,7 @@ class HygieneFormState extends State<HygieneForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Hygiene",
             textAlign: TextAlign.start,

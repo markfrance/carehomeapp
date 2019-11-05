@@ -9,6 +9,8 @@ class User {
   String lastName;
   String email;
   String carehome;
+  bool isManager;
+  bool isSuperAdmin;
 
   /* List<FeedItem> getFeedItems() {
    Firestore.instance
@@ -85,5 +87,5 @@ class User {
     return following.length;
   }
 
-  User(this.id, this.firstName, this.lastName, this.email);
+  User(this.id, this.firstName, this.lastName, this.email, this.isManager, this.isSuperAdmin);
 }

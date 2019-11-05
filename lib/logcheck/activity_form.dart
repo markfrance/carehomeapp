@@ -1,4 +1,6 @@
+import 'package:carehomeapp/logcheck/enter_comment.dart';
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,12 +18,20 @@ class ActivityFormState extends State<ActivityForm> {
 
   final _activityController = TextEditingController();
   String imageurl;
+  String comment;
+
+  void _setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
 
   void _addActivity(BuildContext context)
   {
     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
+    final docRef = Firestore.instance.collection('feeditem').document();
+    
+    docRef.setData(
       {
         'timeadded': DateTime.now(),
         'type': 'other',
@@ -30,15 +40,20 @@ class ActivityFormState extends State<ActivityForm> {
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
+        'username' : user.firstName + " " + user.lastName,
         'activity': _activityController.text,
         'imageurl': imageurl
       }
     ).then(
-      (onValue) => Navigator.pop(context)
+       
+      (onValue) => { 
+         comment != null ? Comment.addNewComment(docRef.documentID, user.id, user.firstName + " " + user.lastName, comment) : null,
+      
+        Navigator.pop(context)}
     );
   }
 
-  void setImage(String newimageurl) {
+  void _setImage(String newimageurl) {
     setState((){
       imageurl = newimageurl;
     });
@@ -54,7 +69,7 @@ class ActivityFormState extends State<ActivityForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-         FormHeader(setImage),
+         FormHeader(_setImage, _setComment),
           Text(
             "Activity",
             textAlign: TextAlign.start,
@@ -73,7 +88,7 @@ class ActivityFormState extends State<ActivityForm> {
                         child: TextFormField(
                           controller: _activityController,
                           keyboardType: TextInputType.multiline,
-                          maxLines: 6,
+                          maxLines: 5,
                         ),
                       ),
                     ),

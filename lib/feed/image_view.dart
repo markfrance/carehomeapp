@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 
-class DetailScreen extends StatelessWidget {
+class ImageView extends StatelessWidget {
 
   final String fullImageUrl;
 
-  DetailScreen(this.fullImageUrl);
+  ImageView(this.fullImageUrl);
 
   @override
   Widget build(BuildContext context) {

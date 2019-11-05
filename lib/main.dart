@@ -49,12 +49,12 @@ class MyAppState extends State<MyApp> {
    .document(currentuser.uid).get()
     .then((dbuser) =>  {
     setState(() {
-      user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email']);
+      user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email'], dbuser['ismanager'], dbuser['issuperadmin']);
     })}));
 */
     if (user == null) {
       user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2", "mark", "france",
-          "markusfrance@hotmail.com");
+          "markusfrance@hotmail.com", true, true);
     }
     super.initState();
   }

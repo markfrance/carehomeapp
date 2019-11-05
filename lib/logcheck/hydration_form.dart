@@ -21,6 +21,7 @@ class HydrationFormState extends State<HydrationForm> {
   final _mlController = TextEditingController();
   final _sugarController = TextEditingController();
   String imageurl;
+  String comment;
 
    void _addHydration(BuildContext context)
   {
@@ -35,6 +36,7 @@ class HydrationFormState extends State<HydrationForm> {
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
+        'username' : user.firstName + " " + user.lastName,
         'hotcold': hotcold,
         'l': _lController.text,
         'ml': _mlController.text,
@@ -52,6 +54,12 @@ class HydrationFormState extends State<HydrationForm> {
     });
   }
 
+   void setComment(String newComment){
+    setState((){
+      comment = newComment;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -62,7 +70,7 @@ class HydrationFormState extends State<HydrationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage),
+          FormHeader(setImage, setComment),
           Text(
             "Hydration",
             textAlign: TextAlign.start,
