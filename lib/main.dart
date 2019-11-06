@@ -1,3 +1,4 @@
+import 'package:carehomeapp/admin/users_list.dart';
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/feed/feed_list.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   User user;
+  String currentScore;
 
   @override
   void initState() {
@@ -59,9 +61,18 @@ class MyAppState extends State<MyApp> {
     super.initState();
   }
 
+  void getCurrentScore(User user) async {
+    user.getScore().then((score) => setState(() {
+          currentScore = score.toString();
+        }));
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    if (currentScore == null) {
+      getCurrentScore(user);
+    }
     return UserBinding(
         user: user,
         child: MaterialApp(
@@ -118,26 +129,22 @@ class _MyHomePageState extends State<MyHomePage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final List<PushMessage> messages = [];
 
-@override
-void initState() { 
-  super.initState();
- 
- _firebaseMessaging.configure(
-   onMessage: (Map<String, dynamic> message) async{
-     print("onMessage:  $message");
-   },
-   onResume: (Map<String, dynamic> message) async{
-     print("onResume:  $message");
-   },
-   onLaunch: (Map<String, dynamic> message) async{
-     print("onLaunch:  $message");
-   }
- );
+  @override
+  void initState() {
+    super.initState();
 
- _firebaseMessaging.requestNotificationPermissions(
-   const IosNotificationSettings(sound: true, badge:true, alert:true)
- );
-}
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      print("onMessage:  $message");
+    }, onResume: (Map<String, dynamic> message) async {
+      print("onResume:  $message");
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch:  $message");
+    });
+
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+  }
 
   void getCurrentScore(User user) async {
     user.getScore().then((score) => setState(() {
@@ -151,15 +158,15 @@ void initState() {
     });
   }
 
-  final widgetOptions = [LogCheck(), FeedList(), PatientsList()];
+  final widgetOptions = [LogCheck(), FeedList(), PatientsList(), UsersList()];
 
   @override
   Widget build(BuildContext context) {
-    if(user == null) {
+    if (user == null) {
       user = UserBinding.of(context).user;
     }
 
-    if(currentScore == null) {
+    if (currentScore == null) {
       getCurrentScore(user);
     }
 
@@ -167,19 +174,34 @@ void initState() {
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(),
         appBar: AppBar(
+          leading: Image.asset("assets/images/icons/PNG/main.png", width: 40, height: 40,),
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
-            title: Align(
+            title: Row(
+              children:<Widget>[Align(
               alignment: Alignment.centerLeft,
-              child: Text("Hello " + user?.firstName + " " + user?.lastName,
+              child: Text(
+                  "Hello " +
+                      user?.firstName +
+                      " " +
+                      user?.lastName,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.w900)),
             ),
+            Spacer(),
+            ClipOval(
+              child:Container(
+                color:Color.fromARGB(255, 249, 210, 45),
+                child:Padding(
+                  padding:EdgeInsets.all(10),
+                  child:Text(currentScore.padLeft(2))),
+              ),
+            ),],),
+            
             iconTheme: new IconThemeData(color: Colors.black)),
         body: Center(
           child: widgetOptions.elementAt(_selectedIndex),
         ),
-        
         bottomNavigationBar: BottomNavigationBar(
           showUnselectedLabels: true,
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -201,15 +223,13 @@ void initState() {
             BottomNavigationBarItem(
               icon: Icon(Icons.account_circle,
                   color: Color.fromARGB(255, 0, 0, 0)),
-              title: Text(currentScore ?? ""),
+                  title: Text('')
             )
           ],
           onTap: (index) {
-            if (index == 3) {
-              this.widget.logoutCallback();
-            } else {
+          
               _incrementTab(index);
-            }
+            
           },
         ));
   }

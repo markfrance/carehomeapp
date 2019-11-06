@@ -96,7 +96,7 @@ class _PatientHomeState extends State<PatientHome> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      PatientView(widget.patient, widget.followText)));
+                                      PatientView(widget.patient)));
                         },
                       ),
                     ],

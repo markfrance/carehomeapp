@@ -1,24 +1,26 @@
+import 'package:carehomeapp/admin/user_card.dart';
+import 'package:carehomeapp/admin/user_edit.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/user_binding.dart';
-import 'package:carehomeapp/patient/patient_edit.dart';
+import 'package:carehomeapp/model/user_model.dart';
+
 import 'package:flutter/material.dart';
-import 'package:carehomeapp/model/patient_model.dart';
-import 'package:carehomeapp/patient/patients_card.dart';
 
 
-class PatientsList extends StatefulWidget {
+
+class UsersList extends StatefulWidget {
   @override
-  _PatientsListState createState() => _PatientsListState();
+  _UsersListState createState() => _UsersListState();
 }
 
-class _PatientsListState extends State<PatientsList> {
-  String dropdownValue = 'Most recent';
+class _UsersListState extends State<UsersList> {
+  String dropdownValue = 'All Carehomes';
 
   Widget _buildList(BuildContext context) {
-    final user = UserBinding.of(context).user;
+ 
 
-    return FutureBuilder<List<Patient>>(
-        future: user.getPatients(dropdownValue),
+    return FutureBuilder<List<User>>(
+        future: User.getUsers(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -26,11 +28,12 @@ class _PatientsListState extends State<PatientsList> {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, int) {
-              return PatientCard(snapshot.data[int]);
+              return UserCard(snapshot.data[int]);
             },
           );
         });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _PatientsListState extends State<PatientsList> {
     return Column(children: <Widget>[
       Row(children: <Widget>[
           Padding(
-            child:Text("Patients", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            child:Text("Users", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             padding:EdgeInsets.all(16)),
           SizedBox(
                 width:30,
@@ -53,7 +56,7 @@ class _PatientsListState extends State<PatientsList> {
                 onPressed: () => showDialog(
             context: context,
             builder: (BuildContext context) {
-              return PatientEdit(null);
+              return UserEdit(null);
             },
                 ),
                 child:Icon(CareHomeIcons.addb,),
@@ -77,7 +80,9 @@ class _PatientsListState extends State<PatientsList> {
                       decoration: BoxDecoration(
                           color: Color.fromARGB(255, 249, 210, 45),
                           borderRadius: BorderRadius.circular(8)),
-                      child: DropdownButton<String>(
+                      child: Visibility(
+                        visible: user.isSuperAdmin == true,
+                        child:DropdownButton<String>(
                         value: dropdownValue,
                         hint:Text(dropdownValue),
                       //  icon: Icon(Icons.arrow_downward),
@@ -91,8 +96,7 @@ class _PatientsListState extends State<PatientsList> {
                           });
                         },
                         items: <String>[
-                          'Most recent',
-                          'Following',
+                          'All Carehomes',
                           'Alphabetically'
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
@@ -103,7 +107,7 @@ class _PatientsListState extends State<PatientsList> {
                             ),
                           );
                         }).toList(),
-                      ),
+                      ),),
                     ),
                   ),
                 )))

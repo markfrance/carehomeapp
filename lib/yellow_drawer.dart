@@ -49,6 +49,7 @@ void getCurrentScore(User user) async {
             
             color: Color.fromARGB(255, 249, 210, 45),
             child: ListView(
+              
               children: <Widget>[
                 ListTile(
                   title: Text(
@@ -74,6 +75,7 @@ void getCurrentScore(User user) async {
                     textAlign: TextAlign.end,
                   ),
                 ),
+
                 ListTile(
                     title: Text(
                       "Settings",

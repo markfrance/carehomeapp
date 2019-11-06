@@ -24,6 +24,30 @@ class User {
     return userFeedItems;
   }*/
 
+
+  static Future<List<User>> getUsers() async {
+
+    List<User> users = new List<User>();
+
+    QuerySnapshot snapshot;
+
+    snapshot = await Firestore.instance
+    .collection('users')
+    .getDocuments();
+
+    snapshot.documents.forEach((data) =>
+    users.add(User(
+      data.documentID,
+      data['firstname'],
+      data['lastname'],
+      data['email'],
+      data['ismanager'],
+      data['issuperadmin']
+    )));
+
+  return users;
+  }
+
   Future<List<Patient>> getPatients([String dropdownValue]) async {
     List<Patient> userPatients = new List<Patient>();
     QuerySnapshot snapshot;
