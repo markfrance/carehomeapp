@@ -35,7 +35,8 @@ class HeartRateFormState extends State<HeartRateForm> {
         'user' : user.id,
         'username' : user.firstName + " " + user.lastName,
         'bpm': _rateController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Heart rate: " + _rateController.text + "bpm"
       }
     ).then(
       (onValue) => Navigator.pop(context)

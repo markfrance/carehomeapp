@@ -51,6 +51,7 @@ class _FeedListState extends State<FeedList> {
         data['timeadded'].toDate(),
         data['type'],
         data['subtype'],
+        data['logdescription'],
         data['user'],
         data['username'],
         data['patientimage'],

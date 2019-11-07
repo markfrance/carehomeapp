@@ -29,7 +29,7 @@ class TasksFormState extends State<TasksForm> {
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
         'user' : user.id,
         'task': _taskController.text,
-        'done' : false
+        'done' : false,
       }
     ).then(
       (onValue) => Navigator.pop(context)

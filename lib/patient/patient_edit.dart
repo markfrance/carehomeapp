@@ -100,7 +100,7 @@ class PatientEditState extends State<PatientEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        endDrawer: YellowDrawer(),
+     
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
           title: Text('Edit Patient Data'),

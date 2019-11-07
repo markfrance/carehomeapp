@@ -1,8 +1,10 @@
 import 'package:carehomeapp/admin/user_card.dart';
 import 'package:carehomeapp/admin/user_edit.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
+import 'package:carehomeapp/model/carehome_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 
@@ -14,13 +16,14 @@ class UsersList extends StatefulWidget {
 }
 
 class _UsersListState extends State<UsersList> {
-  String dropdownValue = 'All Carehomes';
+  Carehome dropdownValue;
 
   Widget _buildList(BuildContext context) {
- 
+ final user = UserBinding.of(context).user;
 
     return FutureBuilder<List<User>>(
-        future: User.getUsers(),
+      
+        future: User.getUsers(dropdownValue, user),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -32,6 +35,20 @@ class _UsersListState extends State<UsersList> {
             },
           );
         });
+  }
+
+  Future<List<Carehome>> getCarehomes() async {
+    List<Carehome> carehomes = new List<Carehome>();
+
+   QuerySnapshot 
+    snapshot =
+        await Firestore.instance.collection('carehome').getDocuments();
+  
+
+  carehomes.add(Carehome('0', 'All Carehomes'));
+    snapshot.documents.forEach(
+        (data) => carehomes.add(Carehome(data.documentID, data['name'])));
+    return carehomes;
   }
 
 
@@ -82,32 +99,41 @@ class _UsersListState extends State<UsersList> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Visibility(
                         visible: user.isSuperAdmin == true,
-                        child:DropdownButton<String>(
-                        value: dropdownValue,
-                        hint:Text(dropdownValue),
-                      //  icon: Icon(Icons.arrow_downward),
-                        iconSize: 24,
-                        elevation: 16,
-                        style: TextStyle(color: Colors.black, backgroundColor: Color.fromARGB(255, 249, 210, 45)),
-                         underline: null,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            dropdownValue = newValue;
-                          });
-                        },
-                        items: <String>[
-                          'All Carehomes',
-                          'Alphabetically'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Container(
-                              color: Color.fromARGB(255, 249, 210, 45),
-                              child: Padding(padding:EdgeInsets.only(left: 8), child:Text(value)),
-                            ),
-                          );
-                        }).toList(),
-                      ),),
+                        child:FutureBuilder<List<Carehome>>(
+                            future: getCarehomes(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<List<Carehome>> snapshot) {
+                              if (!snapshot.hasData)
+                                return CircularProgressIndicator();
+                              return DropdownButton<Carehome>(
+                                  hint: dropdownValue == null
+                                      ? Padding(
+                                          child: Text("All Carehomes"),
+                                          padding: EdgeInsets.only(left: 8))
+                                      : Padding(
+                                          child: Text(dropdownValue.name),
+                                          padding: EdgeInsets.only(left: 8)),
+                                  isExpanded: true,
+                                  value: null,
+                                  items: snapshot.data
+                                      .map((carehome) =>
+                                          DropdownMenuItem<Carehome>(
+                                            child: Container(
+                                              child: Text(carehome.name),
+                                              color: Color.fromARGB(
+                                                  255, 249, 210, 45),
+                                            ),
+                                            value: carehome,
+                                          ))
+                                      .toList(),
+                                  onChanged: (Carehome newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue;
+                                      
+                                      print(newValue.id);
+                                    });
+                                  });
+                            }),),
                     ),
                   ),
                 )))

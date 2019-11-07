@@ -31,7 +31,8 @@ class MoodFormState extends State<MoodForm> {
       'user': user.id,
       'username' : user.firstName + " " + user.lastName,
       'mood': mood,
-      'imageurl': imageurl
+      'imageurl': imageurl,
+      'logdescription': "Mood: " + mood
     }).then((onValue) => Navigator.pop(context));
   }
 

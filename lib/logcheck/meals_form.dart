@@ -35,7 +35,13 @@ class MealsFormState extends State<MealsForm> {
       'mealtype': mealType,
       'gm': _weightController.text,
       'mealdescription': _descriptionController.text,
-      'imageurl': imageurl
+      'imageurl': imageurl,
+      'logdescription': "Ate " +
+            _weightController.text +
+            "g meal for " +
+            mealType +
+            ". " +
+            _descriptionController.text
     }).then((onValue) => Navigator.pop(context));
   }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:csv/csv.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
@@ -21,10 +22,26 @@ class PatientReport extends StatefulWidget {
 class _PatientReportState extends State<PatientReport> {
   List<List<String>> rows = new List<List<String>>();
 
+  String _fromDateString = "";
+  String _toDateString = "";
+  DateTime _fromDate;
+  DateTime _toDate;
+
   @override
   void initState() {
     super.initState();
-    getRows();
+    //  getRows();
+    initDates();
+  }
+
+  void initDates() {
+    var now = DateTime.now();
+    _fromDate = DateTime(now.year, now.month, now.day, 0, 0, 0);
+    _toDate = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    _fromDateString =
+        '${_fromDate.year} / ${_fromDate.month.toString().padLeft(2, '0')} / ${_fromDate.day.toString().padLeft(2, '0')}';
+    _toDateString =
+        '${_toDate.year} / ${_toDate.month.toString().padLeft(2, '0')} / ${_toDate.day.toString().padLeft(2, '0')}';
   }
 
   void getRows() async {
@@ -36,13 +53,15 @@ class _PatientReportState extends State<PatientReport> {
     snapshot.documents.forEach((data) => {
           rows.add([
             data['type'].toString(),
-            "description",
+            data['logdescription']?.toString() ?? "",
             //data['description'].toString(),
             "COmments",
-            data['user'].toString(),
+            data['username']?.toString() ?? "",
             data['timeadded'].toString()
           ])
         });
+
+    setState(() {});
   }
 
   Future<String> get _localPath async {
@@ -56,7 +75,7 @@ class _PatientReportState extends State<PatientReport> {
     return File('$path/$filename');
   }
 
-  Future<File> writeCsv() async {
+  Future<Widget> writeCsv() async {
     var patientName = widget.patient.firstname + "_" + widget.patient.lastname;
 
     var date = DateTime.now().toUtc().toString();
@@ -65,7 +84,11 @@ class _PatientReportState extends State<PatientReport> {
 
     String csv = const ListToCsvConverter().convert(rows);
 
-    return file.writeAsString('$csv');
+    await file.writeAsString('$csv');
+
+    return AlertDialog(
+      contentPadding: EdgeInsets.all(8),
+      content: Text("CSV exported to ${file.path}"),);
   }
 
   List<DataRow> buildRows() {
@@ -166,14 +189,105 @@ class _PatientReportState extends State<PatientReport> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        endDrawer: YellowDrawer(),
+    
         appBar: AppBar(
-          title: 
-            Text("Export CSV"),
-            
-          
+          title: Text("Generate Report"),
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
         ),
-        body: SingleChildScrollView(child: report()));
+        body: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Row(children: <Widget>[
+                Text("From:"),
+                Spacer(),
+                FlatButton(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  onPressed: () {
+                    DatePicker.showDatePicker(context,
+                        theme: DatePickerTheme(
+                          backgroundColor: Color.fromARGB(255, 250, 243, 242),
+                          containerHeight: 210.0,
+                        ),
+                        showTitleActions: true, onConfirm: (date) {
+                      _fromDateString =
+                          '${date.year} / ${date.month.toString().padLeft(2, '0')} / ${date.day.toString().padLeft(2, '0')}';
+
+                      setState(() {
+                        _fromDate = date;
+                      });
+                    }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {});
+                  },
+                  child: Text(
+                    _fromDateString,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                Spacer(),
+                Text("To:"),
+                Spacer(),
+                FlatButton(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(5.0)),
+                  onPressed: () {
+                    DatePicker.showDatePicker(context,
+                        theme: DatePickerTheme(
+                          backgroundColor: Color.fromARGB(255, 250, 243, 242),
+                          containerHeight: 210.0,
+                        ),
+                        showTitleActions: true, onConfirm: (date) {
+                      _toDateString =
+                          '${date.year} / ${date.month.toString().padLeft(2, '0')} / ${date.day.toString().padLeft(2, '0')}';
+
+                      setState(() {
+                        _toDate = date;
+                      });
+                    }, currentTime: DateTime.now(), locale: LocaleType.en);
+                    setState(() {});
+                  },
+                  child: Text(
+                    _toDateString,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ]),
+            ),
+            RaisedButton(
+              onPressed: () => getRows(),
+              child: Text("Generate Report"),
+            ),
+            Visibility(
+                visible: rows.length != 0,
+                child: Row(
+                  children: <Widget>[
+                    Spacer(),
+                    RaisedButton(
+                      onPressed: () => writeCsv(),
+                      child: Text("Export CSV"),
+                    ),
+                    Spacer(),
+                    RaisedButton(
+                      onPressed: () => null,
+                      child: Text("Export PDF"),
+                    ),
+                    Spacer()
+                  ],
+                )),
+            Visibility(
+                child: Container(
+                  
+                    child: SingleChildScrollView(
+                      primary: false,
+                  child: report(),
+                )),
+                visible: rows.length != 0)
+          ],
+        ));
   }
 }

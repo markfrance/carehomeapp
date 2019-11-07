@@ -34,7 +34,8 @@ final _weightController = TextEditingController();
       'user': user.id,
       'username' : user.firstName + " " + user.lastName,
       'weight': _weightController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Weight reading: " + _weightController.text + "kg"
     }).then((onValue) => Navigator.pop(context));
   }
 

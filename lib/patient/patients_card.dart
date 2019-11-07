@@ -81,11 +81,12 @@ class _PatientCardState extends State<PatientCard> {
               padding: const EdgeInsets.only(
                 top: 18.0,
                 bottom: 18.0,
+                left:18.0,
               ),
               child: Row(
                 children: <Widget>[
                   Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(16),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child:CachedNetworkImage(
@@ -111,6 +112,7 @@ class _PatientCardState extends State<PatientCard> {
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: RaisedButton(
+                        padding:EdgeInsets.all(0),
                           color: Colors.black,
                           child: Text(followText ?? "",
                               style: TextStyle(color: Colors.white)),

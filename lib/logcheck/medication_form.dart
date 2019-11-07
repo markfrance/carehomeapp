@@ -73,7 +73,13 @@ String imageurl;
       'medication': med.medication,
       'dose': med.dose,
       'medicationtime': med.time.hour.toString() + ":" + med.time.minute.toString(),
-      'imageurl': imageurl
+      'imageurl': imageurl,
+      'logdescription': "Took " +
+            med.dose +
+            " " +
+            med.medication +
+            " at " +
+            med.time.hour.toString() + ":" + med.time.minute.toString()
     });
     }
   }

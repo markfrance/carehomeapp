@@ -84,7 +84,7 @@ Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
                     Text((widget.user.firstName ?? "") +  " " + (widget.user.lastName ?? ""),
                           style: Theme.of(context).textTheme.subhead),
                     Text(widget.user.email ?? ""),
-                    Text(widget.user.carehome ?? "",
+                    Text(widget.user.carehome?.name ?? "",
                           style: Theme.of(context).textTheme.subhead),
                     ],
                   ),),
@@ -95,16 +95,22 @@ Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
                     children: <Widget>[
                     Text("Roles", style:TextStyle(fontWeight :FontWeight.bold)),
                     Text("Carer"),
-                    Text("Manager"),
-                    Text("Super Admin")
+                    Visibility(
+                      visible: widget.user.isManager ?? false,
+                      child:Text("Manager"),),
+                    Visibility(
+                      visible: widget.user.isSuperAdmin ?? false,
+                      child:Text("Super Admin")
+                    ),
                   ],),
               ), flex:1),
-          
-               Expanded(
+              Visibility(
+                visible: user.isSuperAdmin == true,
+                child: Expanded(
                  child:FlatButton(child:Icon(Icons.delete, color: Colors.red,),
                onPressed: () => _asyncConfirmDialog(context),),
                flex:1
-               ),
+               ),),
               ]),
         
               ),

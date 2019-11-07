@@ -48,7 +48,8 @@ class _TasksViewState extends State<TasksView> {
         'patientname': widget.patient.firstname + " " + widget.patient.lastname,
         'patient': widget.patient.id,
         'subtype': 'task',
-        'task': "Completed Task: " + task.task,
+        'task': task.task,
+        'logdescription': "Completed Task: " + task.task,
         'user': user.id,
         'username' : user.firstName + " " + user.lastName,
       });

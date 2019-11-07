@@ -16,7 +16,7 @@ class PatientView extends StatelessWidget {
     final user = UserBinding.of(context).user;
 
     return Scaffold(
-      endDrawer: YellowDrawer(),
+     
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         title: Text('Patient Data'),

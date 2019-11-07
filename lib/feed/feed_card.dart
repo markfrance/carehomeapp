@@ -32,7 +32,7 @@ class _FeedCardState extends State<FeedCard> {
   IconData getIcon(String type) {
     switch (type) {
       case "body":
-        return CareHomeIcons.body;
+        return CareHomeIcons.bodydark;
       case "medication":
         return CareHomeIcons.medsicon;
       case "mood":
@@ -69,63 +69,6 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
-  String getDescription(String type) {
-    FeedItem feedItem = widget.feedItem;
-    switch (type) {
-      case "mood":
-        return "Mood: " + feedItem.mood;
-      case "bloodpressure":
-        return "Blood pressure reading: " +
-            feedItem.systolic +
-            "/" +
-            feedItem.diastolic;
-      case "bloodsugar":
-        return "Blood sugar level: " + feedItem.mmol + " mmo/l";
-      case "heartrate":
-        return "Heart rate: " + feedItem.bpm + "bpm";
-      case "medication":
-        return "Took " +
-            feedItem.dose +
-            " " +
-            feedItem.medication +
-            " at " +
-            feedItem.medicationtime;
-      case "hydration":
-        return "Drank " +
-            feedItem.l +
-            "L " +
-            feedItem.hotcold +
-            " drink. " +
-            feedItem.sugar;
-      case "meals":
-        return "Ate " +
-            feedItem.gm +
-            "g meal for " +
-            feedItem.mealtype +
-            ". " +
-            feedItem.description;
-      case "weight":
-        return "Weight reading: " + feedItem.weight + "kg";
-      case "hygiene":
-        return "Hygiene: " +
-            feedItem.hygienetype +
-            ". " +
-            feedItem.otherhygiene;
-      case "toilet":
-        return "Went to toilet for " +
-            feedItem.toilettype +
-            ". " +
-            feedItem.status;
-      case "activity":
-        return "New activity:" + feedItem.activity;
-      case "incident":
-        return "New incident: " + feedItem.incident;
-      case "task":
-        return feedItem.task;
-      default:
-        return "description error";
-    }
-  }
 
   void _setLiked() {
     final user = UserBinding.of(context).user;
@@ -284,7 +227,7 @@ class _FeedCardState extends State<FeedCard> {
                   ),
                   Padding(
                       child: Text(
-                          getDescription(widget.feedItem.subType) ?? " ",
+                          widget.feedItem.logdescription ?? " ",
                           style: Theme.of(context).textTheme.subhead),
                       padding: EdgeInsets.all(8)),
                   Visibility(

@@ -34,7 +34,11 @@ class BloodPressureFormState extends State<BloodPressureForm> {
         'username' : user.firstName + " " + user.lastName,
         'systolic': _systolicController.text,
         'diastolic': _diastolicController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Blood pressure reading: " +
+            _systolicController.text +
+            "/" +
+           _diastolicController.text
       }
     ).then(
       (onValue) => Navigator.pop(context)

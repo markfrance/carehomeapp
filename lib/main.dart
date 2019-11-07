@@ -2,6 +2,7 @@ import 'package:carehomeapp/admin/users_list.dart';
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/feed/feed_list.dart';
+import 'package:carehomeapp/model/carehome_model.dart';
 import 'package:carehomeapp/model/push_message.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
@@ -56,7 +57,7 @@ class MyAppState extends State<MyApp> {
 */
     if (user == null) {
       user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2", "mark", "france",
-          "markusfrance@hotmail.com", true, true);
+          "markusfrance@hotmail.com", true, true, Carehome("AKWnLcXz2JCXazm5Ts5P", "Test Carehome"));
     }
     super.initState();
   }
@@ -128,6 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final List<PushMessage> messages = [];
+   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   @override
   void initState() {
@@ -135,7 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-      print("onMessage:  $message");
+     if (message != null) {
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text(message['notification'])));
+      }
     }, onResume: (Map<String, dynamic> message) async {
       print("onResume:  $message");
     }, onLaunch: (Map<String, dynamic> message) async {
@@ -171,8 +177,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        endDrawer: YellowDrawer(),
+        endDrawer: YellowDrawer(widget.logoutCallback),
         appBar: AppBar(
           leading: Image.asset("assets/images/icons/PNG/main.png", width: 40, height: 40,),
             backgroundColor: Color.fromARGB(255, 250, 243, 242),

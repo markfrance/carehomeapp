@@ -8,6 +8,7 @@ class FeedItem {
   final DateTime timeAdded;
   final String type;
   final String subType;
+  final String logdescription;
   final String mood;
   final String systolic;
   final String diastolic;
@@ -39,6 +40,7 @@ class FeedItem {
     this.timeAdded, 
     this.type, 
     this.subType,
+    this.logdescription,
     this.user,
     this.username,
     this.patientImage,

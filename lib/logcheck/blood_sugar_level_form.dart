@@ -33,7 +33,8 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
         'user' : user.id,
         'username' : user.firstName + " " + user.lastName,
         'level': _levelController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Blood sugar level: " + _levelController.text + " mmo/l"
       }
     ).then(
       (onValue) => Navigator.pop(context)

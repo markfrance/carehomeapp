@@ -38,7 +38,11 @@ class ToiletFormState extends State<ToiletForm> {
       'username' : user.firstName + " " + user.lastName,
       'toilettype': toiletType,
       'status': _statusController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Went to toilet for " +
+            toiletType +
+            ". " +
+            _statusController.text
     }).then((onValue) => Navigator.pop(context));
   }
 

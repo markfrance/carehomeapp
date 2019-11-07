@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 
 class YellowDrawer extends StatefulWidget {
 
+  final VoidCallback logoutCallback;
+  YellowDrawer(this.logoutCallback);
   @override
   YellowDrawerState createState() => YellowDrawerState();
 }
 
 class YellowDrawerState extends State<YellowDrawer> {
+
 
   String currentScore;
   String followingCount;
@@ -48,15 +51,17 @@ void getCurrentScore(User user) async {
           child: Container(
             
             color: Color.fromARGB(255, 249, 210, 45),
-            child: ListView(
-              
+            child: Column(
+            
               children: <Widget>[
-                ListTile(
+                Padding(
+                  padding:EdgeInsets.only(top:32),
+                  child:ListTile(
                   title: Text(
                     user.firstName,
                     textAlign: TextAlign.end,
                   ),
-                ),
+                ),),
                 ListTile(
                   title: Text(
                     user.lastName,
@@ -75,14 +80,29 @@ void getCurrentScore(User user) async {
                     textAlign: TextAlign.end,
                   ),
                 ),
-
-                ListTile(
+                 Expanded(
+                   child:Align(
+                     alignment: Alignment.bottomRight,
+                     child:ListTile(
                     title: Text(
                       "Settings",
                       textAlign: TextAlign.end,
                     ),
                     onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => SettingsPage()))
                 ),
+                 ),
+                 ),
+                Align(
+                     alignment: Alignment.bottomRight,
+                     child:ListTile(
+                    title: Text(
+                      "Log Out",
+                      textAlign: TextAlign.end,
+                    ),
+                    onTap: () => widget.logoutCallback()
+                ),
+                 ),
+                 
               ],
             ),
           ),

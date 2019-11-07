@@ -34,7 +34,8 @@ class IncidentFormState extends State<IncidentForm> {
         'user' : user.id,
         'username' : user.firstName + " " + user.lastName,
         'incident': _incidentController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "New incident: " + _incidentController.text
       }
     ).then(
       (onValue) => Navigator.pop(context)

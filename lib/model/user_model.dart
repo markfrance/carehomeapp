@@ -1,3 +1,4 @@
+import 'package:carehomeapp/model/carehome_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -8,7 +9,7 @@ class User {
   String firstName;
   String lastName;
   String email;
-  String carehome;
+  Carehome carehome;
   bool isManager;
   bool isSuperAdmin;
 
@@ -25,15 +26,27 @@ class User {
   }*/
 
 
-  static Future<List<User>> getUsers() async {
+  static Future<List<User>> getUsers([Carehome carehome, User user]) async {
 
     List<User> users = new List<User>();
 
     QuerySnapshot snapshot;
-
+    if(!user.isSuperAdmin) {
+      snapshot = await Firestore.instance
+    .collection('users')
+    .where('carehome', isEqualTo: user.carehome)
+    .getDocuments();
+    }
+    else if(carehome == null || carehome.id == '0') {
     snapshot = await Firestore.instance
     .collection('users')
     .getDocuments();
+    } else {
+      snapshot = await Firestore.instance
+    .collection('users')
+    .where('carehome', isEqualTo: carehome.id)
+    .getDocuments();
+    }
 
     snapshot.documents.forEach((data) =>
     users.add(User(
@@ -42,7 +55,8 @@ class User {
       data['lastname'],
       data['email'],
       data['ismanager'],
-      data['issuperadmin']
+      data['issuperadmin'],
+      Carehome(data['carehome'], data['carehomename'])
     )));
 
   return users;
@@ -111,5 +125,5 @@ class User {
     return following.length;
   }
 
-  User(this.id, this.firstName, this.lastName, this.email, this.isManager, this.isSuperAdmin);
+  User(this.id, this.firstName, this.lastName, this.email, this.isManager, this.isSuperAdmin, this.carehome);
 }

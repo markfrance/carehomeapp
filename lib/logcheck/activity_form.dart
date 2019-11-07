@@ -42,6 +42,7 @@ class ActivityFormState extends State<ActivityForm> {
         'user' : user.id,
         'username' : user.firstName + " " + user.lastName,
         'activity': _activityController.text,
+        'logdescription':  "New activity:" + _activityController.text,
         'imageurl': imageurl
       }
     ).then(

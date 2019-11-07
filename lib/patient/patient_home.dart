@@ -38,7 +38,7 @@ class _PatientHomeState extends State<PatientHome> {
     ];
 
     return Scaffold(
-      endDrawer: YellowDrawer(),
+   
       appBar: AppBar(
         title: Text(widget.patient.firstname + " " + widget.patient.lastname),
         backgroundColor: Color.fromARGB(255, 250, 243, 242),

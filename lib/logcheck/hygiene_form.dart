@@ -40,7 +40,11 @@ class HygieneFormState extends State<HygieneForm> {
         'username' : user.firstName + " " + user.lastName,
         'hygienetype':hygieneType,
         'otherhygiene': _otherController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Hygiene: " +
+            hygieneType +
+            ". " +
+            _otherController.text
       }
     ).then(
       (onValue) => Navigator.pop(context)

@@ -41,7 +41,13 @@ class HydrationFormState extends State<HydrationForm> {
         'l': _lController.text,
         'ml': _mlController.text,
         'sugar': _sugarController.text,
-        'imageurl': imageurl
+        'imageurl': imageurl,
+        'logdescription': "Drank " +
+            _lController.text +
+            "L " +
+            hotcold +
+            " drink. " +
+            _sugarController.text + " tsp sugar."
       }
     ).then(
       (onValue) => Navigator.pop(context)
