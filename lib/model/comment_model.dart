@@ -33,7 +33,7 @@ class Comment {
                   .then((dbuser) => dbuser['notificationcomments'] == true
                       ? 
                         Firestore.instance.collection('users')
-                        .document(user.uid)
+                        .document(feedItemUser)
                         .collection('tokens').getDocuments().then((snap)
                       => 
                         snap.documents.forEach((doc) => PushNotification(

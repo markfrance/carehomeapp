@@ -59,7 +59,12 @@ class UserEditState extends State<UserEdit> {
                 'lastname': _lastNameController.text,
                 'email': _emailController.text,
                 'carehome': dropdownValue.id,
-                'carehomename': dropdownValue.name
+                'carehomename': dropdownValue.name,
+                'notificationlikes' : true,
+                'notificationcomments': true,
+                'notificationmedication': true,
+                'notificationpatient':true,
+                'following': []
               }).then((onValue) => Navigator.pop(context))
             });
   }
@@ -107,41 +112,12 @@ class UserEditState extends State<UserEdit> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      width: 375,
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: 'First Name'),
-                        controller: _firstNameController,
-                      ),
-                    ),
-                    Container(
-                      width: 375,
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: 'Last Name'),
-                        controller: _lastNameController,
-                      ),
-                    ),
-                    Container(
-                      width: 375,
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: 'Email'),
-                        controller: _emailController,
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.user == null,
-                      child:Container(
-                      width: 375,
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: 'Password'),
-                        controller: _passwordController,
-                      ),
-                    ),),
                     Padding(
                       padding: EdgeInsets.all(8),
                       child: Text("Carehome",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
+                    
                     Padding(
                         padding: EdgeInsets.all(8),
                         child: FutureBuilder<List<Carehome>>(
@@ -180,8 +156,47 @@ class UserEditState extends State<UserEdit> {
                                     });
                                   });
                             })),
-                    Text("Roles",
+                             Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Text("User information",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: 375,
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: 'First Name'),
+                        controller: _firstNameController,
+                      ),
+                    ),
+                    Container(
+                      width: 375,
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: 'Last Name'),
+                        controller: _lastNameController,
+                      ),
+                    ),
+                    Container(
+                      width: 375,
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: 'Email'),
+                        controller: _emailController,
+                      ),
+                    ),
+                    Visibility(
+                      visible: widget.user == null,
+                      child:Container(
+                      width: 375,
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: 'Password'),
+                        controller: _passwordController,
+                      ),
+                    ),),
+                    
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child:Text("Roles",
                         style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
                     CheckboxListTile(
                         onChanged: (newValue) =>
                             setPermission('ismanager', newValue),

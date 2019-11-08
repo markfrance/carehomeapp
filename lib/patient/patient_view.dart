@@ -45,7 +45,7 @@ class PatientView extends StatelessWidget {
                                 child: GestureDetector(
                                     child: CachedNetworkImage(
                                         imageUrl: patient.imageUrl ??
-                                            "assets/images/avatar_placeholder_small.png",
+                                            "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
                                         placeholder: (context, url) => Image.asset(
                                             "assets/images/avatar_placeholder_small.png",
                                             width: 50,

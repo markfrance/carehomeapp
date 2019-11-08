@@ -70,19 +70,19 @@ class User {
 
       snapshot = await Firestore.instance
         .collection('patients')
-        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
+        .where('carehome', isEqualTo: carehome.id)
         .getDocuments();
     }
     else if(dropdownValue == "Alphabetically"){
        snapshot = await Firestore.instance
         .collection('patients')
-        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
+        .where('carehome', isEqualTo: carehome.id)
         .orderBy('lastname')
         .getDocuments();
     } else {
     snapshot = await Firestore.instance
         .collection('patients')
-        .where('carehome', isEqualTo: 'AKWnLcXz2JCXazm5Ts5P')
+        .where('carehome', isEqualTo: carehome.id)
         .getDocuments();
     }
 

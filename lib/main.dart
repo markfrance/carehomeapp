@@ -18,6 +18,7 @@ import 'package:carehomeapp/logcheck/log_check.dart';
 import 'package:carehomeapp/patient/patients_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 void main() {
   runApp(MyApp());
 }
@@ -44,8 +45,8 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  User user;
   String currentScore;
+  User user;
 
   @override
   void initState() {
@@ -77,9 +78,9 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentScore == null) {
+   
       getCurrentScore(user);
-    }
+ 
     return UserBinding(
         user: user,
         child: MaterialApp(
@@ -135,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final List<PushMessage> messages = [];
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  
 
  /*static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
    if (message.containsKey('data')) {
@@ -158,13 +159,13 @@ class _MyHomePageState extends State<MyHomePage> {
 Future.delayed(Duration(seconds: 1), () {
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-   /*   if (message != null) {
+    
         _scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(message['notification'])));
-            }*/
+            .showSnackBar(SnackBar(content: Text(message['notification']['body'])));
+            
 
             print("onMessage: $message");
-           showDialog(
+     /*     showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                         content: ListTile(
@@ -178,7 +179,7 @@ Future.delayed(Duration(seconds: 1), () {
                         ),
                     ],
                 ),
-            );
+            );*/
   
     }, // onBackgroundMessage: myBackgroundMessageHandler,
     onResume: (Map<String, dynamic> message) async {
@@ -235,9 +236,8 @@ Future.delayed(Duration(seconds: 1), () {
       user = UserBinding.of(context).user;
     }
 
-    if (currentScore == null) {
       getCurrentScore(user);
-    }
+    
 
     return Scaffold(
         key: _scaffoldKey,
