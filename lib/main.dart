@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carehomeapp/admin/users_list.dart';
 import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
@@ -47,18 +49,23 @@ class MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-/*   FirebaseAuth.instance.currentUser().then((currentuser) => 
-   Firestore.instance.collection('users')
-   .document(currentuser.uid).get()
-    .then((dbuser) =>  {
-    setState(() {
-      user = User(dbuser.documentID, dbuser['firstname'], dbuser['lastname'], dbuser['email'], dbuser['ismanager'], dbuser['issuperadmin']);
-    })}));
-*/
-    if (user == null) {
-      user = new User("LK9gHhSHnDUMhtHJdTrHx1lqvky2", "mark", "france",
-          "markusfrance@hotmail.com", true, true, Carehome("AKWnLcXz2JCXazm5Ts5P", "Test Carehome"));
-    }
+    FirebaseAuth.instance.currentUser().then((currentuser) => Firestore.instance
+        .collection('users')
+        .document(currentuser.uid)
+        .get()
+        .then((dbuser) => {
+              setState(() {
+                user = User(
+                    dbuser.documentID,
+                    dbuser['firstname'],
+                    dbuser['lastname'],
+                    dbuser['email'],
+                    dbuser['ismanager'],
+                    dbuser['issuperadmin'],
+                    Carehome(dbuser['carehome'], dbuser['carehomename']));
+              })
+            }));
+
     super.initState();
   }
 
@@ -68,7 +75,6 @@ class MyAppState extends State<MyApp> {
         }));
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     if (currentScore == null) {
@@ -129,27 +135,84 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final List<PushMessage> messages = [];
-   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+ /*static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
+   if (message.containsKey('data')) {
+     // Handle data message
+     final dynamic data = message['data'];
+   }
 
+   if (message.containsKey('notification')) {
+     // Handle notification message
+     final dynamic notification = message['notification'];
+   }
+
+   // Or do other work.
+ }
+ */
   @override
-  void initState() {
+  void initState()  {
     super.initState();
 
+Future.delayed(Duration(seconds: 1), () {
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-     if (message != null) {
+   /*   if (message != null) {
         _scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(message['notification'])));
-      }
-    }, onResume: (Map<String, dynamic> message) async {
+            }*/
+
+            print("onMessage: $message");
+           showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                        content: ListTile(
+                        title: Text(message['notification']['title']),
+                        subtitle: Text(message['notification']['body']),
+                        ),
+                        actions: <Widget>[
+                        FlatButton(
+                            child: Text('Ok'),
+                            onPressed: () => Navigator.of(context).pop(),
+                        ),
+                    ],
+                ),
+            );
+  
+    }, // onBackgroundMessage: myBackgroundMessageHandler,
+    onResume: (Map<String, dynamic> message) async {
       print("onResume:  $message");
     }, onLaunch: (Map<String, dynamic> message) async {
       print("onLaunch:  $message");
     });
-
+});
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, badge: true, alert: true));
+
+    _saveDeviceToken().then((result) {
+      print("result: $result");
+    });
+  }
+
+  _saveDeviceToken() async {
+    FirebaseUser fbUser = await FirebaseAuth.instance.currentUser();
+
+    String fcmToken = await _firebaseMessaging.getToken();
+
+    if (fcmToken != null) {
+      var tokens = Firestore.instance
+          .collection('users')
+          .document(fbUser.uid)
+          .collection('tokens')
+          .document(fcmToken);
+
+      await tokens.setData({
+        'token': fcmToken,
+        'createdAt': FieldValue.serverTimestamp(),
+        'platform': Platform.operatingSystem
+      });
+    }
   }
 
   void getCurrentScore(User user) async {
@@ -177,34 +240,36 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(widget.logoutCallback),
         appBar: AppBar(
-          leading: Image.asset("assets/images/icons/PNG/main.png", width: 40, height: 40,),
+            leading: Image.asset(
+              "assets/images/icons/PNG/main.png",
+              width: 40,
+              height: 40,
+            ),
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
             title: Row(
-              children:<Widget>[Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                  "Hello " +
-                      user?.firstName +
-                      " " +
-                      user?.lastName,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w900)),
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Hello " + user?.firstName + " " + user?.lastName,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w900)),
+                ),
+                Spacer(),
+                ClipOval(
+                  child: Container(
+                    color: Color.fromARGB(255, 249, 210, 45),
+                    child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(currentScore.padLeft(2))),
+                  ),
+                ),
+              ],
             ),
-            Spacer(),
-            ClipOval(
-              child:Container(
-                color:Color.fromARGB(255, 249, 210, 45),
-                child:Padding(
-                  padding:EdgeInsets.all(10),
-                  child:Text(currentScore.padLeft(2))),
-              ),
-            ),],),
-            
             iconTheme: new IconThemeData(color: Colors.black)),
         body: Center(
           child: widgetOptions.elementAt(_selectedIndex),
@@ -228,15 +293,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 activeIcon: Image.asset("assets/images/patientsactive.png"),
                 title: Text('')),
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle,
-                  color: Color.fromARGB(255, 0, 0, 0)),
-                  title: Text('')
-            )
+                icon: Icon(Icons.account_circle,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: Text(''))
           ],
           onTap: (index) {
-          
-              _incrementTab(index);
-            
+            _incrementTab(index);
           },
         ));
   }

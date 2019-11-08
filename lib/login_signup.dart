@@ -91,6 +91,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
+          leading: Image.asset("assets/images/icons/PNG/main.png"),
           title: new Text('CareHomeApp Login'),
         ),
         body: Stack(
@@ -123,7 +124,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               showEmailInput(),
               showPasswordInput(),
               showPrimaryButton(),
-              showSecondaryButton(),
+         //     showSecondaryButton(),
               showErrorMessage(),
             ],
           ),

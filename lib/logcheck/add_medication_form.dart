@@ -15,7 +15,6 @@ class AddMedicationForm extends StatefulWidget {
 }
 
 class MedicationFormState extends State<AddMedicationForm> {
-  
   final _medicationController = TextEditingController();
   final _doseController = TextEditingController();
   String _timeString = "";
@@ -26,27 +25,26 @@ class MedicationFormState extends State<AddMedicationForm> {
   void _addMedication(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-  final docRef = Firestore.instance.collection('medication').document();
-   
-   docRef.setData(
-      {
-        'lastupdated': DateTime.now(),
-        'patient': widget.patient.id,
-        'patientimage': widget.patient.imageUrl,
-        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'username' : user.firstName + " " + user.lastName,
-        'medication': _medicationController.text,
-        'dose': _doseController.text,
-        'time': _time,
-        'done' : false
-      }
-    ).then(
-      (onValue) => {
-        comment != null ? Comment.addNewComment(docRef.documentID, user.id, user.firstName + " " + user.lastName, comment) : null,
-        Navigator.pop(context)
-      }
-    );
+    final docRef = Firestore.instance.collection('medication').document();
+
+    docRef.setData({
+      'lastupdated': DateTime.now(),
+      'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'username': user.firstName + " " + user.lastName,
+      'medication': _medicationController.text,
+      'dose': _doseController.text,
+      'time': _time,
+      'done': false
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
   void setImage(String newimageurl) {
@@ -55,8 +53,8 @@ class MedicationFormState extends State<AddMedicationForm> {
     });
   }
 
-  void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -81,52 +79,58 @@ class MedicationFormState extends State<AddMedicationForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Align(child:Text("Medication"),alignment:Alignment.centerLeft),
+                Align(
+                    child: Text("Medication"), alignment: Alignment.centerLeft),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextFormField(
                     controller: _medicationController,
                   ),
                 ),
-                Align(child:Text("Dose"),alignment:Alignment.centerLeft),
-                Row(
-                  children:<Widget>[Expanded(
-                    flex:1,
-                    child:Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _doseController,
+                Align(child: Text("Dose"), alignment: Alignment.centerLeft),
+                Row(children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _doseController,
+                      ),
+                    ),
                   ),
-                ),),
-                Spacer()]),
-                Align(child:Text("Time"),alignment:Alignment.centerLeft),
+                  Spacer()
+                ]),
+                Align(child: Text("Time"), alignment: Alignment.centerLeft),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child:Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: FlatButton(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black, width: 1),
-                        borderRadius: BorderRadius.circular(5.0)),
-                    onPressed: () {
-                      DatePicker.showTimePicker(context,
-                          theme: DatePickerTheme(
-                            backgroundColor: Color.fromARGB(255, 250, 243, 242),
-                            containerHeight: 210.0,
-                          ),
-                          showTitleActions: true, onConfirm: (time) {
-                        
-                        _timeString =
-                            '${time.hour} : ${time.minute} ';
-                            _time = time;
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FlatButton(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.black, width: 1),
+                          borderRadius: BorderRadius.circular(5.0)),
+                      onPressed: () {
+                        DatePicker.showTimePicker(context,
+                            theme: DatePickerTheme(
+                              backgroundColor:
+                                  Color.fromARGB(255, 250, 243, 242),
+                              containerHeight: 210.0,
+                            ),
+                            showTitleActions: true, onConfirm: (time) {
+                          _timeString = '${time.hour} : ${time.minute} ';
+                          _time = time;
+                          setState(() {});
+                        }, currentTime: DateTime.now(), locale: LocaleType.en);
                         setState(() {});
-                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                      setState(() {});
-                    },
-                    child: Text(_timeString, style: TextStyle(color: Colors.black),),
+                      },
+                      child: Text(
+                        _timeString,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
-                ),),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(

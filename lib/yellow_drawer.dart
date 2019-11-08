@@ -13,11 +13,9 @@ class YellowDrawer extends StatefulWidget {
 
 class YellowDrawerState extends State<YellowDrawer> {
 
-
   String currentScore;
   String followingCount;
   User user;
-
 
 void getCurrentScore(User user) async {
     user.getScore().then((score) => 

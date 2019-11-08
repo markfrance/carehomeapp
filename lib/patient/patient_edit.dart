@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:carehomeapp/yellow_drawer.dart';
+import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +80,7 @@ class PatientEditState extends State<PatientEdit> {
   }
 
   void _addNewPatient(BuildContext context) {
+     final user = UserBinding.of(context).user;
     Firestore.instance.collection('patients').document().setData({
       'firstname': _firstNameController.text,
       'lastname': _lastNameController.text,
@@ -92,7 +93,8 @@ class PatientEditState extends State<PatientEdit> {
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
       'love': _loveController.text,
-      'carehome': "AKWnLcXz2JCXazm5Ts5P",
+      'carehome': user.carehome.id,
+      'carehomename': user.carehome.name,
       'imageurl': imageUrl
     }).then((onValue) => Navigator.pop(context));
   }

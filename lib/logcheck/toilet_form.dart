@@ -1,11 +1,9 @@
-
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-
 
 class ToiletForm extends StatefulWidget {
   final Patient patient;
@@ -15,49 +13,51 @@ class ToiletForm extends StatefulWidget {
   ToiletFormState createState() => ToiletFormState();
 }
 
-
 class ToiletFormState extends State<ToiletForm> {
-
- final _statusController = TextEditingController();
- String toiletType = 'urine';
- String imageurl;
- String comment;
+  final _statusController = TextEditingController();
+  String toiletType = 'urine';
+  String imageurl;
+  String comment;
 
   void _addToilet(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-    Firestore.instance.collection('feeditem').document().setData({
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
       'timeadded': DateTime.now(),
       'time': DateTime.now(),
       'type': 'body',
       'subtype': 'toilet',
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
-      'username' : user.firstName + " " + user.lastName,
+      'username': user.firstName + " " + user.lastName,
       'toilettype': toiletType,
       'status': _statusController.text,
-        'imageurl': imageurl,
-        'logdescription': "Went to toilet for " +
-            toiletType +
-            ". " +
-            _statusController.text
-    }).then((onValue) => Navigator.pop(context));
+      'imageurl': imageurl,
+      'logdescription':
+          "Went to toilet for " + toiletType + ". " + _statusController.text
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
-   void setImage(String newimageurl) {
-    setState((){
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
 
-  void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -85,16 +85,22 @@ class ToiletFormState extends State<ToiletForm> {
                       direction: Axis.horizontal,
                       children: <Widget>[
                         RaisedButton(
-                          color: toiletType == 'urine' ? Colors.white : Color.fromARGB(255, 244, 174, 124),
+                          color: toiletType == 'urine'
+                              ? Colors.white
+                              : Color.fromARGB(255, 244, 174, 124),
                           child: Text("Urine"),
-                          onPressed: () => setState(() {
-                            toiletType = "urine";
-                          },),
+                          onPressed: () => setState(
+                            () {
+                              toiletType = "urine";
+                            },
+                          ),
                         ),
                         RaisedButton(
-                           color: toiletType == 'stool' ? Colors.white : Color.fromARGB(255, 244, 174, 124),
+                          color: toiletType == 'stool'
+                              ? Colors.white
+                              : Color.fromARGB(255, 244, 174, 124),
                           child: Text("Stool"),
-                          onPressed: () => setState((){
+                          onPressed: () => setState(() {
                             toiletType = "stool";
                           }),
                         )
@@ -112,7 +118,7 @@ class ToiletFormState extends State<ToiletForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addToilet(context);
                     },

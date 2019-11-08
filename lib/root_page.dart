@@ -44,8 +44,7 @@ class _RootPageState extends State<RootPage> {
       if(!doc.exists) {
         database.collection("users").document(user.uid).setData(
           {
-            "email": user.email,
-            "carehome":"AKWnLcXz2JCXazm5Ts5P"
+            "email": user.email
           }
         );
       }

@@ -1,5 +1,5 @@
-
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,48 +8,49 @@ import 'package:flutter/material.dart';
 class HeartRateForm extends StatefulWidget {
   final Patient patient;
   HeartRateForm(this.patient);
-  
+
   @override
   HeartRateFormState createState() => HeartRateFormState();
 }
 
-
 class HeartRateFormState extends State<HeartRateForm> {
-
   final _rateController = TextEditingController();
   String imageurl;
   String comment;
 
-   void _addHeartRate(BuildContext context)
-  {
-     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
-      {
-        'timeadded': DateTime.now(),
-        'type': 'vitals',
-        'subtype': 'heartrate',
-        'patient': widget.patient.id,
-        'patientimage': widget.patient.imageUrl,
-       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'username' : user.firstName + " " + user.lastName,
-        'bpm': _rateController.text,
-        'imageurl': imageurl,
-        'logdescription': "Heart rate: " + _rateController.text + "bpm"
-      }
-    ).then(
-      (onValue) => Navigator.pop(context)
-    );
+  void _addHeartRate(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
+      'timeadded': DateTime.now(),
+      'type': 'vitals',
+      'subtype': 'heartrate',
+      'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'username': user.firstName + " " + user.lastName,
+      'bpm': _rateController.text,
+      'imageurl': imageurl,
+      'logdescription': "Heart rate: " + _rateController.text + "bpm"
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
-   void setImage(String newimageurl) {
-    setState((){
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
-   void setComment(String newComment){
-    setState((){
+
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -79,9 +80,7 @@ class HeartRateFormState extends State<HeartRateForm> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: _rateController
-                        ),
+                        child: TextFormField(controller: _rateController),
                       ),
                       flex: 1,
                     ),
@@ -95,7 +94,7 @@ class HeartRateFormState extends State<HeartRateForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addHeartRate(context);
                     },

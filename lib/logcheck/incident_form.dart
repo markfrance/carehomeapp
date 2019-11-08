@@ -1,5 +1,5 @@
-
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,48 +8,49 @@ import 'package:flutter/material.dart';
 class IncidentForm extends StatefulWidget {
   final Patient patient;
   IncidentForm(this.patient);
-  
+
   @override
   IncidentFormState createState() => IncidentFormState();
 }
 
 class IncidentFormState extends State<IncidentForm> {
+  final _incidentController = TextEditingController();
+  String imageurl;
+  String comment;
 
-   final _incidentController = TextEditingController();
-   String imageurl;
-   String comment;
-  
-   void _addIncident(BuildContext context)
-  {
-     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
-      {
-        'timeadded': DateTime.now(),
-        'type': 'other',
-        'subtype': 'incident',
-        'patient': widget.patient.id,
-        'patientimage': widget.patient.imageUrl,
-        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'username' : user.firstName + " " + user.lastName,
-        'incident': _incidentController.text,
-        'imageurl': imageurl,
-        'logdescription': "New incident: " + _incidentController.text
-      }
-    ).then(
-      (onValue) => Navigator.pop(context)
-    );
+  void _addIncident(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
+      'timeadded': DateTime.now(),
+      'type': 'other',
+      'subtype': 'incident',
+      'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'username': user.firstName + " " + user.lastName,
+      'incident': _incidentController.text,
+      'imageurl': imageurl,
+      'logdescription': "New incident: " + _incidentController.text
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
-   void setImage(String newimageurl) {
-    setState((){
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
 
-   void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -93,7 +94,7 @@ class IncidentFormState extends State<IncidentForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addIncident(context);
                     },

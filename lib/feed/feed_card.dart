@@ -4,6 +4,7 @@ import 'package:carehomeapp/feed/image_view.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
@@ -69,7 +70,6 @@ class _FeedCardState extends State<FeedCard> {
     }
   }
 
-
   void _setLiked() {
     final user = UserBinding.of(context).user;
     Firestore.instance
@@ -79,7 +79,29 @@ class _FeedCardState extends State<FeedCard> {
         .then((data) => {
               setState(() => isLiked =
                   List.from(data['likes'])?.contains(user.id) ?? false)
+                
             });
+  }
+
+  void sendLikeNotification() {
+    final user = UserBinding.of(context).user;
+       Firestore.instance
+                  .collection('users')
+                  .document(widget.feedItem.user)
+                  .get()
+                  .then((dbuser) => dbuser['notificationlikes'] == true
+                      ? 
+                        Firestore.instance.collection('users')
+                        .document(dbuser.documentID)
+                        .collection('tokens').getDocuments().then((snap)
+                      => 
+                        snap.documents.forEach((doc) => PushNotification(
+                          'Like notification',
+                          '${user.firstName} ${user.lastName} liked your post',
+                          doc['token']).send().then((sent) => print('sent like notification')
+                          )
+                          ))
+                      : null);
   }
 
   void _toggleLikeIcon() {
@@ -92,6 +114,7 @@ class _FeedCardState extends State<FeedCard> {
           .updateData({
         'likes': FieldValue.arrayRemove([user.id])
       });
+    
     } else {
       Firestore.instance
           .collection('feeditem')
@@ -99,6 +122,7 @@ class _FeedCardState extends State<FeedCard> {
           .updateData({
         'likes': FieldValue.arrayUnion([user.id])
       });
+        sendLikeNotification();
     }
     setState(() {
       isLiked = !isLiked;
@@ -165,146 +189,145 @@ class _FeedCardState extends State<FeedCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Card(
-            elevation: 4,
-            margin: EdgeInsets.only(left: 25, right: 25, top: 16.0, bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            color: getColor(widget.feedItem.type),
-            child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 18.0,
-                      bottom: 18.0,
-                    ),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.all(8),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: CachedNetworkImage(
-                                    imageUrl: widget.feedItem.patientImage ??
-                                        "assets/images/avatar_placeholder_small.png",
-                                    placeholder: (context, url) => Image.asset(
-                                        "assets/images/avatar_placeholder_small.png",
-                                        width: 50,
-                                        height: 50),
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
+        Widget>[
+      Card(
+        elevation: 4,
+        margin: EdgeInsets.only(left: 25, right: 25, top: 16.0, bottom: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        color: getColor(widget.feedItem.type),
+        child: Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 18.0,
+                  bottom: 18.0,
+                ),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.all(8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CachedNetworkImage(
+                                imageUrl: widget.feedItem.patientImage ??
+                                    "assets/images/avatar_placeholder_small.png",
+                                placeholder: (context, url) => Image.asset(
+                                    "assets/images/avatar_placeholder_small.png",
                                     width: 50,
                                     height: 50),
-                              )),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                            
+                                width: 50,
+                                height: 50),
+                          )),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
                             Align(
                               alignment: Alignment.topLeft,
-                              child:Text(
-                              widget.feedItem.patientname ?? " ",
-                              style: TextStyle(fontWeight: FontWeight.bold, ),
-                            ),),
+                              child: Text(
+                                widget.feedItem.patientname ?? " ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                             Text(formatTime(widget.feedItem.timeAdded)),
                             Text("carer: " + (widget.feedItem.username ?? ""))
                           ]),
-                          Spacer(flex: 5),
-                          Expanded(
-                            flex: 3,
-                            child: Padding(
-                                child: Icon(getIcon(widget.feedItem.type)),
-                                padding: EdgeInsets.all(8)),
-                          ),
-                        ]),
-                  ),
-                  Padding(
-                      child: Text(
-                          widget.feedItem.logdescription ?? " ",
-                          style: Theme.of(context).textTheme.subhead),
-                      padding: EdgeInsets.all(8)),
-                  Visibility(
-                    visible: widget.feedItem.imageUrl != null,
-                    child: Padding(
-                        child: GestureDetector(
-                            child: CachedNetworkImage(
-                              imageUrl: widget.feedItem.imageUrl ??
-                                  "assets/images/avatar_placeholder_small.png",
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                            ),
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) {
-                                return ImageView(widget.feedItem.imageUrl);
-                              }));
-                            }),
-                        padding: EdgeInsets.all(8)),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Spacer(flex: 7),
+                      Spacer(flex: 5),
                       Expanded(
-                        flex: 2,
-                        child: FlatButton(
-                          child: Icon(
-                            _getLikeIcon(),
-                            color: Colors.black,
-                          ),
-                          onPressed: () => _toggleLikeIcon(),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: FlatButton(
-                              child: Icon(
-                                  showComments
-                                      ? CareHomeIcons.commentactive
-                                      : CareHomeIcons.comment,
-                                  color: Colors.black),
-                              onPressed: () => setState(() {
-                                    showComments = !showComments;
-                                  })),
-                        ),
+                            child: Icon(getIcon(widget.feedItem.type)),
+                            padding: EdgeInsets.all(8)),
                       ),
-                    ],
-                  )
-                ],
+                    ]),
               ),
+              Padding(
+                  child: Text(widget.feedItem.logdescription ?? " ",
+                      style: Theme.of(context).textTheme.subhead),
+                  padding: EdgeInsets.all(8)),
+              Visibility(
+                visible: widget.feedItem.imageUrl != null,
+                child: Padding(
+                    child: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: widget.feedItem.imageUrl ??
+                              "assets/images/avatar_placeholder_small.png",
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                        ),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) {
+                            return ImageView(widget.feedItem.imageUrl);
+                          }));
+                        }),
+                    padding: EdgeInsets.all(8)),
+              ),
+              Row(
+                children: <Widget>[
+                  Spacer(flex: 7),
+                  Expanded(
+                    flex: 2,
+                    child: FlatButton(
+                      child: Icon(
+                        _getLikeIcon(),
+                        color: Colors.black,
+                      ),
+                      onPressed: () => _toggleLikeIcon(),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: FlatButton(
+                          child: Icon(
+                              showComments
+                                  ? CareHomeIcons.commentactive
+                                  : CareHomeIcons.comment,
+                              color: Colors.black),
+                          onPressed: () => setState(() {
+                                showComments = !showComments;
+                              })),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+      Visibility(
+        visible: showComments,
+        child: Column(children: <Widget>[
+          Align(
+            alignment: Alignment.centerRight,
+            child: FlatButton(
+              child: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+              onPressed: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return EnterComment(widget.feedItem);
+                  }),
             ),
           ),
-          Visibility(
-            visible: showComments,
-            child: Column(children: <Widget>[
-              Align(
-                alignment: Alignment.centerRight,
-                child: FlatButton(
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
-                  onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return EnterComment(widget.feedItem);
-                      }),
-                ),
-              ),
-              Column(
-                
-                children:<Widget>[ _buildCommentList(context),]
-              ),
-            ]),
-          ),
-        ]);
+          Column(children: <Widget>[
+            _buildCommentList(context),
+          ]),
+        ]),
+      ),
+    ]);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,51 +8,51 @@ import 'package:flutter/material.dart';
 class BloodPressureForm extends StatefulWidget {
   final Patient patient;
   BloodPressureForm(this.patient);
-  
+
   @override
   BloodPressureFormState createState() => BloodPressureFormState();
 }
 
 class BloodPressureFormState extends State<BloodPressureForm> {
-   final _systolicController = TextEditingController();
-   final _diastolicController = TextEditingController();
-    String imageurl;
-    String comment;
+  final _systolicController = TextEditingController();
+  final _diastolicController = TextEditingController();
+  String imageurl;
+  String comment;
 
-   void _addBloodPressure(BuildContext context)
-  {
-     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
-      {
-        'timeadded': DateTime.now(),
-        'type': 'vitals',
-        'subtype': 'bloodpressure',
-        'patient': widget.patient.id,
-        'patientimage': widget.patient.imageUrl,
-       'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'username' : user.firstName + " " + user.lastName,
-        'systolic': _systolicController.text,
-        'diastolic': _diastolicController.text,
-        'imageurl': imageurl,
-        'logdescription': "Blood pressure reading: " +
-            _systolicController.text +
-            "/" +
-           _diastolicController.text
-      }
-    ).then(
-      (onValue) => Navigator.pop(context)
-    );
+  void _addBloodPressure(BuildContext context) {
+    final user = UserBinding.of(context).user;
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
+      'timeadded': DateTime.now(),
+      'type': 'vitals',
+      'subtype': 'bloodpressure',
+      'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'username': user.firstName + " " + user.lastName,
+      'systolic': _systolicController.text,
+      'diastolic': _diastolicController.text,
+      'imageurl': imageurl,
+      'logdescription': "Blood pressure reading: " +
+          _systolicController.text +
+          "/" +
+          _diastolicController.text
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
-   void setImage(String newimageurl) {
-
-      imageurl = newimageurl;
+  void setImage(String newimageurl) {
+    imageurl = newimageurl;
   }
 
-   void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -98,9 +99,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller:_diastolicController
-                        ),
+                        child: TextFormField(controller: _diastolicController),
                       ),
                       flex: 1,
                     ),
@@ -114,7 +113,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addBloodPressure(context);
                     },

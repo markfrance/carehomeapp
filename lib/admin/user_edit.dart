@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:carehomeapp/authentication.dart';
 import 'package:carehomeapp/model/carehome_model.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum ConfirmAction { CANCEL, ACCEPT }
@@ -20,6 +22,7 @@ class UserEditState extends State<UserEdit> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   String carehome;
   Carehome dropdownValue;
 
@@ -45,13 +48,20 @@ class UserEditState extends State<UserEdit> {
   }
 
   void _addNewUser(BuildContext context) {
-    Firestore.instance.collection('users').document().setData({
-      'firstname': _firstNameController.text,
-      'lastname': _lastNameController.text,
-      'email': _emailController.text,
-      'carehome': dropdownValue.id,
-      'carehomename': dropdownValue.name
-    }).then((onValue) => Navigator.pop(context));
+    //Auth auth = new Auth();
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: _emailController.text, password: _passwordController.text)
+        .then((result) => {
+              result.user.sendEmailVerification(),
+              Firestore.instance.collection('users').document(result.user.uid).setData({
+                'firstname': _firstNameController.text,
+                'lastname': _lastNameController.text,
+                'email': _emailController.text,
+                'carehome': dropdownValue.id,
+                'carehomename': dropdownValue.name
+              }).then((onValue) => Navigator.pop(context))
+            });
   }
 
   Future<List<Carehome>> getCarehomes() async {
@@ -77,7 +87,6 @@ class UserEditState extends State<UserEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
- 
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         title: Text('Edit User Data'),
@@ -119,6 +128,15 @@ class UserEditState extends State<UserEdit> {
                         controller: _emailController,
                       ),
                     ),
+                    Visibility(
+                      visible: widget.user == null,
+                      child:Container(
+                      width: 375,
+                      child: TextFormField(
+                        decoration: InputDecoration(hintText: 'Password'),
+                        controller: _passwordController,
+                      ),
+                    ),),
                     Padding(
                       padding: EdgeInsets.all(8),
                       child: Text("Carehome",
@@ -138,7 +156,8 @@ class UserEditState extends State<UserEdit> {
                                           child: Text("Carehomes"),
                                           padding: EdgeInsets.only(left: 8))
                                       : Padding(
-                                          child: Text(dropdownValue?.name ?? ""),
+                                          child:
+                                              Text(dropdownValue?.name ?? ""),
                                           padding: EdgeInsets.only(left: 8)),
                                   isExpanded: true,
                                   value: null,

@@ -1,5 +1,6 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +24,8 @@ class MealsFormState extends State<MealsForm> {
   void _addMeal(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-    Firestore.instance.collection('feeditem').document().setData({
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'nutrition',
       'subtype': 'meals',
@@ -31,18 +33,24 @@ class MealsFormState extends State<MealsForm> {
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
-      'username' : user.firstName + " " + user.lastName,
+      'username': user.firstName + " " + user.lastName,
       'mealtype': mealType,
       'gm': _weightController.text,
       'mealdescription': _descriptionController.text,
       'imageurl': imageurl,
       'logdescription': "Ate " +
-            _weightController.text +
-            "g meal for " +
-            mealType +
-            ". " +
-            _descriptionController.text
-    }).then((onValue) => Navigator.pop(context));
+          _weightController.text +
+          "g meal for " +
+          mealType +
+          ". " +
+          _descriptionController.text
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
   void setImage(String newimageurl) {
@@ -51,8 +59,8 @@ class MealsFormState extends State<MealsForm> {
     });
   }
 
-   void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -125,13 +133,14 @@ class MealsFormState extends State<MealsForm> {
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child:Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Description",
-                    textAlign: TextAlign.start,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Description",
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                ),),
+                ),
                 Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextFormField(

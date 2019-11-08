@@ -44,6 +44,11 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_local_notifications: ^0.8.4
 
+flutter_downloader:
+    git:
+      url: git://github.com/Mahfoud047/flutter_downloader.git
+      ref: fix-uncompatibility-with-background-registeration-context
+
 flutter_icons:
   image_path: "assets/images/icons/PNG/main.png" 
   android: true

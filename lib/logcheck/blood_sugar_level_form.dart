@@ -1,5 +1,5 @@
-
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,47 +8,49 @@ import 'package:flutter/material.dart';
 class BloodSugarLevelForm extends StatefulWidget {
   final Patient patient;
   BloodSugarLevelForm(this.patient);
-  
+
   @override
   BloodSugarLevelFormState createState() => BloodSugarLevelFormState();
 }
 
 class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
-   final _levelController = TextEditingController();
-   String imageurl;
-   String comment;
+  final _levelController = TextEditingController();
+  String imageurl;
+  String comment;
 
-   void _addBloodSugarLevel(BuildContext context)
-  {
-     final user = UserBinding.of(context).user;
-     
-    Firestore.instance.collection('feeditem').document().setData(
-      {
-        'timeadded': DateTime.now(),
-        'type': 'vitals',
-        'subtype': 'bloodsugar',
-        'patient': widget.patient.id,
-        'patientimage': widget.patient.imageUrl,
-        'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
-        'username' : user.firstName + " " + user.lastName,
-        'level': _levelController.text,
-        'imageurl': imageurl,
-        'logdescription': "Blood sugar level: " + _levelController.text + " mmo/l"
-      }
-    ).then(
-      (onValue) => Navigator.pop(context)
-    );
+  void _addBloodSugarLevel(BuildContext context) {
+    final user = UserBinding.of(context).user;
+
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
+      'timeadded': DateTime.now(),
+      'type': 'vitals',
+      'subtype': 'bloodsugar',
+      'patient': widget.patient.id,
+      'patientimage': widget.patient.imageUrl,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'user': user.id,
+      'username': user.firstName + " " + user.lastName,
+      'level': _levelController.text,
+      'imageurl': imageurl,
+      'logdescription': "Blood sugar level: " + _levelController.text + " mmo/l"
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
-   void setImage(String newimageurl) {
-    setState((){
+  void setImage(String newimageurl) {
+    setState(() {
       imageurl = newimageurl;
     });
   }
 
-   void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
@@ -78,9 +80,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller:_levelController
-                        ),
+                        child: TextFormField(controller: _levelController),
                       ),
                       flex: 1,
                     ),
@@ -94,7 +94,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addBloodSugarLevel(context);
                     },

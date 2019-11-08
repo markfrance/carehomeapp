@@ -1,10 +1,9 @@
-
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 
 class WeightForm extends StatefulWidget {
   final Patient patient;
@@ -15,42 +14,48 @@ class WeightForm extends StatefulWidget {
 }
 
 class WeightFormState extends State<WeightForm> {
-
-final _weightController = TextEditingController();
- String toiletType;
- String imageurl;
- String comment;
+  final _weightController = TextEditingController();
+  String toiletType;
+  String imageurl;
+  String comment;
 
   void _addWeight(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-    Firestore.instance.collection('feeditem').document().setData({
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'body',
       'subtype': 'weight',
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " +widget.patient.lastname,
+      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
       'user': user.id,
-      'username' : user.firstName + " " + user.lastName,
+      'username': user.firstName + " " + user.lastName,
       'weight': _weightController.text,
-        'imageurl': imageurl,
-        'logdescription': "Weight reading: " + _weightController.text + "kg"
-    }).then((onValue) => Navigator.pop(context));
+      'imageurl': imageurl,
+      'logdescription': "Weight reading: " + _weightController.text + "kg"
+    }).then((onValue) => {
+          comment != null
+              ? Comment.addNewComment(docRef.documentID, user.id,
+                  user.firstName + " " + user.lastName, comment)
+              : null,
+          Navigator.pop(context)
+        });
   }
 
   void setImage(String newimageurl) {
-    setState((){
+    setState(() {
       imageurl = newimageurl;
     });
   }
 
-  void setComment(String newComment){
-    setState((){
+  void setComment(String newComment) {
+    setState(() {
       comment = newComment;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -77,7 +82,7 @@ final _weightController = TextEditingController();
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
-                          controller:_weightController,
+                          controller: _weightController,
                         ),
                       ),
                       flex: 1,
@@ -92,7 +97,7 @@ final _weightController = TextEditingController();
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
                     color: Colors.black,
-                    child: Text("Save", style:TextStyle(color: Colors.white)),
+                    child: Text("Save", style: TextStyle(color: Colors.white)),
                     onPressed: () {
                       _addWeight(context);
                     },

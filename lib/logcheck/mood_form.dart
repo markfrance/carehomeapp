@@ -1,5 +1,6 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/logcheck/form_header.dart';
+import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +22,8 @@ class MoodFormState extends State<MoodForm> {
   void _addMood(BuildContext context) {
     final user = UserBinding.of(context).user;
 
-    Firestore.instance.collection('feeditem').document().setData({
+    final docRef = Firestore.instance.collection('feeditem').document();
+    docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'mood',
       'subtype': 'mood',
@@ -33,7 +35,11 @@ class MoodFormState extends State<MoodForm> {
       'mood': mood,
       'imageurl': imageurl,
       'logdescription': "Mood: " + mood
-    }).then((onValue) => Navigator.pop(context));
+    }).then((onValue) => 
+    {
+         comment != null ? Comment.addNewComment(docRef.documentID, user.id, user.firstName + " " + user.lastName, comment) : null,
+
+      Navigator.pop(context)});
   }
 
   
