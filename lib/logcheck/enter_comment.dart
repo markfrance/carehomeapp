@@ -59,7 +59,7 @@ class EnterCommentState extends State<EnterComment> {
                       Comment.addNewComment(widget.feedItem.id,
                       user.id, 
                       user.firstName + " " + user.lastName,
-                      _commentTextController.text);
+                      _commentTextController.text, widget.feedItem.user);
                       Navigator.pop(context);
                     },
                   ),

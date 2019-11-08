@@ -1,3 +1,4 @@
+import 'package:carehomeapp/model/feeditem_model.dart';
 import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,7 +10,7 @@ class Comment {
   final DateTime time;
   final String text;
 
- static void addNewComment(String feedItem, String userId, String username, String body) {
+ static void addNewComment(String feedItem,  String userId, String username, String body, [String feedItemUser]) {
 
    
     Firestore.instance.collection('feeditem')
@@ -22,11 +23,12 @@ class Comment {
       'text': body
     });
 
+  if(feedItemUser != null){
     //Send push notification
     FirebaseAuth.instance.currentUser().then((user) =>
      Firestore.instance
                   .collection('users')
-                  .document()
+                  .document(feedItemUser)
                   .get()
                   .then((dbuser) => dbuser['notificationcomments'] == true
                       ? 
@@ -35,11 +37,12 @@ class Comment {
                         .collection('tokens').getDocuments().then((snap)
                       => 
                         snap.documents.forEach((doc) => PushNotification(
-                          'Like notification',
+                          'Comment notification',
                           '$username just said $body on your post',
-                          doc['token']).send().then((sent) => print('sent like notification')
+                          doc['token']).send().then((sent) => print('sent comment notification')
                           )
                           )):null));
+  }
 
   }
 

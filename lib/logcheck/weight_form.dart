@@ -23,6 +23,7 @@ class WeightFormState extends State<WeightForm> {
     final user = UserBinding.of(context).user;
 
     final docRef = Firestore.instance.collection('feeditem').document();
+
     docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'body',
@@ -37,7 +38,7 @@ class WeightFormState extends State<WeightForm> {
       'logdescription': "Weight reading: " + _weightController.text + "kg"
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID, user.id,
+              ? Comment.addNewComment(docRef.documentID,user.id,
                   user.firstName + " " + user.lastName, comment)
               : null,
           Navigator.pop(context)
