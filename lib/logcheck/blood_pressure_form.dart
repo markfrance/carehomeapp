@@ -2,12 +2,14 @@ import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BloodPressureForm extends StatefulWidget {
   final Patient patient;
-  BloodPressureForm(this.patient);
+  final User user;
+  BloodPressureForm(this.patient, this.user);
 
   @override
   BloodPressureFormState createState() => BloodPressureFormState();
@@ -20,7 +22,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
   String comment;
 
   void _addBloodPressure(BuildContext context) {
-    final user = UserBinding.of(context).user;
+  
     final docRef = Firestore.instance.collection('feeditem').document();
     docRef.setData({
       'timeadded': DateTime.now(),
@@ -29,8 +31,8 @@ class BloodPressureFormState extends State<BloodPressureForm> {
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
+      'user': widget.user.id,
+      'username': widget.user.firstName + " " + widget.user.lastName,
       'systolic': _systolicController.text,
       'diastolic': _diastolicController.text,
       'imageurl': imageurl,
@@ -40,8 +42,8 @@ class BloodPressureFormState extends State<BloodPressureForm> {
           _diastolicController.text
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID, user.id,
-                  user.firstName + " " + user.lastName, comment)
+              ? Comment.addNewComment(docRef.documentID, widget.user.id,
+                  widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
           Navigator.pop(context)
         });
@@ -67,7 +69,7 @@ class BloodPressureFormState extends State<BloodPressureForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage, setComment),
+          FormHeader(widget.user,setImage, setComment),
           Text(
             "Blood Pressure",
             textAlign: TextAlign.start,

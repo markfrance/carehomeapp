@@ -1,5 +1,6 @@
 
 import 'package:carehomeapp/model/patient_model.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/popup_message.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:carehomeapp/logcheck/hydration_form.dart';
 import 'package:carehomeapp/logcheck/meals_form.dart';
 
 class LogCheck extends StatefulWidget {
+  LogCheck(this.user);
+  User user;
   @override
   LogCheckState createState() => LogCheckState();
 }
@@ -26,7 +29,7 @@ class LogCheckState extends State<LogCheck> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
+    
   
     return MaterialApp(
       home: Scaffold(
@@ -50,7 +53,7 @@ class LogCheckState extends State<LogCheck> {
             decoration: BoxDecoration(color: Color.fromARGB(255, 249, 210, 45), borderRadius: BorderRadius.circular(8)),
             
             child: FutureBuilder<List<Patient>>(
-                  future: user.getPatients(),
+                  future: widget.user.getPatients(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Patient>> snapshot) {
                     if (!snapshot.hasData) return CircularProgressIndicator();
@@ -84,7 +87,7 @@ class LogCheckState extends State<LogCheck> {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) =>
-                    EntryItem(data[index], context, dropdownValue),
+                    EntryItem(data[index], context, dropdownValue, widget.user),
                 itemCount: data.length,
               ),
             ),
@@ -157,38 +160,39 @@ final List<Entry> data = <Entry>[
 // Displays one Entry. If the entry has children then it's displayed
 // with an ExpansionTile.
 class EntryItem extends StatelessWidget {
-  EntryItem(this.entry, this.context, this.patient);
+  EntryItem(this.entry, this.context, this.patient, this.user);
 
   final Patient patient;
+  final User user;
   final Entry entry;
   final BuildContext context;
 
   Widget getForm(String formname) {
     switch (formname) {
       case 'mood':
-        return MoodForm(patient);
+        return MoodForm(patient, user);
       case 'bloodpressure':
-        return BloodPressureForm(patient);
+        return BloodPressureForm(patient, user);
       case 'bloodsugar':
-        return BloodSugarLevelForm(patient);
+        return BloodSugarLevelForm(patient, user);
       case 'heartrate':
-        return HeartRateForm(patient);
+        return HeartRateForm(patient, user);
       case 'medication':
-        return MedicationForm(patient, true);
+        return MedicationForm(patient, true, user);
       case 'hydration':
-        return HydrationForm(patient);
+        return HydrationForm(patient, user);
       case 'meals':
-        return MealsForm(patient);
+        return MealsForm(patient, user);
       case 'weight':
-        return WeightForm(patient);
+        return WeightForm(patient, user);
       case 'hygiene':
-        return HygieneForm(patient);
+        return HygieneForm(patient, user);
       case 'toilet':
-        return ToiletForm(patient);
+        return ToiletForm(patient, user);
       case 'activity':
-        return ActivityForm(patient);
+        return ActivityForm(patient, user);
       case 'incident':
-        return IncidentForm(patient);
+        return IncidentForm(patient, user);
 
       default:
         return null;

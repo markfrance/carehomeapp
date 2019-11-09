@@ -4,6 +4,7 @@ import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/medication_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,7 +12,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class MedicationForm extends StatefulWidget {
   final Patient patient;
   final bool showHeader;
-  MedicationForm(this.patient, this.showHeader);
+  final User user;
+  MedicationForm(this.patient, this.showHeader, this.user);
 
   @override
   MedicationState createState() => new MedicationState();
@@ -45,7 +47,7 @@ class MedicationState extends State<MedicationForm> {
   }
 
   void setMedication(Medication med, bool done) {
-    final user = UserBinding.of(context).user;
+ 
 
     Firestore.instance
         .collection('medication')
@@ -65,7 +67,7 @@ class MedicationState extends State<MedicationForm> {
         'patient': widget.patient.id,
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-        'user': user.id,
+        'user': widget.user.id,
         'medication': med.medication,
         'dose': med.dose,
         'medicationtime':
@@ -168,7 +170,7 @@ class MedicationState extends State<MedicationForm> {
                         onPressed: () => showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return AddMedicationForm(widget.patient);
+                            return AddMedicationForm(widget.patient,widget.user);
                           },
                         ),
                         child: Icon(

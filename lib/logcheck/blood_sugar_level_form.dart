@@ -2,12 +2,14 @@ import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BloodSugarLevelForm extends StatefulWidget {
   final Patient patient;
-  BloodSugarLevelForm(this.patient);
+  final User user;
+  BloodSugarLevelForm(this.patient, this.user);
 
   @override
   BloodSugarLevelFormState createState() => BloodSugarLevelFormState();
@@ -19,7 +21,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
   String comment;
 
   void _addBloodSugarLevel(BuildContext context) {
-    final user = UserBinding.of(context).user;
+  
 
     final docRef = Firestore.instance.collection('feeditem').document();
     docRef.setData({
@@ -29,15 +31,15 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
+      'user': widget.user.id,
+      'username': widget.user.firstName + " " + widget.user.lastName,
       'level': _levelController.text,
       'imageurl': imageurl,
       'logdescription': "Blood sugar level: " + _levelController.text + " mmo/l"
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID, user.id,
-                  user.firstName + " " + user.lastName, comment)
+              ? Comment.addNewComment(docRef.documentID, widget.user.id,
+              widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
           Navigator.pop(context)
         });
@@ -65,7 +67,7 @@ class BloodSugarLevelFormState extends State<BloodSugarLevelForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage, setComment),
+          FormHeader(widget.user, setImage, setComment),
           Text(
             "Blood Sugar Level",
             textAlign: TextAlign.start,

@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
+  SettingsPage(this.user);
+  final User user;
   @override
   SettingsPageState createState() => SettingsPageState();
 }
@@ -17,11 +19,10 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final user = UserBinding.of(context).user;
 
     Firestore.instance
         .collection('users')
-        .document(user.id)
+        .document(widget.user.id)
         .get()
         .then((data) => {
               setState(() {
@@ -44,7 +45,7 @@ class SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
+ 
 
     return Scaffold(
         appBar: AppBar(
@@ -85,7 +86,7 @@ class SettingsPageState extends State<SettingsPage> {
                       ),
                       Padding(
                           child: Align(
-                              child: Text(user.email),
+                              child: Text(widget.user.email),
                               alignment: Alignment.centerLeft),
                           padding: EdgeInsets.only(bottom: 16)),
                       Align(
@@ -145,7 +146,7 @@ class SettingsPageState extends State<SettingsPage> {
                                   value: patientpost,
                                   onChanged: (value) => {
                                     setSwitch(
-                                        user, 'notificationpatient', value)
+                                        widget.user, 'notificationpatient', value)
                                   },
                                 )),
                           ],
@@ -159,7 +160,7 @@ class SettingsPageState extends State<SettingsPage> {
                                   activeColor: Color.fromARGB(255, 35, 33, 26),
                                   value: likes,
                                   onChanged: (value) => {
-                                    setSwitch(user, 'notificationlikes', value)
+                                    setSwitch(widget.user, 'notificationlikes', value)
                                   },
                                 )),
                           ],
@@ -174,7 +175,7 @@ class SettingsPageState extends State<SettingsPage> {
                                   value: comments,
                                   onChanged: (value) => {
                                     setSwitch(
-                                        user, 'notificationcomments', value)
+                                        widget.user, 'notificationcomments', value)
                                   },
                                 )),
                           ],
@@ -190,7 +191,7 @@ class SettingsPageState extends State<SettingsPage> {
                                   value: medication,
                                   onChanged: (value) => {
                                     setSwitch(
-                                        user, 'notificationmedication', value)
+                                        widget.user, 'notificationmedication', value)
                                   },
                                 )),
                           ],

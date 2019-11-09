@@ -1,6 +1,7 @@
 import 'package:carehomeapp/charts/chart_type_list.dart';
 import 'package:carehomeapp/feed/feed_list.dart';
 import 'package:carehomeapp/logcheck/medication_form.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_view.dart';
 import 'package:carehomeapp/patient/tasks_view.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
@@ -10,10 +11,11 @@ import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientHome extends StatefulWidget {
-  PatientHome(this.patient, this.followText);
+  PatientHome(this.patient, this.followText, this.user);
 
   final Patient patient;
   final String followText;
+  final User user;
   @override
   _PatientHomeState createState() => _PatientHomeState();
 }
@@ -31,10 +33,10 @@ class _PatientHomeState extends State<PatientHome> {
   @override
   Widget build(BuildContext context) {
     final widgetOptions = [
-      FeedList(widget.patient),
-      MedicationForm(widget.patient, false),
+      FeedList(widget.user, widget.patient),
+      MedicationForm(widget.patient, false, widget.user),
       ChartTypeList(widget.patient),
-      TasksView(widget.patient)
+      TasksView(widget.patient, widget.user)
     ];
 
     return Scaffold(
@@ -96,7 +98,7 @@ class _PatientHomeState extends State<PatientHome> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      PatientView(widget.patient)));
+                                      PatientView(widget.patient, widget.user)));
                         },
                       ),
                     ],

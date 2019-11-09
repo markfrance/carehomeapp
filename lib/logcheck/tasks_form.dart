@@ -1,12 +1,14 @@
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
 class TasksForm extends StatefulWidget {
     final Patient patient;
-  TasksForm(this.patient);
+    final User user;
+  TasksForm(this.patient, this.user);
   
   @override
   TasksFormState createState() => TasksFormState();
@@ -19,7 +21,7 @@ class TasksFormState extends State<TasksForm> {
 
   void _addTask(BuildContext context)
   {
-    final user = UserBinding.of(context).user;
+   
      
     Firestore.instance.collection('tasks').document().setData(
       {
@@ -27,7 +29,7 @@ class TasksFormState extends State<TasksForm> {
         'patient': widget.patient.id,
         'patientimage': widget.patient.imageUrl,
         'patientname': widget.patient.firstname + " " +widget.patient.lastname,
-        'user' : user.id,
+        'user' : widget.user.id,
         'task': _taskController.text,
         'done' : false,
       }

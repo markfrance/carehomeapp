@@ -2,13 +2,15 @@ import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/feeditem_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class EnterComment extends StatefulWidget {
 
   FeedItem feedItem;
+  final User user;
   final void Function(String value) commentCallback;
-  EnterComment([this.feedItem, this.commentCallback]);
+  EnterComment(this.user,[this.feedItem, this.commentCallback]);
   
   @override
   EnterCommentState createState() => EnterCommentState();
@@ -18,7 +20,7 @@ class EnterCommentState extends State<EnterComment> {
    
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
+   
 
         return AlertDialog(
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -57,8 +59,8 @@ class EnterCommentState extends State<EnterComment> {
                       widget.feedItem == null ?
                       widget.commentCallback(_commentTextController.text) :
                       Comment.addNewComment(widget.feedItem.id,
-                      user.id, 
-                      user.firstName + " " + user.lastName,
+                      widget.user.id, 
+                      widget.user.firstName + " " + widget.user.lastName,
                       _commentTextController.text, widget.feedItem.user);
                       Navigator.pop(context);
                     },

@@ -8,8 +8,9 @@ import 'package:carehomeapp/model/patient_model.dart';
 
 class PatientCard extends StatefulWidget {
   final Patient patient;
+  final User user;
 
-  PatientCard(this.patient);
+  PatientCard(this.patient, this.user);
 
   @override
   _PatientCardState createState() => _PatientCardState(patient);
@@ -57,17 +58,16 @@ class _PatientCardState extends State<PatientCard> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
-
+ 
     if (followText == null) {
-      _setFollowText(user);
+      _setFollowText(widget.user);
     }
 
     return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PatientHome(this.patient, followText)),
+            MaterialPageRoute(builder: (context) => PatientHome(this.patient, followText, widget.user)),
           );
         },
         child: Card(
@@ -116,7 +116,7 @@ class _PatientCardState extends State<PatientCard> {
                           color: Colors.black,
                           child: Text(followText ?? "",
                               style: TextStyle(color: Colors.white)),
-                          onPressed: () => {_followToggle(user)}),
+                          onPressed: () => {_followToggle(widget.user)}),
                     ),
                   )),
                 ],

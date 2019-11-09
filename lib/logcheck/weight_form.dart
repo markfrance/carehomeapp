@@ -2,12 +2,14 @@ import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class WeightForm extends StatefulWidget {
   final Patient patient;
-  WeightForm(this.patient);
+  final User user;
+  WeightForm(this.patient, this.user);
 
   @override
   WeightFormState createState() => WeightFormState();
@@ -20,7 +22,7 @@ class WeightFormState extends State<WeightForm> {
   String comment;
 
   void _addWeight(BuildContext context) {
-    final user = UserBinding.of(context).user;
+
 
     final docRef = Firestore.instance.collection('feeditem').document();
 
@@ -31,15 +33,15 @@ class WeightFormState extends State<WeightForm> {
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
+      'user': widget.user.id,
+      'username': widget.user.firstName + " " + widget.user.lastName,
       'weight': _weightController.text,
       'imageurl': imageurl,
       'logdescription': "Weight reading: " + _weightController.text + "kg"
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID,user.id,
-                  user.firstName + " " + user.lastName, comment)
+              ? Comment.addNewComment(docRef.documentID,widget.user.id,
+                  widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
           Navigator.pop(context)
         });
@@ -67,7 +69,7 @@ class WeightFormState extends State<WeightForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage, setComment),
+          FormHeader(widget.user, setImage, setComment),
           Text(
             "Weight",
             textAlign: TextAlign.start,

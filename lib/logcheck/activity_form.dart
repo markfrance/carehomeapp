@@ -3,13 +3,15 @@ import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ActivityForm extends StatefulWidget {
   final Patient patient;
-  ActivityForm(this.patient);
+  final User user;
+  ActivityForm(this.patient, this.user);
 
   @override
   ActivityFormState createState() => ActivityFormState();
@@ -27,7 +29,7 @@ class ActivityFormState extends State<ActivityForm> {
   }
 
   void _addActivity(BuildContext context) {
-    final user = UserBinding.of(context).user;
+   
     final docRef = Firestore.instance.collection('feeditem').document();
 
     docRef.setData({
@@ -37,15 +39,15 @@ class ActivityFormState extends State<ActivityForm> {
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
+      'user': widget.user.id,
+      'username': widget.user.firstName + " " + widget.user.lastName,
       'activity': _activityController.text,
       'logdescription': "New activity:" + _activityController.text,
       'imageurl': imageurl
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID, user.id,
-                  user.firstName + " " + user.lastName, comment)
+              ? Comment.addNewComment(docRef.documentID, widget.user.id,
+                  widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
 
           Navigator.pop(context)
@@ -68,7 +70,7 @@ class ActivityFormState extends State<ActivityForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(_setImage, _setComment),
+          FormHeader(widget.user, _setImage, _setComment),
           Text(
             "Activity",
             textAlign: TextAlign.start,

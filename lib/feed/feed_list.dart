@@ -1,4 +1,5 @@
 import 'package:carehomeapp/model/patient_model.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/feeditem_model.dart';
@@ -6,7 +7,8 @@ import 'package:carehomeapp/feed/feed_card.dart';
 
 class FeedList extends StatefulWidget {
   final Patient patient;
-  FeedList([this.patient]);
+  final User user;
+  FeedList(this.user,[this.patient]);
   @override
   _FeedListState createState() => _FeedListState();
 }
@@ -94,7 +96,7 @@ class _FeedListState extends State<FeedList> {
           return ListView.builder(
               itemCount: feedItems.length,
               itemBuilder: (context, int) {
-                return FeedCard(feedItems[int]);
+                return FeedCard(feedItems[int], widget.user);
               });
         });
   }

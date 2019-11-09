@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class UserCard extends StatefulWidget {
   final User user;
+  final User currentUser;
 
-  UserCard(this.user);
+  UserCard(this.user, this.currentUser);
 
   @override
   _UserCardState createState() => _UserCardState();
@@ -51,7 +52,7 @@ class _UserCardState extends State<UserCard> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
+
 
     return GestureDetector(
         onTap: () {
@@ -107,7 +108,7 @@ class _UserCardState extends State<UserCard> {
                   ),
                   flex: 1),
               Visibility(
-                visible: user.isSuperAdmin == true,
+                visible: widget.currentUser.isSuperAdmin == true,
                 child: Expanded(
                     child: FlatButton(
                       child: Icon(

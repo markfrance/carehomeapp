@@ -3,12 +3,14 @@ import 'package:carehomeapp/logcheck/tasks_form.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/task_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TasksView extends StatefulWidget {
   final Patient patient;
-  TasksView(this.patient);
+  final User user;
+  TasksView(this.patient, this.user);
 
   @override
   _TasksViewState createState() => _TasksViewState();
@@ -34,7 +36,7 @@ class _TasksViewState extends State<TasksView> {
   }
 
   void setTask(Task task, bool status) {
-    final user = UserBinding.of(context).user;
+
 
     Firestore.instance
         .collection('tasks')
@@ -50,8 +52,8 @@ class _TasksViewState extends State<TasksView> {
         'subtype': 'task',
         'task': task.task,
         'logdescription': "Completed Task: " + task.task,
-        'user': user.id,
-        'username' : user.firstName + " " + user.lastName,
+        'user': widget.user.id,
+        'username' : widget.user.firstName + " " + widget.user.lastName,
       });
     }
   }
@@ -124,7 +126,7 @@ class _TasksViewState extends State<TasksView> {
                   onPressed: () => showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return TasksForm(widget.patient);
+                        return TasksForm(widget.patient, widget.user);
                       }),
                   child: Icon(CareHomeIcons.addb),
                 ),

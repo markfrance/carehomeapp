@@ -4,6 +4,7 @@ import 'package:carehomeapp/feed/image_view.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,9 @@ import 'package:carehomeapp/model/feeditem_model.dart';
 
 class FeedCard extends StatefulWidget {
   final FeedItem feedItem;
+  final User user;
 
-  FeedCard(this.feedItem);
+  FeedCard(this.feedItem, this.user);
 
   @override
   _FeedCardState createState() => _FeedCardState();
@@ -71,20 +73,20 @@ class _FeedCardState extends State<FeedCard> {
   }
 
   void _setLiked() {
-    final user = UserBinding.of(context).user;
+ 
     Firestore.instance
         .collection('feeditem')
         .document(widget.feedItem.id)
         .get()
         .then((data) => 
             setState(() => isLiked =
-                 data['likes'] != null ? (List.from(data['likes'])?.contains(user.id) ?? false) : false)
+                 data['likes'] != null ? (List.from(data['likes'])?.contains(widget.user.id) ?? false) : false)
                 
             );
   }
 
   void sendLikeNotification() {
-    final user = UserBinding.of(context).user;
+  
        Firestore.instance
                   .collection('users')
                   .document(widget.feedItem.user)
@@ -97,7 +99,7 @@ class _FeedCardState extends State<FeedCard> {
                       => 
                         snap.documents.forEach((doc) => PushNotification(
                           'Like notification',
-                          '${user.firstName} ${user.lastName} liked your post',
+                          '${widget.user.firstName} ${widget.user.lastName} liked your post',
                           doc['token']).send().then((sent) => print('sent like notification')
                           )
                           ))
@@ -105,14 +107,14 @@ class _FeedCardState extends State<FeedCard> {
   }
 
   void _toggleLikeIcon() {
-    final user = UserBinding.of(context).user;
+ 
 
     if (isLiked) {
       Firestore.instance
           .collection('feeditem')
           .document(widget.feedItem.id)
           .updateData({
-        'likes': FieldValue.arrayRemove([user.id])
+        'likes': FieldValue.arrayRemove([widget.user.id])
       });
     
     } else {
@@ -120,7 +122,7 @@ class _FeedCardState extends State<FeedCard> {
           .collection('feeditem')
           .document(widget.feedItem.id)
           .updateData({
-        'likes': FieldValue.arrayUnion([user.id])
+        'likes': FieldValue.arrayUnion([widget.user.id])
       });
         sendLikeNotification();
     }
@@ -322,7 +324,7 @@ class _FeedCardState extends State<FeedCard> {
               onPressed: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return EnterComment(widget.feedItem);
+                    return EnterComment(widget.user, widget.feedItem);
                   }),
             ),
           ),

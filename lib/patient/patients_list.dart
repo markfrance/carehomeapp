@@ -1,5 +1,6 @@
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
@@ -7,6 +8,8 @@ import 'package:carehomeapp/patient/patients_card.dart';
 
 
 class PatientsList extends StatefulWidget {
+  PatientsList(this.user);
+  final User user;
   @override
   _PatientsListState createState() => _PatientsListState();
 }
@@ -15,10 +18,10 @@ class _PatientsListState extends State<PatientsList> {
   String dropdownValue = 'Most recent';
 
   Widget _buildList(BuildContext context) {
-    final user = UserBinding.of(context).user;
+
 
     return FutureBuilder<List<Patient>>(
-        future: user.getPatients(dropdownValue),
+        future: widget.user.getPatients(dropdownValue),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -26,7 +29,7 @@ class _PatientsListState extends State<PatientsList> {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, int) {
-              return PatientCard(snapshot.data[int]);
+              return PatientCard(snapshot.data[int], widget.user);
             },
           );
         });
@@ -34,7 +37,7 @@ class _PatientsListState extends State<PatientsList> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
+
 
     return Column(children: <Widget>[
       Row(children: <Widget>[
@@ -45,7 +48,7 @@ class _PatientsListState extends State<PatientsList> {
                 width:30,
                 height:30,
                 child: Visibility(
-                    visible: user.isSuperAdmin == true || user.isManager == true,
+                    visible: widget.user.isSuperAdmin == true || widget.user.isManager == true,
                     child:RaisedButton(
                 padding:EdgeInsets.all(0),
                 color:Colors.black,
@@ -53,7 +56,7 @@ class _PatientsListState extends State<PatientsList> {
                 onPressed: () => showDialog(
             context: context,
             builder: (BuildContext context) {
-              return PatientEdit(null);
+              return PatientEdit(null, widget.user);
             },
                 ),
                 child:Icon(CareHomeIcons.addb,),

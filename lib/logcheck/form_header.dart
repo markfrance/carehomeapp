@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/logcheck/enter_comment.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +10,8 @@ class FormHeader extends StatefulWidget{
 
   final void Function(String value) imagecallback;
   final void Function(String value) commentCallback;
-  FormHeader(this.imagecallback, this.commentCallback);
+  final User user;
+  FormHeader(this.user,this.imagecallback, this.commentCallback);
   @override
   FormHeaderState createState() => FormHeaderState();
 }
@@ -54,7 +56,7 @@ class FormHeaderState extends State<FormHeader> {
               onPressed: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return EnterComment(null, this.setComment);
+                    return EnterComment(widget.user, null, this.setComment);
                   }),
             ),
             flex: 1),

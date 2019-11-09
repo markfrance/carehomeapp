@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 
 
 class UsersList extends StatefulWidget {
+  final User user;
+  UsersList(this.user);
   @override
   _UsersListState createState() => _UsersListState();
 }
@@ -19,11 +21,11 @@ class _UsersListState extends State<UsersList> {
   Carehome dropdownValue;
 
   Widget _buildList(BuildContext context) {
- final user = UserBinding.of(context).user;
+
 
     return FutureBuilder<List<User>>(
       
-        future: User.getUsers(dropdownValue, user),
+        future: User.getUsers(dropdownValue, widget.user),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -31,7 +33,7 @@ class _UsersListState extends State<UsersList> {
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, int) {
-              return UserCard(snapshot.data[int]);
+              return UserCard(snapshot.data[int], widget.user);
             },
           );
         });
@@ -54,7 +56,6 @@ class _UsersListState extends State<UsersList> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
 
     return Column(children: <Widget>[
       Row(children: <Widget>[
@@ -65,7 +66,7 @@ class _UsersListState extends State<UsersList> {
                 width:30,
                 height:30,
                 child: Visibility(
-                    visible: user.isSuperAdmin == true || user.isManager == true,
+                    visible: widget.user.isSuperAdmin == true || widget.user.isManager == true,
                     child:RaisedButton(
                 padding:EdgeInsets.all(0),
                 color:Colors.black,
@@ -98,7 +99,7 @@ class _UsersListState extends State<UsersList> {
                           color: Color.fromARGB(255, 249, 210, 45),
                           borderRadius: BorderRadius.circular(8)),
                       child: Visibility(
-                        visible: user.isSuperAdmin == true,
+                        visible: widget.user.isSuperAdmin == true,
                         child:FutureBuilder<List<Carehome>>(
                             future: getCarehomes(),
                             builder: (BuildContext context,

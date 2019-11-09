@@ -2,13 +2,15 @@ import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class AddMedicationForm extends StatefulWidget {
   final Patient patient;
-  AddMedicationForm(this.patient);
+  final User user;
+  AddMedicationForm(this.patient, this.user);
 
   @override
   MedicationFormState createState() => MedicationFormState();
@@ -23,7 +25,7 @@ class MedicationFormState extends State<AddMedicationForm> {
   String comment;
 
   void _addMedication(BuildContext context) {
-    final user = UserBinding.of(context).user;
+ 
 
     final docRef = Firestore.instance.collection('medication').document();
 
@@ -32,16 +34,16 @@ class MedicationFormState extends State<AddMedicationForm> {
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
       'patientname': widget.patient.firstname + " " + widget.patient.lastname,
-      'user': user.id,
-      'username': user.firstName + " " + user.lastName,
+      'user': widget.user.id,
+      'username': widget.user.firstName + " " + widget.user.lastName,
       'medication': _medicationController.text,
       'dose': _doseController.text,
       'time': _time,
       'done': false
     }).then((onValue) => {
           comment != null
-              ? Comment.addNewComment(docRef.documentID, user.id,
-                  user.firstName + " " + user.lastName, comment)
+              ? Comment.addNewComment(docRef.documentID, widget.user.id,
+                  widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
           Navigator.pop(context)
         });
@@ -69,7 +71,7 @@ class MedicationFormState extends State<AddMedicationForm> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          FormHeader(setImage, setComment),
+          FormHeader(widget.user,setImage, setComment),
           Text(
             "Add Medication",
             textAlign: TextAlign.start,

@@ -47,39 +47,8 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   User user;
 
-  @override
-  void initState() {
-    FirebaseAuth.instance.currentUser().then((currentuser) => Firestore.instance
-        .collection('users')
-        .document(currentuser.uid)
-        .get()
-        .then((dbuser) => {
-              setState(() {
-                user = User(
-                    dbuser.documentID,
-                    dbuser['firstname'],
-                    dbuser['lastname'],
-                    dbuser['email'],
-                    dbuser['ismanager'],
-                    dbuser['issuperadmin'],
-                    Carehome(dbuser['carehome'], dbuser['carehomename']));
-              })
-            }));
-
-    super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-   
-    if(user == null){
-      return CircularProgressIndicator();
-    }
-
-    return UserBinding(
-        user: user,
-        child: MaterialApp(
+  Widget materialApp() {
+    return MaterialApp(
             title: 'CareHomeApp',
             theme: ThemeData(
               cursorColor: Colors.black,
@@ -107,8 +76,20 @@ class MyAppState extends State<MyApp> {
               ),
               primarySwatch: backColor,
             ),
-            home: RootPage(auth: new Auth())));
+            home: RootPage(auth: new Auth()));
   }
+  @override
+  Widget build(BuildContext context) {
+
+   if(user == null){
+     return materialApp();
+   }
+   return UserBinding(child: materialApp(),
+   user: user);
+      
+  }
+    
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -128,6 +109,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
   int currentScore = 0;
+  User user;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -148,9 +130,31 @@ class _MyHomePageState extends State<MyHomePage> {
    // Or do other work.
  }
  */
+
+void setUser() {
+   user = null;
+    FirebaseAuth.instance.currentUser().then((currentuser) => Firestore.instance
+        .collection('users')
+        .document(currentuser.uid)
+        .get()
+        .then((dbuser) => {
+              setState(() {
+                user = User(
+                    dbuser.documentID,
+                    dbuser['firstname'],
+                    dbuser['lastname'],
+                    dbuser['email'],
+                    dbuser['ismanager'],
+                    dbuser['issuperadmin'],
+                    Carehome(dbuser['carehome'], dbuser['carehomename']));
+              })
+            }));
+}
   @override
   void initState()  {
     super.initState();
+
+    setUser();
 
 Future.delayed(Duration(seconds: 1), () {
     _firebaseMessaging.configure(
@@ -190,6 +194,9 @@ Future.delayed(Duration(seconds: 1), () {
     _saveDeviceToken().then((result) {
       print("result: $result");
     });
+
+
+  
   }
 
   _saveDeviceToken() async {
@@ -224,21 +231,23 @@ Future.delayed(Duration(seconds: 1), () {
     });
   }
 
-  final widgetOptions = [LogCheck(), FeedList(), PatientsList(), UsersList()];
-
+ 
   @override
   Widget build(BuildContext context) {
     
-    var user = UserBinding.of(context).user;
-    
+    if(user == null){
+      return CircularProgressIndicator();
+    }
     if(currentScore == null){
       getCurrentScore(user);
     }
-    
-    return Scaffold(
+    final widgetOptions = [LogCheck(user), FeedList(user), PatientsList(user), UsersList(user)];
+    return UserBinding(
+      user: user,
+      child:Scaffold(
         key: _scaffoldKey,
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
-        endDrawer: YellowDrawer(widget.logoutCallback),
+        endDrawer: YellowDrawer(widget.logoutCallback, user),
         appBar: AppBar(
             leading: Image.asset(
               "assets/images/icons/PNG/main.png",
@@ -296,6 +305,6 @@ Future.delayed(Duration(seconds: 1), () {
           onTap: (index) {
             _incrementTab(index);
           },
-        ));
+        )));
   }
 }

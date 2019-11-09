@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientEdit extends StatefulWidget {
   final Patient patient;
-  PatientEdit(this.patient);
+  final User user;
+  PatientEdit(this.patient, this.user);
 
   @override
   PatientEditState createState() => PatientEditState();
@@ -80,7 +82,7 @@ class PatientEditState extends State<PatientEdit> {
   }
 
   void _addNewPatient(BuildContext context) {
-     final user = UserBinding.of(context).user;
+   
     Firestore.instance.collection('patients').document().setData({
       'firstname': _firstNameController.text,
       'lastname': _lastNameController.text,
@@ -93,8 +95,8 @@ class PatientEditState extends State<PatientEdit> {
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
       'love': _loveController.text,
-      'carehome': user.carehome.id,
-      'carehomename': user.carehome.name,
+      'carehome': widget.user.carehome.id,
+      'carehomename': widget.user.carehome.name,
       'imageurl': imageUrl
     }).then((onValue) => Navigator.pop(context));
   }

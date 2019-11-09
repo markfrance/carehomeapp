@@ -1,6 +1,7 @@
 import 'package:carehomeapp/admin/patient_report.dart';
 import 'package:carehomeapp/feed/image_view.dart';
 import 'package:carehomeapp/model/user_binding.dart';
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_edit.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +9,13 @@ import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientView extends StatelessWidget {
-  PatientView(this.patient);
+  PatientView(this.patient, this.user);
   final Patient patient;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
-    final user = UserBinding.of(context).user;
-
+ 
     return Scaffold(
      
       appBar: AppBar(
@@ -97,7 +98,7 @@ class PatientView extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          PatientEdit(this.patient)));
+                                          PatientEdit(this.patient, this.user)));
                             },
                           ),
                           Spacer()

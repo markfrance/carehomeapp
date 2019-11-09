@@ -1,12 +1,14 @@
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/settings_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class YellowDrawer extends StatefulWidget {
 
   final VoidCallback logoutCallback;
-  YellowDrawer(this.logoutCallback);
+  final User user;
+  YellowDrawer(this.logoutCallback, this.user);
   @override
   YellowDrawerState createState() => YellowDrawerState();
 }
@@ -15,7 +17,6 @@ class YellowDrawerState extends State<YellowDrawer> {
 
   String currentScore;
   String followingCount;
-  User user;
 
 void getCurrentScore(User user) async {
     user.getScore().then((score) => 
@@ -34,16 +35,13 @@ void getCurrentScore(User user) async {
   @override
   Widget build(BuildContext context) {
 
-    if (user == null) {
-      user = UserBinding.of(context).user;
-    }
 
     if(currentScore == null){
-      getCurrentScore(user);
+      getCurrentScore(widget.user);
     }
 
     if(followingCount == null){
-      getFollowingCount(user);
+      getFollowingCount(widget.user);
     }
     return Drawer(
           child: Container(
@@ -56,13 +54,13 @@ void getCurrentScore(User user) async {
                   padding:EdgeInsets.only(top:32),
                   child:ListTile(
                   title: Text(
-                    user.firstName,
+                    widget.user.firstName,
                     textAlign: TextAlign.end,
                   ),
                 ),),
                 ListTile(
                   title: Text(
-                    user.lastName,
+                    widget.user.lastName,
                     textAlign: TextAlign.end,
                   ),
                 ),
@@ -86,7 +84,7 @@ void getCurrentScore(User user) async {
                       "Settings",
                       textAlign: TextAlign.end,
                     ),
-                    onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => SettingsPage()))
+                    onTap: () => Navigator.push(context,MaterialPageRoute(builder: (context) => SettingsPage(widget.user)))
                 ),
                  ),
                  ),
@@ -97,7 +95,10 @@ void getCurrentScore(User user) async {
                       "Log Out",
                       textAlign: TextAlign.end,
                     ),
-                    onTap: () => widget.logoutCallback()
+                    onTap: () => {
+                      FirebaseAuth.instance.signOut().then((_) => {widget.logoutCallback(),
+                      Navigator.pop(context)})
+                    }
                 ),
                  ),
                  
