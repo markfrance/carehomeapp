@@ -76,11 +76,11 @@ class _FeedCardState extends State<FeedCard> {
         .collection('feeditem')
         .document(widget.feedItem.id)
         .get()
-        .then((data) => {
-              setState(() => isLiked =
-                  List.from(data['likes'])?.contains(user.id) ?? false)
+        .then((data) => 
+            setState(() => isLiked =
+                 data['likes'] != null ? (List.from(data['likes'])?.contains(user.id) ?? false) : false)
                 
-            });
+            );
   }
 
   void sendLikeNotification() {

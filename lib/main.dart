@@ -18,7 +18,7 @@ import 'package:carehomeapp/logcheck/log_check.dart';
 import 'package:carehomeapp/patient/patients_list.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 void main() {
   runApp(MyApp());
 }
@@ -45,7 +45,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  String currentScore;
   User user;
 
   @override
@@ -70,17 +69,14 @@ class MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  void getCurrentScore(User user) async {
-    user.getScore().then((score) => setState(() {
-          currentScore = score.toString();
-        }));
-  }
 
   @override
   Widget build(BuildContext context) {
    
-      getCurrentScore(user);
- 
+    if(user == null){
+      return CircularProgressIndicator();
+    }
+
     return UserBinding(
         user: user,
         child: MaterialApp(
@@ -131,9 +127,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
-  String currentScore;
-  User user;
-
+  int currentScore = 0;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final List<PushMessage> messages = [];
   
@@ -216,9 +212,9 @@ Future.delayed(Duration(seconds: 1), () {
     }
   }
 
-  void getCurrentScore(User user) async {
+  void getCurrentScore(User user) {
     user.getScore().then((score) => setState(() {
-          currentScore = score.toString();
+          currentScore = score;
         }));
   }
 
@@ -232,13 +228,13 @@ Future.delayed(Duration(seconds: 1), () {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      user = UserBinding.of(context).user;
-    }
-
-      getCurrentScore(user);
     
-
+    var user = UserBinding.of(context).user;
+    
+    if(currentScore == null){
+      getCurrentScore(user);
+    }
+    
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -265,7 +261,7 @@ Future.delayed(Duration(seconds: 1), () {
                     color: Color.fromARGB(255, 249, 210, 45),
                     child: Padding(
                         padding: EdgeInsets.all(10),
-                        child: Text(currentScore.padLeft(2))),
+                        child: Text(currentScore.toString())),
                   ),
                 ),
               ],
