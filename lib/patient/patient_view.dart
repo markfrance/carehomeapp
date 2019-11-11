@@ -4,20 +4,68 @@ import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/patient/patient_edit.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class PatientView extends StatelessWidget {
-  PatientView(this.patient, this.user);
+class PatientView extends StatefulWidget{
+PatientView(this.patient, this.user);
+
   final Patient patient;
   final User user;
 
   @override
+  State<StatefulWidget> createState() => PatientViewState();
+}
+
+class PatientViewState extends State<PatientView> {
+  
+  Patient patient;
+
+  @override
+  void initState() { 
+    super.initState();
+  setPatient();
+  }
+
+  void setPatient(){
+     Firestore.instance
+        .collection('patients')
+        .document(widget.patient.id)
+        .get()
+        .then((data) => setState(() => 
+  patient = Patient(
+            data.documentID,
+            data['firstname'],
+            data['lastname'],
+            data['age'],
+            data['carehome'],
+            data['likes'],
+            data['dislikes'],
+            data['medicalcondition'],
+            data['contacts'],
+            data['keynurse'],
+            data['contraindications'],
+            data['frustrate'],
+            data['love'],
+            data['imageurl'])));
+  }
+
+_navigateAndDisplayEdit(BuildContext context) async {
+
+    final Patient result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>  PatientEdit(this.patient, this.widget.user)
+    ));
+
+   setPatient();
+  }
+  
+  @override
   Widget build(BuildContext context) {
- 
+
     return Scaffold(
-     
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         title: Text('Patient Data'),
@@ -94,11 +142,7 @@ class PatientView extends StatelessWidget {
                             padding: EdgeInsets.all(8),
                             child: Text("Edit"),
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PatientEdit(this.patient, this.user)));
+                             _navigateAndDisplayEdit(context);
                             },
                           ),
                           Spacer()

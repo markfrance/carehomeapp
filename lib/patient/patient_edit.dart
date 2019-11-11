@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/patient/patient_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class PatientEditState extends State<PatientEdit> {
   final _loveController = TextEditingController();
 
   String imageUrl;
+  Patient patient;
 
   @override
   void initState() {
@@ -64,11 +66,16 @@ class PatientEditState extends State<PatientEdit> {
         .then((url) => setState(() => imageUrl = url));
   }
 
+
+
   void _updatePatientData(BuildContext context) {
     Firestore.instance
         .collection('patients')
         .document(widget.patient.id)
         .updateData({
+           'firstname': _firstNameController.text,
+      'lastname': _lastNameController.text,
+      'age': int.tryParse(_ageController.text) ?? 0,
       'likes': _likesController.text,
       'dislikes': _dislikesController.text,
       'medicalcondition': _medicalconditionController.text,
@@ -78,11 +85,10 @@ class PatientEditState extends State<PatientEdit> {
       'frustrate': _frustrateController.text,
       'love': _loveController.text,
       'imageurl': imageUrl
-    }).then((onValue) => Navigator.pop(context));
+    }).then((onValue) => {Navigator.pop(context, patient)});
   }
 
   void _addNewPatient(BuildContext context) {
-   
     Firestore.instance.collection('patients').document().setData({
       'firstname': _firstNameController.text,
       'lastname': _lastNameController.text,
@@ -98,13 +104,12 @@ class PatientEditState extends State<PatientEdit> {
       'carehome': widget.user.carehome.id,
       'carehomename': widget.user.carehome.name,
       'imageurl': imageUrl
-    }).then((onValue) => Navigator.pop(context));
+    }).then((onValue) => {Navigator.pop(context, patient)});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
         appBar: AppBar(
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
           title: Text('Edit Patient Data'),
@@ -151,24 +156,23 @@ class PatientEditState extends State<PatientEdit> {
                             Container(
                               width: 150,
                               child: TextFormField(
-                                decoration: InputDecoration(
-                                    hintText: 'First Name'),
+                                decoration:
+                                    InputDecoration(hintText: 'First Name'),
                                 controller: _firstNameController,
                               ),
                             ),
                             Container(
                               width: 150,
                               child: TextFormField(
-                                 decoration: InputDecoration(
-                                    hintText: 'Last Name'),
+                                decoration:
+                                    InputDecoration(hintText: 'Last Name'),
                                 controller: _lastNameController,
                               ),
                             ),
                             Container(
                               width: 50,
                               child: TextFormField(
-                                 decoration: InputDecoration(
-                                    hintText: 'Age'),
+                                decoration: InputDecoration(hintText: 'Age'),
                                 controller: _ageController,
                               ),
                             ),
