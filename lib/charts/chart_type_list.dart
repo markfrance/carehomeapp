@@ -8,18 +8,26 @@ import 'package:carehomeapp/charts/vitals_charts.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:flutter/material.dart';
 
-class ChartTypeList extends StatelessWidget {
+
+class ChartTypeList extends StatefulWidget{
   final Patient patient;
-  final bool ishome;
-  ChartTypeList(this.patient,[this.ishome]);
+ 
+  ChartTypeList(this.patient);
+
+  @override
+  ChartTypeListState createState() => ChartTypeListState();
+}
+class ChartTypeListState extends State<ChartTypeList> {
+  
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       home: Scaffold(
         body: ListView.builder(
           itemBuilder: (BuildContext context, int index) =>
-              ChartEntryItem(data[index], context, patient),
+              ChartEntryItem(data[index], context, widget.patient),
           itemCount: data.length,
         ),
       ),

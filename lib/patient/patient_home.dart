@@ -11,11 +11,12 @@ import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class PatientHome extends StatefulWidget {
-  PatientHome(this.patient, this.followText, this.user);
+  PatientHome(this.patient, this.followText, this.user, [this.ischart]);
 
   final Patient patient;
   final String followText;
   final User user;
+  bool ischart;
   @override
   _PatientHomeState createState() => _PatientHomeState();
 }
@@ -26,23 +27,25 @@ class _PatientHomeState extends State<PatientHome> {
 
   @override
   void initState() {
-   
+    if (widget.ischart ?? false) {
+      _selectedIndex = 2;
+    }
     super.initState();
     setPatient();
   }
+
   void _setIndex(index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
- void setPatient(){
-     Firestore.instance
+  void setPatient() {
+    Firestore.instance
         .collection('patients')
         .document(widget.patient.id)
         .get()
-        .then((data) => setState(() => 
-  patient = Patient(
+        .then((data) => setState(() => patient = Patient(
             data.documentID,
             data['firstname'],
             data['lastname'],
@@ -57,22 +60,21 @@ class _PatientHomeState extends State<PatientHome> {
             data['frustrate'],
             data['love'],
             data['imageurl'])));
- }
-  
+  }
+
   @override
   Widget build(BuildContext context) {
     final widgetOptions = [
       FeedList(widget.user, widget.patient),
       MedicationForm(widget.patient, false, widget.user),
-      ChartTypeList(widget.patient, true),
+      ChartTypeList(widget.patient),
       TasksView(widget.patient, widget.user)
     ];
-   if(patient == null) {
-     return CircularProgressIndicator();
-   }
+    if (patient == null) {
+      return CircularProgressIndicator();
+    }
 
     return Scaffold(
-
       appBar: AppBar(
         title: Text(patient.firstname + " " + patient.lastname),
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -96,10 +98,14 @@ class _PatientHomeState extends State<PatientHome> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: CachedNetworkImage(
-                                  imageUrl: patient.imageUrl ?? "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
-                                  placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
-                                  width: 50,
-                                  height: 50),
+                                imageUrl: patient.imageUrl ??
+                                    "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
+                                placeholder: (context, url) => Image.asset(
+                                    "assets/images/avatar_placeholder_small.png",
+                                    width: 50,
+                                    height: 50),
+                                width: 50,
+                                height: 50),
                           )),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,17 +118,17 @@ class _PatientHomeState extends State<PatientHome> {
                               style: Theme.of(context).textTheme.subhead),
                         ],
                       ),
-                      Expanded(
+                  /*   Expanded(
                           child: Padding(
                         padding: EdgeInsets.only(right: 16),
                         child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: RaisedButton(
+                            alignment: Alignment.bottomRight,
+                            child: RaisedButton(
                               color: Colors.black,
                               child: Text(widget.followText),
-                              onPressed: () => null,)
-                        ),
-                      )),
+                              onPressed: () => null,
+                            )),
+                      )),*/
                       FlatButton(
                         child: Icon(Icons.info, color: Colors.black),
                         onPressed: () {
@@ -161,8 +167,13 @@ class _PatientHomeState extends State<PatientHome> {
                 Expanded(
                   flex: 3,
                   child: RaisedButton(
-                      child: Text("Chart"), onPressed: () => _setIndex(2)),
-                ),
+                      child: Text("Chart"), onPressed: () => Navigator.pushReplacement(context,
+                      PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) => PatientHome(widget.patient, "", widget.user, true),
+          transitionsBuilder: (context, anim1, anim2, child) => Container(child: child)))
+        
+        ),),
+
                 Spacer(),
                 Expanded(
                   flex: 3,
