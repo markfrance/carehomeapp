@@ -1,3 +1,4 @@
+import 'package:carehomeapp/admin/add_carehome.dart';
 import 'package:carehomeapp/admin/user_card.dart';
 import 'package:carehomeapp/admin/user_edit.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
@@ -18,9 +19,7 @@ class _UsersListState extends State<UsersList> {
   Carehome dropdownValue;
 
   Widget _buildList(BuildContext context) {
-
     return FutureBuilder<List<User>>(
-      
         future: User.getUsers(dropdownValue, widget.user),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -38,12 +37,10 @@ class _UsersListState extends State<UsersList> {
   Future<List<Carehome>> getCarehomes() async {
     List<Carehome> carehomes = new List<Carehome>();
 
-   QuerySnapshot 
-    snapshot =
+    QuerySnapshot snapshot =
         await Firestore.instance.collection('carehome').getDocuments();
-  
 
-  carehomes.add(Carehome('0', 'All Carehomes'));
+    carehomes.add(Carehome('0', 'All Carehomes'));
     snapshot.documents.forEach(
         (data) => carehomes.add(Carehome(data.documentID, data['name'])));
     return carehomes;
@@ -51,34 +48,41 @@ class _UsersListState extends State<UsersList> {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(children: <Widget>[
-      Row(children: <Widget>[
+      Row(
+        children: <Widget>[
           Padding(
-            child:Text("Users", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-            padding:EdgeInsets.all(16)),
+              child: Text(
+                "Users",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(16)),
           SizedBox(
-                width:30,
-                height:30,
-                child: Visibility(
-                    visible: widget.user.isSuperAdmin == true || widget.user.isManager == true,
-                    child:RaisedButton(
-                padding:EdgeInsets.all(0),
-                color:Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+            width: 30,
+            height: 30,
+            child: Visibility(
+              visible: widget.user.isSuperAdmin == true ||
+                  widget.user.isManager == true,
+              child: RaisedButton(
+                padding: EdgeInsets.all(0),
+                color: Colors.black,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100)),
                 onPressed: () => showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return UserEdit(null);
-            },
+                  context: context,
+                  builder: (BuildContext context) {
+                    return UserEdit(null);
+                  },
                 ),
-                child:Icon(CareHomeIcons.addb,),
-              ),),)
-
+                child: Icon(
+                  CareHomeIcons.addb,
+                ),
+              ),
+            ),
+          )
         ],
-        ),
+      ),
       Row(children: <Widget>[
-        
         Expanded(
             flex: 2,
             child: Align(
@@ -95,7 +99,7 @@ class _UsersListState extends State<UsersList> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Visibility(
                         visible: widget.user.isSuperAdmin == true,
-                        child:FutureBuilder<List<Carehome>>(
+                        child: FutureBuilder<List<Carehome>>(
                             future: getCarehomes(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<List<Carehome>> snapshot) {
@@ -125,15 +129,24 @@ class _UsersListState extends State<UsersList> {
                                   onChanged: (Carehome newValue) {
                                     setState(() {
                                       dropdownValue = newValue;
-                                      
+
                                       print(newValue.id);
                                     });
                                   });
-                            }),),
+                            }),
+                      ),
                     ),
                   ),
-                )))
+                ))),
       ]),
+      Visibility(
+          visible: widget.user.isSuperAdmin == true,
+          child: RaisedButton(
+              child: Text('Add Carehome'),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddCarehome())))),
       Expanded(child: _buildList(context), flex: 1)
     ]);
   }
