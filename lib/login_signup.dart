@@ -20,6 +20,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   bool _isLoginForm;
   bool _isLoading;
+  bool _acceptTerms = false;
 
   // Check if form is valid before perform login or signup
   bool validateAndSave() {
@@ -37,6 +38,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       _errorMessage = "";
       _isLoading = true;
     });
+
+    if(!_acceptTerms) {
+      return;
+    }
+
     if (validateAndSave()) {
       String userId = "";
       try {
@@ -134,6 +140,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             children: <Widget>[
               showEmailInput(),
               showPasswordInput(),
+              showTermsInput(),
               showPrimaryButton(),
          //     showSecondaryButton(),
               showErrorMessage(),
@@ -170,6 +177,27 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           child: Image.asset('assets/flutter-icon.png'),
         ),
       ),
+    );
+  }
+
+  Widget showTermsInput() {
+     return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+      child: CheckboxListTile(
+activeColor: Colors.black,
+                checkColor: Colors.white,
+        value: _acceptTerms,
+        title: Text("By logging in I accept terms and conditions"),
+         subtitle: !_acceptTerms
+      ? Text(
+          'Required',
+          style: TextStyle(color: Colors.red),
+        )
+      : null,
+        onChanged: (bool newValue) => setState(() {
+          _acceptTerms = newValue;
+        }),
+      )
     );
   }
 

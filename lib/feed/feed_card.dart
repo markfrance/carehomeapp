@@ -264,6 +264,9 @@ class _FeedCardState extends State<FeedCard> {
                 child: Padding(
                     child: GestureDetector(
                         child: CachedNetworkImage(
+                          height: 150,
+                          width: 320,
+                          fit:BoxFit.fitWidth,
                           imageUrl: widget.feedItem.imageUrl ??
                               "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
                           placeholder: (context, url) =>
