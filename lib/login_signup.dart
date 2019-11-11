@@ -91,11 +91,22 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          leading: Image.asset("assets/images/icons/PNG/main.png"),
+          leading: Padding(
+            padding:EdgeInsets.all(5),
+            child:Image.asset("assets/images/icons/PNG/main.png",
+      
+          ),),
           title: new Text('CareHomeApp Login'),
         ),
         body: Stack(
           children: <Widget>[
+            Align(
+              alignment: Alignment.topCenter,
+              child:Padding(
+                padding:EdgeInsets.only(top:10),
+                child:Image.asset("assets/images/icons/PNG/main.png",),),
+      
+          ),
             _showForm(),
             _showCircularProgress(),
           ],

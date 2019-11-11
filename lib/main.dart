@@ -304,11 +304,12 @@ Future.delayed(Duration(seconds: 1), () {
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
         endDrawer: YellowDrawer(widget.logoutCallback, user),
         appBar: AppBar(
-            leading: Image.asset(
+            leading: Padding(
+              padding:EdgeInsets.all(5),
+              child:Image.asset(
               "assets/images/icons/PNG/main.png",
-              width: 40,
-              height: 40,
-            ),
+
+            ),),
             backgroundColor: Color.fromARGB(255, 250, 243, 242),
             title: Row(
               children: <Widget>[
