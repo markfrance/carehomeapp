@@ -39,7 +39,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       _isLoading = true;
     });
 
-    if(!_acceptTerms) {
+    if (!_acceptTerms) {
       return;
     }
 
@@ -98,21 +98,24 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     return new Scaffold(
         appBar: new AppBar(
           leading: Padding(
-            padding:EdgeInsets.all(5),
-            child:Image.asset("assets/images/icons/PNG/main.png",
-      
-          ),),
+            padding: EdgeInsets.all(5),
+            child: Image.asset(
+              "assets/images/icons/PNG/main.png",
+            ),
+          ),
           title: new Text('CareHomeApp Login'),
         ),
         body: Stack(
           children: <Widget>[
             Align(
               alignment: Alignment.topCenter,
-              child:Padding(
-                padding:EdgeInsets.only(top:10),
-                child:Image.asset("assets/images/icons/PNG/main.png",),),
-      
-          ),
+              child: Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Image.asset(
+                  "assets/images/icons/PNG/main.png",
+                ),
+              ),
+            ),
             _showForm(),
             _showCircularProgress(),
           ],
@@ -129,7 +132,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     );
   }
 
-
   Widget _showForm() {
     return new Container(
         padding: EdgeInsets.all(16.0),
@@ -142,7 +144,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               showPasswordInput(),
               showTermsInput(),
               showPrimaryButton(),
-         //     showSecondaryButton(),
+              //     showSecondaryButton(),
               showErrorMessage(),
             ],
           ),
@@ -181,24 +183,23 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showTermsInput() {
-     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-      child: CheckboxListTile(
-activeColor: Colors.black,
-                checkColor: Colors.white,
-        value: _acceptTerms,
-        title: Text("By logging in I accept terms and conditions"),
-         subtitle: !_acceptTerms
-      ? Text(
-          'Required',
-          style: TextStyle(color: Colors.red),
-        )
-      : null,
-        onChanged: (bool newValue) => setState(() {
-          _acceptTerms = newValue;
-        }),
-      )
-    );
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+        child: CheckboxListTile(
+          activeColor: Colors.black,
+          checkColor: Colors.white,
+          value: _acceptTerms,
+          title: Text("By logging in I accept terms and conditions"),
+          subtitle: !_acceptTerms
+              ? Text(
+                  'Required',
+                  style: TextStyle(color: Colors.red),
+                )
+              : null,
+          onChanged: (bool newValue) => setState(() {
+            _acceptTerms = newValue;
+          }),
+        ));
   }
 
   Widget showEmailInput() {
@@ -209,8 +210,8 @@ activeColor: Colors.black,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'email',
-           ),
+          hintText: 'email',
+        ),
         validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
         onSaved: (value) => _email = value.trim(),
       ),
@@ -225,8 +226,8 @@ activeColor: Colors.black,
         obscureText: true,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'password',
-           ),
+          hintText: 'password',
+        ),
         validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
         onSaved: (value) => _password = value.trim(),
       ),

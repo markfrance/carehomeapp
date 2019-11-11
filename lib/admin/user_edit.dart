@@ -25,6 +25,8 @@ class UserEditState extends State<UserEdit> {
   final _passwordController = TextEditingController();
   String carehome;
   Carehome dropdownValue;
+  bool isManager = false;
+  bool isSuperAdmin = false;
 
   @override
   void initState() {
@@ -33,6 +35,8 @@ class UserEditState extends State<UserEdit> {
       _lastNameController.text = widget.user.lastName;
       _emailController.text = widget.user.email;
       dropdownValue = widget.user.carehome;
+      isSuperAdmin = widget.user.isSuperAdmin ?? false;
+      isManager = widget.user.isManager ?? false;
     }
     return super.initState();
   }
@@ -43,7 +47,9 @@ class UserEditState extends State<UserEdit> {
       'lastname': _lastNameController.text,
       'email': _emailController.text,
       'carehome': dropdownValue.id,
-      'carehomename': dropdownValue.name
+      'carehomename': dropdownValue.name,
+      'ismanager': isManager,
+      'issuperadmin': isSuperAdmin
     }).then((onValue) => Navigator.pop(context));
   }
 
@@ -54,16 +60,21 @@ class UserEditState extends State<UserEdit> {
             email: _emailController.text, password: _passwordController.text)
         .then((result) => {
               result.user.sendEmailVerification(),
-              Firestore.instance.collection('users').document(result.user.uid).setData({
+              Firestore.instance
+                  .collection('users')
+                  .document(result.user.uid)
+                  .setData({
                 'firstname': _firstNameController.text,
                 'lastname': _lastNameController.text,
                 'email': _emailController.text,
                 'carehome': dropdownValue.id,
                 'carehomename': dropdownValue.name,
-                'notificationlikes' : true,
+                'notificationlikes': true,
                 'notificationcomments': true,
                 'notificationmedication': true,
-                'notificationpatient':true,
+                'notificationpatient': true,
+                'ismanager': isManager,
+                'issuperadmin': isSuperAdmin,
                 'following': []
               }).then((onValue) => Navigator.pop(context))
             });
@@ -78,15 +89,6 @@ class UserEditState extends State<UserEdit> {
     snapshot.documents.forEach(
         (data) => carehomes.add(Carehome(data.documentID, data['name'])));
     return carehomes;
-  }
-
-  void setPermission(String permission, bool isOn) {
-    setState(() {
-      Firestore.instance
-          .collection('users')
-          .document(widget.user.id)
-          .updateData({permission: isOn});
-    });
   }
 
   @override
@@ -117,7 +119,6 @@ class UserEditState extends State<UserEdit> {
                       child: Text("Carehome",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                    
                     Padding(
                         padding: EdgeInsets.all(8),
                         child: FutureBuilder<List<Carehome>>(
@@ -156,7 +157,7 @@ class UserEditState extends State<UserEdit> {
                                     });
                                   });
                             })),
-                             Padding(
+                    Padding(
                       padding: EdgeInsets.all(8),
                       child: Text("User information",
                           style: TextStyle(fontWeight: FontWeight.bold)),
@@ -184,29 +185,33 @@ class UserEditState extends State<UserEdit> {
                     ),
                     Visibility(
                       visible: widget.user == null,
-                      child:Container(
-                      width: 375,
-                      child: TextFormField(
-                        decoration: InputDecoration(hintText: 'Password'),
-                        controller: _passwordController,
+                      child: Container(
+                        width: 375,
+                        child: TextFormField(
+                          decoration: InputDecoration(hintText: 'Password'),
+                          controller: _passwordController,
+                        ),
                       ),
-                    ),),
-                    
+                    ),
                     Padding(
                       padding: EdgeInsets.all(8),
-                      child:Text("Roles",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text("Roles",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     CheckboxListTile(
+                        activeColor: Colors.black,
+                        checkColor: Colors.white,
                         onChanged: (newValue) =>
-                            setPermission('ismanager', newValue),
+                            setState(() => isManager = newValue),
                         title: Text("Manager"),
-                        value: widget.user?.isManager ?? false),
+                        value:isManager),
                     CheckboxListTile(
+                        activeColor: Colors.black,
+                        checkColor: Colors.white,
                         onChanged: (newValue) =>
-                            setPermission('issuperadmin', newValue),
+                            setState(() => isSuperAdmin = newValue),
                         title: Text("Super Admin"),
-                        value: widget.user?.isSuperAdmin ?? false),
+                        value: isSuperAdmin),
                     Align(
                       alignment: Alignment.center,
                       child: RaisedButton(
