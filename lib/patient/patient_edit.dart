@@ -66,14 +66,12 @@ class PatientEditState extends State<PatientEdit> {
         .then((url) => setState(() => imageUrl = url));
   }
 
-
-
   void _updatePatientData(BuildContext context) {
     Firestore.instance
         .collection('patients')
         .document(widget.patient.id)
         .updateData({
-           'firstname': _firstNameController.text,
+      'firstname': _firstNameController.text,
       'lastname': _lastNameController.text,
       'age': int.tryParse(_ageController.text) ?? 0,
       'likes': _likesController.text,
@@ -83,9 +81,15 @@ class PatientEditState extends State<PatientEdit> {
       'keynurse': _keynurseController.text,
       'contraindications': _contraindicationsController.text,
       'frustrate': _frustrateController.text,
-      'love': _loveController.text,
-      'imageurl': imageUrl
+      'love': _loveController.text
     }).then((onValue) => {Navigator.pop(context, patient)});
+
+    if (imageUrl != null) {
+      Firestore.instance
+          .collection('patients')
+          .document(widget.patient.id)
+          .updateData({'imageurl': imageUrl});
+    }
   }
 
   void _addNewPatient(BuildContext context) {

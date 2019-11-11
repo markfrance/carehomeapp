@@ -61,10 +61,13 @@ _navigateAndDisplayEdit(BuildContext context) async {
 
    setPatient();
   }
-  
+
   @override
   Widget build(BuildContext context) {
 
+   if(patient == null) {
+     return CircularProgressIndicator();
+   }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 250, 243, 242),

@@ -21,14 +21,43 @@ class PatientHome extends StatefulWidget {
 }
 
 class _PatientHomeState extends State<PatientHome> {
+  Patient patient;
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+   
+    super.initState();
+    setPatient();
+  }
   void _setIndex(index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+ void setPatient(){
+     Firestore.instance
+        .collection('patients')
+        .document(widget.patient.id)
+        .get()
+        .then((data) => setState(() => 
+  patient = Patient(
+            data.documentID,
+            data['firstname'],
+            data['lastname'],
+            data['age'],
+            data['carehome'],
+            data['likes'],
+            data['dislikes'],
+            data['medicalcondition'],
+            data['contacts'],
+            data['keynurse'],
+            data['contraindications'],
+            data['frustrate'],
+            data['love'],
+            data['imageurl'])));
+ }
   
   @override
   Widget build(BuildContext context) {
@@ -38,11 +67,14 @@ class _PatientHomeState extends State<PatientHome> {
       ChartTypeList(widget.patient, true),
       TasksView(widget.patient, widget.user)
     ];
+   if(patient == null) {
+     return CircularProgressIndicator();
+   }
 
     return Scaffold(
-   
+
       appBar: AppBar(
-        title: Text(widget.patient.firstname + " " + widget.patient.lastname),
+        title: Text(patient.firstname + " " + patient.lastname),
         backgroundColor: Color.fromARGB(255, 250, 243, 242),
       ),
       body: Column(children: <Widget>[
@@ -64,7 +96,7 @@ class _PatientHomeState extends State<PatientHome> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: CachedNetworkImage(
-                                  imageUrl: widget.patient.imageUrl ?? "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
+                                  imageUrl: patient.imageUrl ?? "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
                                   placeholder: (context, url) => Image.asset("assets/images/avatar_placeholder_small.png",width:50,height:50),
                                   width: 50,
                                   height: 50),
@@ -72,11 +104,11 @@ class _PatientHomeState extends State<PatientHome> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.patient.firstname,
+                          Text(patient.firstname,
                               style: Theme.of(context).textTheme.subhead),
-                          Text(widget.patient.lastname,
+                          Text(patient.lastname,
                               style: Theme.of(context).textTheme.subhead),
-                          Text(widget.patient.age.toString(),
+                          Text(patient.age.toString(),
                               style: Theme.of(context).textTheme.subhead),
                         ],
                       ),
@@ -98,7 +130,7 @@ class _PatientHomeState extends State<PatientHome> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      PatientView(widget.patient, widget.user)));
+                                      PatientView(patient, widget.user)));
                         },
                       ),
                     ],
