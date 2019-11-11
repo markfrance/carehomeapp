@@ -5,10 +5,7 @@ import 'package:carehomeapp/model/carehome_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
-
-
 
 class UsersList extends StatefulWidget {
   final User user;
@@ -21,7 +18,6 @@ class _UsersListState extends State<UsersList> {
   Carehome dropdownValue;
 
   Widget _buildList(BuildContext context) {
-
 
     return FutureBuilder<List<User>>(
       
@@ -52,7 +48,6 @@ class _UsersListState extends State<UsersList> {
         (data) => carehomes.add(Carehome(data.documentID, data['name'])));
     return carehomes;
   }
-
 
   @override
   Widget build(BuildContext context) {

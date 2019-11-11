@@ -3,6 +3,7 @@ import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -25,13 +26,14 @@ class HeartRateFormState extends State<HeartRateForm> {
   
 
     final docRef = Firestore.instance.collection('feeditem').document();
+    final patientName = widget.patient.firstname + " " + widget.patient.lastname;
     docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'vitals',
       'subtype': 'heartrate',
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'patientname': patientName,
       'user': widget.user.id,
       'username': widget.user.firstName + " " + widget.user.lastName,
       'bpm': _rateController.text,
@@ -42,6 +44,7 @@ class HeartRateFormState extends State<HeartRateForm> {
               ? Comment.addNewComment(docRef.documentID, widget.user.id,
                   widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
+              PushNotification.sendPostNotifications(widget.user, 'heart rate', widget.patient.id, patientName),
           Navigator.pop(context)
         });
   }

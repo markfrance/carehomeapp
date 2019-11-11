@@ -194,8 +194,6 @@ Future.delayed(Duration(seconds: 1), () {
     _saveDeviceToken().then((result) {
       print("result: $result");
     });
-
-
   
   }
 

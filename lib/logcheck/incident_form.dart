@@ -3,6 +3,7 @@ import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -22,15 +23,15 @@ class IncidentFormState extends State<IncidentForm> {
 
   void _addIncident(BuildContext context) {
  
-
     final docRef = Firestore.instance.collection('feeditem').document();
+    final patientName =  widget.patient.firstname + " " + widget.patient.lastname;
     docRef.setData({
       'timeadded': DateTime.now(),
       'type': 'other',
       'subtype': 'incident',
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'patientname': patientName,
       'user': widget.user.id,
       'username': widget.user.firstName + " " + widget.user.lastName,
       'incident': _incidentController.text,
@@ -41,6 +42,7 @@ class IncidentFormState extends State<IncidentForm> {
               ? Comment.addNewComment(docRef.documentID, widget.user.id,
                   widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
+               PushNotification.sendPostNotifications(widget.user, 'incident', widget.patient.id, patientName),
           Navigator.pop(context)
         });
   }

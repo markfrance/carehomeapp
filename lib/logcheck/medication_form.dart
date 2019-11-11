@@ -5,6 +5,7 @@ import 'package:carehomeapp/model/medication_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -48,15 +49,11 @@ class MedicationState extends State<MedicationForm> {
 
   void setMedication(Medication med, bool done) {
  
-
+    final patientName = widget.patient.firstname + " " + widget.patient.lastname;
     Firestore.instance
         .collection('medication')
         .document(med.id)
         .updateData({'lastupdated': DateTime.now(), 'done': done});
-
-    //Check if user like notifications are enabled
-    //Create daily reminder notiofication
-    //LocalNotification().scheduleNotification(Time(med.time.hour, med.time.minute, 0));
 
     if (done) {
       //Create feed item
@@ -66,7 +63,7 @@ class MedicationState extends State<MedicationForm> {
         'subtype': 'medication',
         'patient': widget.patient.id,
         'patientimage': widget.patient.imageUrl,
-        'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+        'patientname': patientName,
         'user': widget.user.id,
         'medication': med.medication,
         'dose': med.dose,
@@ -82,6 +79,7 @@ class MedicationState extends State<MedicationForm> {
             ":" +
             med.time.minute.toString()
       });
+        PushNotification.sendPostNotifications(widget.user, 'medication', widget.patient.id, patientName);
     }
   }
 

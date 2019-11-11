@@ -31,6 +31,7 @@ class ActivityFormState extends State<ActivityForm> {
   void _addActivity(BuildContext context) {
    
     final docRef = Firestore.instance.collection('feeditem').document();
+    final patientName =  widget.patient.firstname + " " + widget.patient.lastname;
 
     docRef.setData({
       'timeadded': DateTime.now(),
@@ -38,7 +39,7 @@ class ActivityFormState extends State<ActivityForm> {
       'subtype': 'activity',
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'patientname':patientName,
       'user': widget.user.id,
       'username': widget.user.firstName + " " + widget.user.lastName,
       'activity': _activityController.text,
@@ -49,6 +50,7 @@ class ActivityFormState extends State<ActivityForm> {
               ? Comment.addNewComment(docRef.documentID, widget.user.id,
                   widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
+              PushNotification.sendPostNotifications(widget.user, 'activity', widget.patient.id, patientName),
 
           Navigator.pop(context)
         });

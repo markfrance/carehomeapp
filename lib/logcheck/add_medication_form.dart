@@ -1,11 +1,12 @@
 import 'package:carehomeapp/logcheck/form_header.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/patient_model.dart';
-import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class AddMedicationForm extends StatefulWidget {
   final Patient patient;
@@ -28,12 +29,13 @@ class MedicationFormState extends State<AddMedicationForm> {
  
 
     final docRef = Firestore.instance.collection('medication').document();
+    final patientName = widget.patient.firstname + " " + widget.patient.lastname;
 
     docRef.setData({
       'lastupdated': DateTime.now(),
       'patient': widget.patient.id,
       'patientimage': widget.patient.imageUrl,
-      'patientname': widget.patient.firstname + " " + widget.patient.lastname,
+      'patientname': patientName,
       'user': widget.user.id,
       'username': widget.user.firstName + " " + widget.user.lastName,
       'medication': _medicationController.text,
@@ -47,6 +49,14 @@ class MedicationFormState extends State<AddMedicationForm> {
               : null,
           Navigator.pop(context)
         });
+
+        //Check if user like notifications are enabled and create daily notification
+    Firestore.instance.collection('users').document(widget.user.id).get().then((dbuser) =>
+      dbuser['notificationmedication'] == true ? 
+       PushNotification("Medication notification", 
+    "Time to give $patientName ${_doseController.text} ${_medicationController.text}",
+    "").scheduleNotification(Time(_time.hour, _time.minute, 0), 'medication') : null);
+    
   }
 
   void setImage(String newimageurl) {
