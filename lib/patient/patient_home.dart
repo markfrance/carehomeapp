@@ -35,7 +35,7 @@ class _PatientHomeState extends State<PatientHome> {
     final widgetOptions = [
       FeedList(widget.user, widget.patient),
       MedicationForm(widget.patient, false, widget.user),
-      ChartTypeList(widget.patient),
+      ChartTypeList(widget.patient, true),
       TasksView(widget.patient, widget.user)
     ];
 

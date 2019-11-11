@@ -26,7 +26,7 @@ void getCurrentScore(User user) async {
   }
 
   void getFollowingCount(User user) async {
-    user.getFollowing().then((count) =>
+    user.getFollowingCount().then((count) =>
     setState(() =>
       followingCount = count.toString()
     ));

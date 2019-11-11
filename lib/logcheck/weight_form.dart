@@ -45,7 +45,7 @@ class WeightFormState extends State<WeightForm> {
               ? Comment.addNewComment(docRef.documentID,widget.user.id,
                   widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
-               PushNotification.sendPostNotifications(widget.user, 'toilet', widget.patient.id, patientName),
+               PushNotification.sendPostNotifications(widget.user, 'weight', widget.patient.id, patientName),
           Navigator.pop(context)
         });
   }

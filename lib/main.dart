@@ -147,6 +147,7 @@ void setUser() {
                     dbuser['ismanager'],
                     dbuser['issuperadmin'],
                     Carehome(dbuser['carehome'], dbuser['carehomename']));
+             //   user.carehome = Carehome(dbuser['carehome'], dbuser['carehomename']);
               })
             }));
 }
@@ -229,6 +230,62 @@ Future.delayed(Duration(seconds: 1), () {
     });
   }
 
+  Widget getBottomNavBar(){
+    if(user.isManager || user.isSuperAdmin) {
+    return BottomNavigationBar(
+          showUnselectedLabels: true,
+          backgroundColor: Color.fromARGB(255, 250, 243, 242),
+          currentIndex: _selectedIndex,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(CareHomeIcons.addb,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: Text('')),
+            BottomNavigationBarItem(
+                icon: Image.asset("assets/images/home.png"),
+                activeIcon: Image.asset("assets/images/homeactive.png"),
+                title: Text('')),
+            BottomNavigationBarItem(
+                icon: Image.asset("assets/images/patients.png"),
+                activeIcon: Image.asset("assets/images/patientsactive.png"),
+                title: Text('')),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: Text(''))
+          ],
+          onTap: (index) {
+            _incrementTab(index);
+          },
+        );
+    } else {
+      return BottomNavigationBar(
+          showUnselectedLabels: true,
+          backgroundColor: Color.fromARGB(255, 250, 243, 242),
+          currentIndex: _selectedIndex,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(CareHomeIcons.addb,
+                    color: Color.fromARGB(255, 0, 0, 0)),
+                title: Text('')),
+            BottomNavigationBarItem(
+                icon: Image.asset("assets/images/home.png"),
+                activeIcon: Image.asset("assets/images/homeactive.png"),
+                title: Text('')),
+            BottomNavigationBarItem(
+                icon: Image.asset("assets/images/patients.png"),
+                activeIcon: Image.asset("assets/images/patientsactive.png"),
+                title: Text('')),
+          ],
+          onTap: (index) {
+            _incrementTab(index);
+          },
+        );
+    }
+  }
+
  
   @override
   Widget build(BuildContext context) {
@@ -263,46 +320,13 @@ Future.delayed(Duration(seconds: 1), () {
                           color: Colors.black, fontWeight: FontWeight.w900)),
                 ),
                 Spacer(),
-                ClipOval(
-                  child: Container(
-                    color: Color.fromARGB(255, 249, 210, 45),
-                    child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text(currentScore.toString())),
-                  ),
-                ),
+               
               ],
             ),
             iconTheme: new IconThemeData(color: Colors.black)),
         body: Center(
           child: widgetOptions.elementAt(_selectedIndex),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          showUnselectedLabels: true,
-          backgroundColor: Color.fromARGB(255, 250, 243, 242),
-          currentIndex: _selectedIndex,
-          type: BottomNavigationBarType.fixed,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(CareHomeIcons.addb,
-                    color: Color.fromARGB(255, 0, 0, 0)),
-                title: Text('')),
-            BottomNavigationBarItem(
-                icon: Image.asset("assets/images/home.png"),
-                activeIcon: Image.asset("assets/images/homeactive.png"),
-                title: Text('')),
-            BottomNavigationBarItem(
-                icon: Image.asset("assets/images/patients.png"),
-                activeIcon: Image.asset("assets/images/patientsactive.png"),
-                title: Text('')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle,
-                    color: Color.fromARGB(255, 0, 0, 0)),
-                title: Text(''))
-          ],
-          onTap: (index) {
-            _incrementTab(index);
-          },
-        )));
+        bottomNavigationBar: getBottomNavBar()));
   }
 }

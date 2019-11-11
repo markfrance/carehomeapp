@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 
 class ChartTypeList extends StatelessWidget {
   final Patient patient;
-  ChartTypeList(this.patient);
+  final bool ishome;
+  ChartTypeList(this.patient,[this.ishome]);
 
   @override
   Widget build(BuildContext context) {

@@ -32,12 +32,14 @@ class _FeedListState extends State<FeedList> {
         snapshot = await Firestore.instance
             .collection('feeditem')
             .orderBy('type', descending: false)
+            .orderBy('timeadded', descending: true)
             .getDocuments();
       }
       if (dropdownValue == 'Patients') {
         snapshot = await Firestore.instance
             .collection('feeditem')
             .orderBy('patientname', descending: false)
+            .orderBy('timeadded', descending: true)
             .getDocuments();
       }
     } else {
@@ -48,7 +50,15 @@ class _FeedListState extends State<FeedList> {
           .getDocuments();
     }
 
-    snapshot.documents.forEach((data) => feedItems.add(new FeedItem(
+    var user = await Firestore.instance.collection('users')
+    .document(widget.user.id)
+    .get();
+
+    var following = List.from(user['following']);
+
+    snapshot.documents.forEach((data) => 
+    widget.patient != null || following.contains(data['patient']) ?
+    feedItems.add(new FeedItem(
       data.documentID,
         data['timeadded'].toDate(),
         data['type'],
@@ -81,7 +91,7 @@ class _FeedListState extends State<FeedList> {
         data['activity'],
         data['incident'],
         data['task'],
-        data['imageurl'])));
+        data['imageurl'])): null);
 
     return feedItems;
   }

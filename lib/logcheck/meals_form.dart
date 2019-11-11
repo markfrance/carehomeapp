@@ -52,7 +52,7 @@ class MealsFormState extends State<MealsForm> {
               ? Comment.addNewComment(docRef.documentID, widget.user.id,
                   widget.user.firstName + " " + widget.user.lastName, comment)
               : null,
-               PushNotification.sendPostNotifications(widget.user, 'hygiene', widget.patient.id, patientName),
+               PushNotification.sendPostNotifications(widget.user, 'meals', widget.patient.id, patientName),
           Navigator.pop(context)
         });
   }
