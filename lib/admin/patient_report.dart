@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carehomeapp/admin/pdf_report.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,6 +65,7 @@ class _PatientReportState extends State<PatientReport> {
   }
 
   void getRows() async {
+    rows.clear();
     QuerySnapshot snapshot = await Firestore.instance
         .collection('feeditem')
         .where('patient', isEqualTo: widget.patient.id)
@@ -71,7 +73,8 @@ class _PatientReportState extends State<PatientReport> {
 
     rows.add(["Check Type", "Check", "Comments", "Carer", "Time"]);
 
-    snapshot.documents.forEach((data) => {
+    snapshot.documents.where((snap) => snap['timeadded'].toDate() >= _fromDate && snap['timeadded'] <= _toDate)
+    .forEach((data) => {
           getComments(data.documentID).then((comments) => rows.add([
                 data['type'].toString(),
                 data['logdescription']?.toString() ?? "",
@@ -121,6 +124,10 @@ class _PatientReportState extends State<PatientReport> {
     );
 
     await FlutterEmailSender.send(email);
+  }
+
+  Future<void> writePdf() async {
+    await PdfReport(widget.patient, rows, widget.user.email, _fromDate, _toDate).sendReport();
   }
 
   List<DataRow> buildRows() {
@@ -304,7 +311,7 @@ class _PatientReportState extends State<PatientReport> {
                     ),
                     Spacer(),
                     RaisedButton(
-                      onPressed: () => null,
+                      onPressed: () => writePdf(),
                       child: Text("Export PDF"),
                     ),
                     Spacer()
@@ -316,7 +323,12 @@ class _PatientReportState extends State<PatientReport> {
                   primary: false,
                   child: report(),
                 )),
-                visible: rows.length != 0)
+                visible: rows.length != 0),
+            Visibility(
+                child: Container(
+                    child:Text("No data available for selected date range. Select dates and click generate report."),
+                ),
+                visible: rows.length == 0)
           ],
         ));
   }
