@@ -5,6 +5,7 @@ import 'package:carehomeapp/logcheck/enter_comment.dart';
 import 'package:carehomeapp/model/comment_model.dart';
 import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
+import 'package:carehomeapp/my_flutter_app_icons.dart';
 import 'package:carehomeapp/push_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class _FeedCardState extends State<FeedCard> {
   IconData getIcon(String type) {
     switch (type) {
       case "body":
-        return Icons.person_outline;
+        return MyFlutterApp.person;
       case "medication":
         return CareHomeIcons.medsicon;
       case "mood":

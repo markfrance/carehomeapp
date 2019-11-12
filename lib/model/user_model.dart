@@ -23,7 +23,7 @@ class User {
     if (!user.isSuperAdmin) {
       snapshot = await Firestore.instance
           .collection('users')
-         .where('carehome', isEqualTo: user.carehome)
+         .where('carehome', isEqualTo: user.carehome.id)
           .getDocuments();
     } else if (carehome == null || carehome.id == '0') {
       snapshot = await Firestore.instance.collection('users').getDocuments();

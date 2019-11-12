@@ -58,7 +58,7 @@ class _UserCardState extends State<UserCard> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => UserEdit(widget.user)),
+            MaterialPageRoute(builder: (context) => UserEdit(widget.user, widget.currentUser)),
           );
         },
         child: Card(

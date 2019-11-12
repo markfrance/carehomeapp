@@ -6,6 +6,7 @@ import 'package:carehomeapp/charts/nutrition_charts.dart';
 import 'package:carehomeapp/charts/other_charts.dart';
 import 'package:carehomeapp/charts/vitals_charts.dart';
 import 'package:carehomeapp/model/patient_model.dart';
+import 'package:carehomeapp/my_flutter_app_icons.dart';
 import 'package:flutter/material.dart';
 
 
@@ -51,7 +52,7 @@ final List<ChartEntry> data = <ChartEntry>[
   ChartEntry(
       'Medication', new List<ChartEntry>(), CareHomeIcons.medicationdark),
   ChartEntry('Nutrition', new List<ChartEntry>(), CareHomeIcons.nutritiondark),
-  ChartEntry('Body', new List<ChartEntry>(), CareHomeIcons.body),
+  ChartEntry('Body', new List<ChartEntry>(), MyFlutterApp.person),
   ChartEntry(
     'Other',
     new List<ChartEntry>(),

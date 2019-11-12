@@ -31,6 +31,7 @@ class _PatientReportState extends State<PatientReport> {
   String _toDateString = "";
   DateTime _fromDate;
   DateTime _toDate;
+  bool update;
 
   @override
   void initState() {
@@ -73,7 +74,8 @@ class _PatientReportState extends State<PatientReport> {
 
     rows.add(["Check Type", "Check", "Comments", "Carer", "Time"]);
 
-    snapshot.documents.where((snap) => snap['timeadded'].toDate() >= _fromDate && snap['timeadded'] <= _toDate)
+    snapshot.documents.where((snap) => DateTime.parse(snap['timeadded']).compareTo(_fromDate) >= 0
+      && DateTime.parse(snap['timeadded']).compareTo(_toDate) <= 0)
     .forEach((data) => {
           getComments(data.documentID).then((comments) => rows.add([
                 data['type'].toString(),
@@ -84,7 +86,9 @@ class _PatientReportState extends State<PatientReport> {
               ]))
         });
 
-    setState(() {});
+    setState(() {
+      update = true;
+    });
   }
 
   Future<String> get _localPath async {
@@ -136,7 +140,7 @@ class _PatientReportState extends State<PatientReport> {
     rows.forEach((r) => rowWidgets.add(DataRow(cells: [
           DataCell(Text(r[0] ?? "")),
           DataCell(Text(r[1] ?? "")),
-          DataCell(Text(r[2] ?? "")),
+     //     DataCell(Text(r[2] ?? "")),
           DataCell(Text(r[3] ?? "")),
           DataCell(Text(r[4] ?? "")),
         ])));
@@ -148,12 +152,12 @@ class _PatientReportState extends State<PatientReport> {
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.asset("assets/images/icons/PNG/main.png"),
-          Text("Daily Report",
+         
+          Text("Patient Report",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center),
           Column(children: <Widget>[
-            Row(
+          /*  Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Expanded(
@@ -194,8 +198,7 @@ class _PatientReportState extends State<PatientReport> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("Date",
-                              style: Theme.of(context).textTheme.subhead),
+               
                           Text(widget.patient.id,
                               style: Theme.of(context).textTheme.subhead),
                           Text(widget.patient.keynurse,
@@ -206,22 +209,22 @@ class _PatientReportState extends State<PatientReport> {
                   ),
                 )),
               ],
-            ),
+          ),*/
             Card(
               color: Color.fromARGB(255, 250, 243, 242),
               child: DataTable(
                 columns: [
                   DataColumn(label: Text("Check Type")),
                   DataColumn(label: Text("Check")),
-                  DataColumn(label: Text("Comments")),
+                //  DataColumn(label: Text("Comments")),
                   DataColumn(label: Text("Carer")),
                   DataColumn(label: Text("Time"))
                 ],
                 rows: buildRows(),
               ),
-            ),
-          ])
-        ]);
+            )
+         // ])
+        ])]);
   }
 
   @override
@@ -321,7 +324,7 @@ class _PatientReportState extends State<PatientReport> {
                 child: Container(
                     child: SingleChildScrollView(
                   primary: false,
-                  child: report(),
+                  child: report()
                 )),
                 visible: rows.length != 0),
             Visibility(

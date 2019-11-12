@@ -70,6 +70,9 @@ flutter:
     - family:  CareHomeIcons
       fonts:
       - asset: assets/fonts/CareHomeIcons.ttf
+    - family:  MyFlutterApp
+      fonts:
+      - asset: assets/fonts/MyFlutterApp.ttf
     - family: Nunito
       fonts:
       - asset: assets/fonts/Nunito-Regular.ttf

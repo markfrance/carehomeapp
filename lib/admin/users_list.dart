@@ -71,7 +71,7 @@ class _UsersListState extends State<UsersList> {
                 onPressed: () => showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return UserEdit(null);
+                    return UserEdit(null, widget.user);
                   },
                 ),
                 child: Icon(
@@ -84,7 +84,7 @@ class _UsersListState extends State<UsersList> {
       ),
       Row(children: <Widget>[
         Expanded(
-            flex: 2,
+            flex: 1,
             child: Align(
                 alignment: Alignment.topLeft,
                 child: Theme(
@@ -138,15 +138,22 @@ class _UsersListState extends State<UsersList> {
                     ),
                   ),
                 ))),
-      ]),
-      Visibility(
-          visible: widget.user.isSuperAdmin == true,
-          child: RaisedButton(
+               
+             Expanded(child:  
+             Padding(padding: EdgeInsets.only(left:8, right:8),
+             child:
+           Visibility(
+             visible: widget.user.isSuperAdmin,
+             child:RaisedButton(
               child: Text('Add Carehome'),
               onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddCarehome())))),
+              )),
+                      
+      ]),
+     
       Expanded(child: _buildList(context), flex: 1)
     ]);
   }

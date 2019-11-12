@@ -12,7 +12,8 @@ enum ConfirmAction { CANCEL, ACCEPT }
 
 class UserEdit extends StatefulWidget {
   final User user;
-  UserEdit(this.user);
+  final User currentUser;
+  UserEdit(this.user, this.currentUser);
 
   @override
   UserEditState createState() => UserEditState();
@@ -114,12 +115,16 @@ class UserEditState extends State<UserEdit> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
+                  Visibility(
+                    visible:widget.currentUser.isSuperAdmin,
+                    child:  Padding(
                       padding: EdgeInsets.all(8),
                       child: Text("Carehome",
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
+                    ),),
+                    Visibility(
+                      visible:widget.currentUser.isSuperAdmin,
+                      child:Padding(
                         padding: EdgeInsets.all(8),
                         child: FutureBuilder<List<Carehome>>(
                             future: getCarehomes(),
@@ -143,8 +148,7 @@ class UserEditState extends State<UserEdit> {
                                           DropdownMenuItem<Carehome>(
                                             child: Container(
                                               child: Text(carehome.name ?? ""),
-                                              color: Color.fromARGB(
-                                                  255, 249, 210, 45),
+                                             
                                             ),
                                             value: carehome,
                                           ))
@@ -156,7 +160,7 @@ class UserEditState extends State<UserEdit> {
                                       print(newValue);
                                     });
                                   });
-                            })),
+                            })),),
                     Padding(
                       padding: EdgeInsets.all(8),
                       child: Text("User information",
@@ -205,13 +209,15 @@ class UserEditState extends State<UserEdit> {
                             setState(() => isManager = newValue),
                         title: Text("Manager"),
                         value:isManager),
-                    CheckboxListTile(
+                    Visibility(
+                      visible: widget.currentUser.isSuperAdmin,
+                     child: CheckboxListTile(
                         activeColor: Colors.black,
                         checkColor: Colors.white,
                         onChanged: (newValue) =>
                             setState(() => isSuperAdmin = newValue),
                         title: Text("Super Admin"),
-                        value: isSuperAdmin),
+                        value: isSuperAdmin),),
                     Align(
                       alignment: Alignment.center,
                       child: RaisedButton(
