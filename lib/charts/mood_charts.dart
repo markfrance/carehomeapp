@@ -37,6 +37,7 @@ class MoodChartState extends State<MoodCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'mood')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => moodData.add(

@@ -60,6 +60,7 @@ class NutritionChartState extends State<NutritionCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'hydration')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => hydrationData.add(
@@ -87,6 +88,7 @@ class NutritionChartState extends State<NutritionCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'meals')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => mealData.add(

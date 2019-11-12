@@ -68,6 +68,7 @@ class VitalsChartState extends State<VitalsCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'heartrate')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => heartRateData.add(
@@ -94,6 +95,7 @@ class VitalsChartState extends State<VitalsCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'bloodsugar')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => bloodSugarData.add(
@@ -129,6 +131,7 @@ class VitalsChartState extends State<VitalsCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'bloodpressure')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => bloodPressureData.add(

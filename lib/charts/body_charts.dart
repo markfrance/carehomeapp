@@ -52,6 +52,7 @@ class BodyChartState extends State<BodyCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'weight')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               setState(() => weightData.add(
@@ -78,6 +79,7 @@ class BodyChartState extends State<BodyCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'toilet')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               toiletVisits.add(data['timeadded'].toDate()),
@@ -116,6 +118,7 @@ class BodyChartState extends State<BodyCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('type', isEqualTo: 'hygiene')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               hygieneDates.add(data['timeadded'].toDate()),

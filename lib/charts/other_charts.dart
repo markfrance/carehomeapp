@@ -41,6 +41,7 @@ class _OtherChartsState extends State<OtherCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'activity')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               activityDates.add(data['timeadded'].toDate()),
@@ -52,6 +53,7 @@ class _OtherChartsState extends State<OtherCharts> {
         .collection('feeditem')
         .where('patient', isEqualTo: patient.id)
         .where('subtype', isEqualTo: 'incident')
+        .orderBy('timeadded', descending: false)
         .getDocuments()
         .then((documents) => documents.documents.forEach((data) => {
               incidents.add(data['timeadded'].toDate()),

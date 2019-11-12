@@ -35,7 +35,7 @@ class _FeedCardState extends State<FeedCard> {
   IconData getIcon(String type) {
     switch (type) {
       case "body":
-        return CareHomeIcons.bodydark;
+        return Icons.person_outline;
       case "medication":
         return CareHomeIcons.medsicon;
       case "mood":
