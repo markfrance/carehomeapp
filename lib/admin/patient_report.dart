@@ -1,20 +1,24 @@
 import 'dart:io';
 
+import 'package:carehomeapp/model/user_model.dart';
 import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidgets;
 
 class PatientReport extends StatefulWidget {
-  PatientReport(this.patient);
+  PatientReport(this.patient, this.user);
 
   final Patient patient;
+  final User user;
   @override
   _PatientReportState createState() => _PatientReportState();
 }
@@ -44,21 +48,37 @@ class _PatientReportState extends State<PatientReport> {
         '${_toDate.year} / ${_toDate.month.toString().padLeft(2, '0')} / ${_toDate.day.toString().padLeft(2, '0')}';
   }
 
+  Future<String> getComments(String feedId) async {
+    List<String> comments = new List<String>();
+
+    QuerySnapshot commentDocs = await Firestore.instance
+        .collection('feeditem')
+        .document(feedId)
+        .collection('comments')
+        .getDocuments();
+
+    commentDocs.documents
+        .forEach((comment) => comments.add(comment.data['text']));
+
+    return comments.join(", ");
+  }
+
   void getRows() async {
     QuerySnapshot snapshot = await Firestore.instance
         .collection('feeditem')
         .where('patient', isEqualTo: widget.patient.id)
         .getDocuments();
 
+    rows.add(["Check Type", "Check", "Comments", "Carer", "Time"]);
+
     snapshot.documents.forEach((data) => {
-          rows.add([
-            data['type'].toString(),
-            data['logdescription']?.toString() ?? "",
-            //data['description'].toString(),
-            "COmments",
-            data['username']?.toString() ?? "",
-            data['timeadded'].toString()
-          ])
+          getComments(data.documentID).then((comments) => rows.add([
+                data['type'].toString(),
+                data['logdescription']?.toString() ?? "",
+                comments,
+                data['username']?.toString() ?? "",
+                data['timeadded'].toDate().toString()
+              ]))
         });
 
     setState(() {});
@@ -75,31 +95,43 @@ class _PatientReportState extends State<PatientReport> {
     return File('$path/$filename');
   }
 
-  Future<Widget> writeCsv() async {
+  Future<void> writeCsv() async {
     var patientName = widget.patient.firstname + "_" + widget.patient.lastname;
 
     var date = DateTime.now().toUtc().toString();
 
-    final file = await _localFile('$patientName-$date.csv');
+    File csvFile = await _localFile('$patientName-$date.csv');
 
     String csv = const ListToCsvConverter().convert(rows);
 
-    await file.writeAsString('$csv');
+    await csvFile.writeAsString('$csv');
 
-    return AlertDialog(
-      contentPadding: EdgeInsets.all(8),
-      content: Text("CSV exported to ${file.path}"),);
+    storage.StorageReference ref = storage.FirebaseStorage.instance
+        .ref()
+        .child("csv")
+        .child(csvFile.uri.toString());
+    storage.StorageUploadTask uploadTask = ref.putFile(csvFile);
+    var csvUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+    final Email email = Email(
+      body: 'Here is your reqested report $csvUrl',
+      subject: 'Patient csv report',
+      recipients: [widget.user.email],
+      isHTML: true,
+    );
+
+    await FlutterEmailSender.send(email);
   }
 
   List<DataRow> buildRows() {
     List<DataRow> rowWidgets = [];
 
     rows.forEach((r) => rowWidgets.add(DataRow(cells: [
-          DataCell(Text(r[0])),
-          DataCell(Text(r[1])),
-          DataCell(Text(r[2])),
-          DataCell(Text(r[3])),
-          DataCell(Text(r[4])),
+          DataCell(Text(r[0] ?? "")),
+          DataCell(Text(r[1] ?? "")),
+          DataCell(Text(r[2] ?? "")),
+          DataCell(Text(r[3] ?? "")),
+          DataCell(Text(r[4] ?? "")),
         ])));
 
     return rowWidgets;
@@ -189,7 +221,6 @@ class _PatientReportState extends State<PatientReport> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-    
         appBar: AppBar(
           title: Text("Generate Report"),
           backgroundColor: Color.fromARGB(255, 250, 243, 242),
@@ -223,7 +254,7 @@ class _PatientReportState extends State<PatientReport> {
                     setState(() {});
                   },
                   child: Text(
-                    _fromDateString,
+                    _fromDateString ?? "",
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -252,7 +283,7 @@ class _PatientReportState extends State<PatientReport> {
                     setState(() {});
                   },
                   child: Text(
-                    _toDateString,
+                    _toDateString ?? "",
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
@@ -281,9 +312,8 @@ class _PatientReportState extends State<PatientReport> {
                 )),
             Visibility(
                 child: Container(
-                  
                     child: SingleChildScrollView(
-                      primary: false,
+                  primary: false,
                   child: report(),
                 )),
                 visible: rows.length != 0)

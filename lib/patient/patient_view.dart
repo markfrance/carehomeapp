@@ -135,7 +135,7 @@ _navigateAndDisplayEdit(BuildContext context) async {
                                 child: Text('Report'),
                                 onPressed: () => Navigator.push(context,
                                               MaterialPageRoute(builder: (_) {
-                                              return PatientReport(patient);
+                                              return PatientReport(patient, widget.user);
                                             })),
                               ),
                             ),
