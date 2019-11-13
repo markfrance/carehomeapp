@@ -3,7 +3,6 @@ import 'package:carehomeapp/admin/user_card.dart';
 import 'package:carehomeapp/admin/user_edit.dart';
 import 'package:carehomeapp/care_home_icons_icons.dart';
 import 'package:carehomeapp/model/carehome_model.dart';
-import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

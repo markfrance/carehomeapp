@@ -2,18 +2,15 @@ import 'dart:io';
 
 import 'package:carehomeapp/admin/pdf_report.dart';
 import 'package:carehomeapp/model/user_model.dart';
-import 'package:carehomeapp/yellow_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/model/patient_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pdfWidgets;
+
 
 class PatientReport extends StatefulWidget {
   PatientReport(this.patient, this.user);
@@ -26,6 +23,7 @@ class PatientReport extends StatefulWidget {
 
 class _PatientReportState extends State<PatientReport> {
   List<List<String>> rows = new List<List<String>>();
+  GlobalKey scaffoldKey = GlobalKey();
 
   String _fromDateString = "";
   String _toDateString = "";
@@ -36,7 +34,7 @@ class _PatientReportState extends State<PatientReport> {
   @override
   void initState() {
     super.initState();
-    //  getRows();
+  
     initDates();
   }
 
@@ -65,19 +63,23 @@ class _PatientReportState extends State<PatientReport> {
     return comments.join(", ");
   }
 
-  void getRows() async {
+  Future<List<List<String>>> getRows() async {
     rows.clear();
+
+    List<List<String>> newRows = List<List<String>>();
+
     QuerySnapshot snapshot = await Firestore.instance
         .collection('feeditem')
         .where('patient', isEqualTo: widget.patient.id)
+        .where('timeadded', isGreaterThanOrEqualTo: _fromDate)
+        .where('timeadded', isLessThanOrEqualTo: _toDate)
         .getDocuments();
 
-    rows.add(["Check Type", "Check", "Comments", "Carer", "Time"]);
+    newRows.add(["Check Type", "Check", "Comments", "Carer", "Time"]);
 
-    snapshot.documents.where((snap) => DateTime.parse(snap['timeadded']).compareTo(_fromDate) >= 0
-      && DateTime.parse(snap['timeadded']).compareTo(_toDate) <= 0)
+    snapshot.documents
     .forEach((data) => {
-          getComments(data.documentID).then((comments) => rows.add([
+          getComments(data.documentID).then((comments) => newRows.add([
                 data['type'].toString(),
                 data['logdescription']?.toString() ?? "",
                 comments,
@@ -86,9 +88,9 @@ class _PatientReportState extends State<PatientReport> {
               ]))
         });
 
-    setState(() {
-      update = true;
-    });
+        setState(() {});
+
+    return newRows;
   }
 
   Future<String> get _localPath async {
@@ -131,7 +133,7 @@ class _PatientReportState extends State<PatientReport> {
   }
 
   Future<void> writePdf() async {
-    await PdfReport(widget.patient, rows, widget.user.email, _fromDate, _toDate).sendReport();
+    await PdfReport(widget.patient, rows, widget.user.email, _fromDate, _toDate, widget.user.carehome.name).sendReport();
   }
 
   List<DataRow> buildRows() {
@@ -149,87 +151,63 @@ class _PatientReportState extends State<PatientReport> {
   }
 
   Widget report() {
-    return Column(
+    return SingleChildScrollView(
+            primary: true,
+            child:  ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height -240 ),
+            child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-         
-          Text("Patient Report",
+          Align(
+            alignment: Alignment.center,
+            child:Text("Patient Report",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center),
-          Column(children: <Widget>[
-          /*  Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Expanded(
-                    child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 18.0,
-                    bottom: 18.0,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 24, right: 24, top: 8),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: CachedNetworkImage(
-                              imageUrl: widget.patient.imageUrl ??
-                                  "https://firebasestorage.googleapis.com/v0/b/carehomeapp-a2936.appspot.com/o/avatar_placeholder_small.png?alt=media&token=32adc9ac-03ad-45ed-bd4c-27ecc4f80a55",
-                              placeholder: (context, url) => Image.asset(
-                                  "assets/images/avatar_placeholder_small.png",
-                                  width: 50,
-                                  height: 50),
-                              width: 50,
-                              height: 50),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(widget.patient.firstname,
-                              style: Theme.of(context).textTheme.subhead),
-                          Text(widget.patient.lastname,
-                              style: Theme.of(context).textTheme.subhead),
-                          Text(widget.patient.age.toString(),
-                              style: Theme.of(context).textTheme.subhead),
-                        ],
-                      ),
-                      Spacer(),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-               
-                          Text(widget.patient.id,
-                              style: Theme.of(context).textTheme.subhead),
-                          Text(widget.patient.keynurse,
-                              style: Theme.of(context).textTheme.subhead),
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
-              ],
-          ),*/
-            Card(
+              textAlign: TextAlign.center),),
+          
+           Expanded(child: Container(
+           
+              
+         child: Card(
               color: Color.fromARGB(255, 250, 243, 242),
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text("Check Type")),
-                  DataColumn(label: Text("Check")),
-                //  DataColumn(label: Text("Comments")),
-                  DataColumn(label: Text("Carer")),
-                  DataColumn(label: Text("Time"))
-                ],
-                rows: buildRows(),
+              child:ListView.builder(
+                shrinkWrap: true,
+                itemCount: rows.length,
+                itemBuilder: (context, int){
+                  return Row(children: <Widget>[
+                    Container( 
+                      constraints: BoxConstraints(maxWidth: 70, minWidth: 70),
+                      child:Padding(
+                        padding:EdgeInsets.all(4),
+                       child:Text(rows[int][0] ?? "", style: int == 0 ? TextStyle(fontWeight: FontWeight.bold) : null),
+                       )),
+                       Container( 
+                      constraints: BoxConstraints(maxWidth: 180, minWidth: 180),
+                      child:Padding(
+                        padding:EdgeInsets.all(4),
+                       child:Text(rows[int][1] ?? "", style: int == 0 ? TextStyle(fontWeight: FontWeight.bold) : null),)),
+                       Container( 
+                      constraints: BoxConstraints(maxWidth: 80, minWidth: 80),
+                      child:Padding(
+                        padding:EdgeInsets.all(4),
+                       child:Text(rows[int][3] ?? "", style: int == 0 ? TextStyle(fontWeight: FontWeight.bold) : null),)),
+                         Container( 
+                      constraints: BoxConstraints(maxWidth: 70, minWidth: 70),
+                      child:Padding(
+                        padding:EdgeInsets.all(4),
+                       child:Text(rows[int][4] ?? "", style: int == 0 ? TextStyle(fontWeight: FontWeight.bold) : null),)),
+    
+                  ],);
+                },
               ),
-            )
+            ))
          // ])
-        ])]);
+        )])));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key:scaffoldKey,
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text("Generate Report"),
@@ -300,7 +278,8 @@ class _PatientReportState extends State<PatientReport> {
               ]),
             ),
             RaisedButton(
-              onPressed: () => getRows(),
+              onPressed: (){ getRows().then((newRows) => setState((){rows = newRows;}));
+              },
               child: Text("Generate Report"),
             ),
             Visibility(
@@ -322,10 +301,8 @@ class _PatientReportState extends State<PatientReport> {
                 )),
             Visibility(
                 child: Container(
-                    child: SingleChildScrollView(
-                  primary: false,
-                  child: report()
-                )),
+                    child:report()
+                ),
                 visible: rows.length != 0),
             Visibility(
                 child: Container(

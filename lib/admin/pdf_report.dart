@@ -8,11 +8,12 @@ import 'package:pdf/widgets.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 
 class PdfReport {
-  PdfReport(this.patient, this.rows, this.email, this.dateFrom, this.dateTo);
+  PdfReport(this.patient, this.rows, this.email, this.dateFrom, this.dateTo, this.carehomename);
   final Patient patient;
   final String email;
   final DateTime dateFrom;
   final DateTime dateTo;
+  final String carehomename;
   final List<List<String>> rows;
 
   Future<String> get _localPath async {
@@ -68,9 +69,10 @@ class PdfReport {
               Paragraph(text: "Last Name: ${patient.lastname}"),
               Paragraph(text: "Age: ${patient.age.toString()}"),
               Paragraph(
-                  text: "Dates: ${dateFrom.toString()} = ${dateTo.toString()}"),
+                  text: "Dates: ${dateFrom.toString()} - ${dateTo.toString()}"),
               Paragraph(text: "Patient ID: ${patient.id.toString()}"),
               Paragraph(text: "Key Nurse: ${patient.keynurse}"),
+              Paragraph(text: "Carehome: $carehomename"),
               Table.fromTextArray(context: context, data: rows),
             ]));
 
