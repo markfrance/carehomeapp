@@ -64,7 +64,6 @@ class _PatientReportState extends State<PatientReport> {
   }
 
   Future<List<List<String>>> getRows() async {
-    rows.clear();
 
     List<List<String>> newRows = List<List<String>>();
 
@@ -88,8 +87,11 @@ class _PatientReportState extends State<PatientReport> {
               ]))
         });
 
-        setState(() {});
-
+        
+      setState(() {
+        rows = newRows;
+      });
+   
     return newRows;
   }
 
@@ -278,8 +280,7 @@ class _PatientReportState extends State<PatientReport> {
               ]),
             ),
             RaisedButton(
-              onPressed: (){ getRows().then((newRows) => setState((){rows = newRows;}));
-              },
+              onPressed: (){getRows(); setState((){});},
               child: Text("Generate Report"),
             ),
             Visibility(
