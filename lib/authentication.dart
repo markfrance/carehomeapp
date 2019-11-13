@@ -14,6 +14,8 @@ abstract class BaseAuth {
   Future<void> signOut();
 
   Future<bool> isEmailVerified();
+
+  Future<void> resetPassword(String email);
 }
 
 class Auth implements BaseAuth {
@@ -46,6 +48,10 @@ class Auth implements BaseAuth {
   Future<void> sendEmailVerification() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     user.sendEmailVerification();
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   Future<void> updatePassword(String password) async {

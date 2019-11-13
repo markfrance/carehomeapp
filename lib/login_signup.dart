@@ -1,3 +1,4 @@
+import 'package:carehomeapp/reset_password.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/authentication.dart';
 
@@ -122,6 +123,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         ));
   }
 
+  Widget _showResetPassword() {
+     return FlatButton(child: Text("Reset Password", style: TextStyle(color: Colors.black)),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ResetPassword(widget.auth))));
+  }
+
   Widget _showCircularProgress() {
     if (_isLoading) {
       return Center(child: CircularProgressIndicator());
@@ -133,19 +140,23 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget _showForm() {
-    return new Container(
+    return Container(
         padding: EdgeInsets.all(16.0),
-        child: new Form(
+        child: Form(
           key: _formKey,
-          child: new ListView(
+          child: ListView(
             shrinkWrap: true,
             children: <Widget>[
               showEmailInput(),
               showPasswordInput(),
+             
               showTermsInput(),
               showPrimaryButton(),
+              
               //     showSecondaryButton(),
               showErrorMessage(),
+               _showResetPassword(),
+              
             ],
           ),
         ));
