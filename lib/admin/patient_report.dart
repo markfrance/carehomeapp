@@ -87,7 +87,6 @@ class _PatientReportState extends State<PatientReport> {
               ]))
         });
 
-        
       setState(() {
         rows = newRows;
       });

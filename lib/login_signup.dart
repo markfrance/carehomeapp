@@ -1,6 +1,7 @@
 import 'package:carehomeapp/reset_password.dart';
 import 'package:flutter/material.dart';
 import 'package:carehomeapp/authentication.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -156,6 +157,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               //     showSecondaryButton(),
               showErrorMessage(),
                _showResetPassword(),
+               
               
             ],
           ),
@@ -196,7 +198,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   Widget showTermsInput() {
     return Padding(
         padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-        child: CheckboxListTile(
+        child: Column(
+          children:<Widget>[
+            CheckboxListTile(
           activeColor: Colors.black,
           checkColor: Colors.white,
           value: _acceptTerms,
@@ -210,8 +214,20 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           onChanged: (bool newValue) => setState(() {
             _acceptTerms = newValue;
           }),
+        ),
+        FlatButton(child: Text("Terms and Conditions", style:TextStyle(color:Colors.blue)), 
+        onPressed: _launchTandC,)]
         ));
   }
+
+  _launchTandC() async {
+  const url = 'https://www.iubenda.com/terms-and-conditions/50588106';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
   Widget showEmailInput() {
     return Padding(

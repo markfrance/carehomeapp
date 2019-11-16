@@ -2,6 +2,7 @@ import 'package:carehomeapp/model/user_binding.dart';
 import 'package:carehomeapp/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage(this.user);
@@ -42,6 +43,15 @@ class SettingsPageState extends State<SettingsPage> {
           .updateData({type: isOn});
     });
   }
+
+    _launchPolicy() async {
+  const url = 'https://www.iubenda.com/privacy-policy/50588106';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +234,10 @@ class SettingsPageState extends State<SettingsPage> {
                                       TextStyle(fontWeight: FontWeight.bold)),
                               alignment: Alignment.centerLeft),
                           Align(
-                              child: Text("CareHomeApp v1.0"),
+                              child: FlatButton(
+                                padding:EdgeInsets.all(0),
+                                child: Text("Privacy and Cookie Policy", textAlign: TextAlign.left, style:TextStyle(color:Colors.blue)), 
+        onPressed: _launchPolicy,),
                               alignment: Alignment.centerLeft),
                         ],
                       )),
